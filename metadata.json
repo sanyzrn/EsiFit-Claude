@@ -1,0 +1,8 @@
+{
+  "name": "EsiFit",
+  "description": "Fitness application featuring exercises, diet tools, programs, and health calculators.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

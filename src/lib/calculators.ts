@@ -1,0 +1,262 @@
+// All calculator pure functions
+
+export function calcBMI(weightKg: number, heightCm: number): { bmi: number; category: string } {
+  const heightM = heightCm / 100;
+  const bmi = weightKg / (heightM * heightM);
+  let category = 'Normal weight';
+  if (bmi < 18.5) category = 'Underweight';
+  else if (bmi < 25) category = 'Normal weight';
+  else if (bmi < 30) category = 'Overweight';
+  else category = 'Obese';
+  return { bmi: Math.round(bmi * 10) / 10, category };
+}
+
+export function calcBodyFat(
+  gender: 'male' | 'female',
+  waistCm: number,
+  neckCm: number,
+  heightCm: number,
+  hipCm?: number
+): { bodyFatPct: number; category: string } {
+  let bf: number;
+  if (gender === 'male') {
+    bf = 495 / (1.0324 - 0.19077 * Math.log10(waistCm - neckCm) + 0.15456 * Math.log10(heightCm)) - 450;
+  } else {
+    const hip = hipCm || 0;
+    bf = 495 / (1.29579 - 0.35004 * Math.log10(waistCm + hip - neckCm) + 0.22100 * Math.log10(heightCm)) - 450;
+  }
+  bf = Math.round(bf * 10) / 10;
+  let category = 'Average';
+  if (gender === 'male') {
+    if (bf < 6) category = 'Essential fat';
+    else if (bf < 14) category = 'Athletic';
+    else if (bf < 18) category = 'Fitness';
+    else if (bf < 25) category = 'Average';
+    else category = 'Obese';
+  } else {
+    if (bf < 14) category = 'Essential fat';
+    else if (bf < 21) category = 'Athletic';
+    else if (bf < 25) category = 'Fitness';
+    else if (bf < 32) category = 'Average';
+    else category = 'Obese';
+  }
+  return { bodyFatPct: bf, category };
+}
+
+export function calcBMR(
+  gender: 'male' | 'female',
+  weightKg: number,
+  heightCm: number,
+  age: number
+): number {
+  if (gender === 'male') {
+    return Math.round(10 * weightKg + 6.25 * heightCm - 5 * age + 5);
+  }
+  return Math.round(10 * weightKg + 6.25 * heightCm - 5 * age - 161);
+}
+
+export const ACTIVITY_FACTORS = {
+  sedentary: 1.2,
+  light: 1.375,
+  moderate: 1.55,
+  active: 1.725,
+  veryActive: 1.9,
+};
+
+export function calcTDEE(bmr: number, activityLevel: keyof typeof ACTIVITY_FACTORS): number {
+  return Math.round(bmr * ACTIVITY_FACTORS[activityLevel]);
+}
+
+export function calcMacros(
+  weightKg: number,
+  tdee: number,
+  goal: 'muscle_gain' | 'fat_loss' | 'maintenance'
+): { protein: number; fat: number; carbs: number; calories: number } {
+  const proteinMultiplier = goal === 'muscle_gain' ? 2.0 : goal === 'fat_loss' ? 2.2 : 1.8;
+  const protein = Math.round(weightKg * proteinMultiplier);
+  const fat = Math.round(weightKg * 0.9);
+  const remainingKcal = tdee - (protein * 4 + fat * 9);
+  const carbs = Math.max(0, Math.round(remainingKcal / 4));
+  const calories = protein * 4 + fat * 9 + carbs * 4;
+  return { protein, fat, carbs, calories };
+}
+
+export function calcOneRepMax(
+  weight: number,
+  reps: number,
+  formula: 'epley' | 'brzycki' = 'epley'
+): number {
+  if (reps <= 0) return weight;
+  if (reps === 1) return weight;
+  if (formula === 'epley') {
+    return Math.round(weight * (1 + reps / 30));
+  }
+  return Math.round(weight * 36 / (37 - reps));
+}
+
+export function getRepMaxTable(oneRM: number): { percentage: number; reps: number; weight: number }[] {
+  const table = [
+    { percentage: 100, reps: 1 },
+    { percentage: 95, reps: 2 },
+    { percentage: 90, reps: 4 },
+    { percentage: 85, reps: 6 },
+    { percentage: 80, reps: 8 },
+    { percentage: 75, reps: 10 },
+    { percentage: 70, reps: 12 },
+    { percentage: 65, reps: 15 },
+    { percentage: 60, reps: 20 },
+  ];
+  return table.map(r => ({ ...r, weight: Math.round(oneRM * r.percentage / 100 * 10) / 10 }));
+}
+
+export function calcFFMI(weightKg: number, heightCm: number, bodyFatPct: number): { ffmi: number; adjusted: number; category: string } {
+  const heightM = heightCm / 100;
+  const leanMass = weightKg * (1 - bodyFatPct / 100);
+  const ffmi = leanMass / (heightM * heightM);
+  const adjusted = ffmi + 6.1 * (1.8 - heightM);
+  let category = 'Average';
+  if (adjusted < 18) category = 'Below average';
+  else if (adjusted < 20) category = 'Average';
+  else if (adjusted < 22) category = 'Above average';
+  else if (adjusted < 23) category = 'Excellent';
+  else if (adjusted < 26) category = 'Superior';
+  else category = 'Suspicious (may indicate steroid use)';
+  return {
+    ffmi: Math.round(ffmi * 10) / 10,
+    adjusted: Math.round(adjusted * 10) / 10,
+    category,
+  };
+}
+
+export function calcWHR(waistCm: number, hipCm: number, gender: 'male' | 'female'): { whr: number; risk: string } {
+  const whr = Math.round((waistCm / hipCm) * 100) / 100;
+  const threshold = gender === 'male' ? 0.90 : 0.85;
+  const risk = whr > threshold ? 'Elevated health risk' : 'Normal range';
+  return { whr, risk };
+}
+
+export function calcWaterIntake(weightKg: number): { liters: number } {
+  return { liters: Math.round(weightKg * 0.033 * 10) / 10 };
+}
+
+export function calcGoalDate(
+  currentWeight: number,
+  goalWeight: number,
+  weeklyCalorieDelta: number
+): { weeks: number; estimatedDate: string } {
+  const kgDiff = Math.abs(currentWeight - goalWeight);
+  const weeks = Math.ceil((kgDiff * 7700) / Math.abs(weeklyCalorieDelta));
+  const date = new Date();
+  date.setDate(date.getDate() + weeks * 7);
+  return {
+    weeks,
+    estimatedDate: date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+  };
+}
+
+export function calcVolumeLoad(logs: { sets: number; reps: number; weightKg: number }[]): number {
+  return logs.reduce((sum, l) => sum + l.sets * l.reps * l.weightKg, 0);
+}
+
+export const MET_TABLE: Record<string, number> = {
+  'Running (8 km/h)': 8.3,
+  'Running (10 km/h)': 10.0,
+  'Running (12 km/h)': 11.8,
+  'Cycling (moderate)': 6.8,
+  'Cycling (vigorous)': 10.0,
+  'Swimming (moderate)': 5.8,
+  'Swimming (vigorous)': 9.8,
+  'Weight Training': 6.0,
+  'Walking (5 km/h)': 3.5,
+  'Walking (6.5 km/h)': 4.3,
+  'Jump Rope': 11.0,
+  'Rowing': 7.0,
+  'Yoga': 3.0,
+  'HIIT': 12.0,
+  'Elliptical': 5.0,
+  'Stair Climbing': 9.0,
+};
+
+export function calcCaloriesBurned(met: number, weightKg: number, durationMinutes: number): number {
+  return Math.round(met * weightKg * (durationMinutes / 60));
+}
+
+export interface BodyTypeAnswer {
+  question: string;
+  options: { text: string; ecto: number; meso: number; endo: number }[];
+}
+
+export const BODY_TYPE_QUESTIONS: BodyTypeAnswer[] = [
+  {
+    question: 'What is your natural body build?',
+    options: [
+      { text: 'Thin, narrow shoulders and hips', ecto: 3, meso: 0, endo: 0 },
+      { text: 'Medium build, broad shoulders', ecto: 0, meso: 3, endo: 0 },
+      { text: 'Wider build, stores fat easily', ecto: 0, meso: 0, endo: 3 },
+    ],
+  },
+  {
+    question: 'How easily do you gain weight?',
+    options: [
+      { text: 'Very hard to gain weight', ecto: 3, meso: 0, endo: 0 },
+      { text: 'Can gain/lose relatively easily', ecto: 0, meso: 3, endo: 0 },
+      { text: 'Gain weight easily, hard to lose', ecto: 0, meso: 0, endo: 3 },
+    ],
+  },
+  {
+    question: 'What is your wrist circumference?',
+    options: [
+      { text: 'Small (under 16 cm / 6.3")', ecto: 3, meso: 0, endo: 0 },
+      { text: 'Medium (16-18 cm / 6.3-7")', ecto: 0, meso: 3, endo: 0 },
+      { text: 'Large (over 18 cm / 7"+)', ecto: 0, meso: 0, endo: 3 },
+    ],
+  },
+  {
+    question: 'How would you describe your shoulders?',
+    options: [
+      { text: 'Narrower than my hips', ecto: 3, meso: 0, endo: 0 },
+      { text: 'Same width or wider than hips', ecto: 0, meso: 3, endo: 0 },
+      { text: 'Wide but rounded', ecto: 0, meso: 0, endo: 3 },
+    ],
+  },
+  {
+    question: 'What happens when you skip workouts for a week?',
+    options: [
+      { text: 'I lose muscle and weight quickly', ecto: 3, meso: 0, endo: 0 },
+      { text: 'Not much changes', ecto: 0, meso: 3, endo: 0 },
+      { text: 'I tend to gain fat', ecto: 0, meso: 0, endo: 3 },
+    ],
+  },
+  {
+    question: 'How is your metabolism?',
+    options: [
+      { text: 'Very fast — I can eat a lot without gaining', ecto: 3, meso: 0, endo: 0 },
+      { text: 'Moderate — predictable', ecto: 0, meso: 3, endo: 0 },
+      { text: 'Slow — everything seems to stick', ecto: 0, meso: 0, endo: 3 },
+    ],
+  },
+];
+
+export function calcBodyType(answers: number[]): { type: 'ectomorph' | 'mesomorph' | 'endomorph'; description: string } {
+  let ecto = 0, meso = 0, endo = 0;
+  answers.forEach((ansIdx, qIdx) => {
+    if (BODY_TYPE_QUESTIONS[qIdx] && BODY_TYPE_QUESTIONS[qIdx].options[ansIdx]) {
+      const opt = BODY_TYPE_QUESTIONS[qIdx].options[ansIdx];
+      ecto += opt.ecto;
+      meso += opt.meso;
+      endo += opt.endo;
+    }
+  });
+  if (ecto >= meso && ecto >= endo) return {
+    type: 'ectomorph',
+    description: 'You have an ectomorphic body type — naturally lean with a fast metabolism. You may find it harder to gain muscle mass. Focus on calorie-surplus diets, compound lifts, and progressive overload. Programs emphasizing hypertrophy (8-12 rep range) with adequate rest are ideal.',
+  };
+  if (meso >= ecto && meso >= endo) return {
+    type: 'mesomorph',
+    description: 'You have a mesomorphic body type — naturally muscular and athletic. You respond well to both strength and endurance training. You can gain muscle and lose fat relatively easily. A balanced program mixing strength training with moderate cardio works best.',
+  };
+  return {
+    type: 'endomorph',
+    description: 'You have an endomorphic body type — naturally broader with a tendency to store fat. Focus on a combination of resistance training and regular cardio. Diet control is especially important. High-protein diets with moderate carbs work well for your body type.',
+  };
+}
