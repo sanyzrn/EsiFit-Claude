@@ -520,3 +520,7 @@ export const ARTICLES: Article[] = [
 // All unique muscle groups and equipment for filtering
 export const ALL_MUSCLE_GROUPS = [...new Set(EXERCISES.flatMap(e => e.muscleGroups))].sort();
 export const ALL_EQUIPMENT = [...new Set(EXERCISES.flatMap(e => e.equipment))].sort();
+
+export function getExerciseSlugById(exerciseId: string): string | undefined {
+  return EXERCISES.find((exercise) => exercise.id === exerciseId)?.slug;
+}
