@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Lock, Crown } from 'lucide-react';
 import { hasTierAccess, type SubscriptionTier } from '@/lib/types';
 import { useEntitlements } from '@/lib/entitlements';
+import { useI18n } from '@/lib/i18n';
 
 interface TierGateProps {
   minTier: SubscriptionTier;
@@ -10,13 +11,22 @@ interface TierGateProps {
   showBlur?: boolean;
 }
 
+const TIER_LABELS: Record<SubscriptionTier, { en: string; fa: string }> = {
+  FREE: { en: 'Free', fa: 'رایگان' },
+  ECONOMY: { en: 'Economy', fa: 'اقتصادی' },
+  VIP: { en: 'VIP', fa: 'ویژه' },
+  ELITE: { en: 'Elite', fa: 'الیت' },
+};
+
 export default function TierGate({ minTier, children, showBlur = true }: TierGateProps) {
   const { subscriptionTier, loading } = useEntitlements();
+  const { t } = useI18n();
+  const tierLabel = t(TIER_LABELS[minTier]);
 
   if (loading) {
     return showBlur ? (
       <div className="relative min-h-[12rem] flex items-center justify-center">
-        <div className="text-gray-400 text-sm">Loading access…</div>
+        <div className="text-gray-400 text-sm">{t({ en: 'Loading access…', fa: 'در حال بررسی دسترسی…' })}</div>
       </div>
     ) : null;
   }
@@ -46,17 +56,20 @@ export default function TierGate({ minTier, children, showBlur = true }: TierGat
           )}
         </div>
         <h3 id="tier-gate-title" className="text-lg font-bold mb-2">
-          {minTier} Content
+          {t({ en: `${minTier} Content`, fa: `محتوای ${tierLabel}` })}
         </h3>
         <p className="text-gray-400 text-sm mb-4">
-          This content requires a {minTier} subscription or higher. Upgrade now to unlock.
+          {t({
+            en: `This content requires a ${minTier} subscription or higher. Upgrade now to unlock.`,
+            fa: `این محتوا به اشتراک ${tierLabel} یا بالاتر نیاز دارد. برای باز کردن، هم‌اکنون ارتقا دهید.`,
+          })}
         </p>
         <Link
           to="/pricing"
           className="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600 transition-colors"
         >
           <Crown className="w-4 h-4" />
-          Upgrade to {minTier}
+          {t({ en: `Upgrade to ${minTier}`, fa: `ارتقا به ${tierLabel}` })}
         </Link>
       </div>
     </div>

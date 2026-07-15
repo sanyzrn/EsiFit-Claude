@@ -14,7 +14,7 @@ const MUSCLE_MAPPING: Record<string, string> = {
   'gluteal': 'Glutes',
   'hamstring': 'Hamstrings',
   'lower-back': 'Back',
-  'neck': 'Neck',
+  'neck': 'Back',
   'obliques': 'Core',
   'quadriceps': 'Quadriceps',
   'trapezius': 'Back',

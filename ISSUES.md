@@ -83,10 +83,10 @@ Status legend: `open` · `fixed` · `deferred` · `investigated-not-reproducible
 | CALC-2 | Medium | 5 | fixed | BMI `height=0` → Infinity (no guard) |
 | CALC-3 | Medium | 5 | fixed | WHR `hip=0` → Infinity (no guard) |
 | CALC-4 | Medium | 5 | fixed | Brzycki 1RM `reps≥37` → NaN |
-| BUG-1 | Medium | 7 | open | Program detail exercise links use wrong slug (404) |
-| BUG-2 | Low | 7 | open | Anatomy "Neck" maps to muscle group with zero exercises |
-| BUG-3 | Low | 7 | open | `TierGate` gate copy not i18n-wrapped |
-| BUG-4 | Medium | 7 | open | Auth pages (Login/Register/Forgot) have zero `t()` calls |
+| BUG-1 | Medium | 7 | fixed | Program detail exercise links use wrong slug (404) |
+| BUG-2 | Low | 7 | fixed | Anatomy "Neck" maps to muscle group with zero exercises |
+| BUG-3 | Low | 7 | fixed | `TierGate` gate copy not i18n-wrapped |
+| BUG-4 | Medium | 7 | fixed | Auth pages (Login/Register/Forgot) have zero `t()` calls |
 | BUG-5 | Low | 8 | fixed | `TierGate` renders gated content in DOM behind blur |
 | BUG-6 | Medium | 8 | fixed | Tablet 768px horizontal overflow (scrollWidth 830px) |
 | BUG-7 | Low | 8 | fixed | Hero image `alt=""` empty |
@@ -226,30 +226,42 @@ Status legend: `open` · `fixed` · `deferred` · `investigated-not-reproducible
 ### BUG-1 — Program exercise links 404 (wrong slug)
 - **Severity:** Medium
 - **Phase:** 7
-- **Status:** open
-- **Files:** `src/pages/Programs.tsx:202`
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/pages/Programs.tsx`, `src/lib/store.ts`
 - **Reports:** B (`(1).md:138,232-238`)
+- **Before:** Program detail linked to `/exercises/${exerciseName.slugified}` (e.g. `barbell-back-squat`) instead of canonical slugs (`barbell-squat`).
+- **After:** Added `getExerciseSlugById()`; links use `pe.exerciseId` to resolve the real exercise slug from `EXERCISES`.
+- **Verification:** `phase7-bugs-verify.mjs` static checks.
 
 ### BUG-2 — Anatomy "Neck" hotspot → empty exercise list
 - **Severity:** Low
 - **Phase:** 7
-- **Status:** open
-- **Files:** `src/pages/Exercises.tsx:17`, `src/lib/store.ts` (no Neck in muscleGroups)
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/pages/Exercises.tsx`
 - **Reports:** A (`EsiFit_Full_Audit_2026-07-15.md:107-110`) — B does not list
+- **Before:** Anatomy `neck` hotspot mapped to `Neck` muscle group; no exercises tagged `Neck` → zero results.
+- **After:** `neck` maps to `Back` (upper-back/trap exercises) until dedicated neck content exists.
+- **Verification:** `phase7-bugs-verify.mjs` static check.
 
 ### BUG-3 — TierGate English-only copy
 - **Severity:** Low
 - **Phase:** 7
-- **Status:** open
-- **Files:** `src/components/TierGate.tsx:36-40`
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/components/TierGate.tsx`
 - **Reports:** B (`(1).md:155,305-309`)
+- **Before:** Gate title, description, upgrade button, and loading text were hardcoded English.
+- **After:** All user-facing strings wrapped with `useI18n()` / `t()` including localized tier labels.
+- **Verification:** `phase7-bugs-verify.mjs` static check.
 
 ### BUG-4 — Auth pages not translated
 - **Severity:** Medium
 - **Phase:** 7
-- **Status:** open
-- **Files:** `src/pages/Auth.tsx` (no `t()` calls)
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/pages/Auth.tsx`
 - **Reports:** B (`(1).md:156-157`) · A (`EsiFit_Full_Audit_2026-07-15.md:137`)
+- **Before:** Login, Register, and Forgot Password had zero `t()` calls — English only.
+- **After:** All headings, labels, buttons, validation errors, and success messages use `t({ en, fa })`.
+- **Verification:** `phase7-bugs-verify.mjs` static check.
 
 ### BUG-5 — TierGate blur leaks gated content in DOM
 - **Severity:** Low
