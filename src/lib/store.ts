@@ -1,5 +1,14 @@
 import type { User, Exercise, Program, DietPlan, Article, BodyLog, ExerciseLog, CalculatorResult, Ticket, Plan, Goal, ActivityLevel } from './types';
 import { fetchEntitlements } from './entitlements';
+import {
+  fetchUserActivityData,
+  persistUserProfile,
+  persistSavedExercises,
+  persistBodyLog,
+  persistExerciseLog,
+  persistCalculatorResult,
+  persistTicket,
+} from './firestore-data';
 
 // Simple reactive store with localStorage persistence
 type Listener = () => void;
@@ -54,6 +63,28 @@ import { doc, getDoc } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
 import { auth, db } from './firebase';
 
+function clearActivityData() {
+  state.bodyLogs = [];
+  state.exerciseLogs = [];
+  state.calculatorResults = [];
+  state.tickets = [];
+  state.savedExercises = [];
+}
+
+async function loadActivityFromFirestore(userId: string) {
+  try {
+    const activity = await fetchUserActivityData(userId);
+    state.bodyLogs = activity.bodyLogs;
+    state.exerciseLogs = activity.exerciseLogs;
+    state.calculatorResults = activity.calculatorResults;
+    state.tickets = activity.tickets;
+    state.savedExercises = activity.savedExercises;
+    saveState();
+  } catch (error) {
+    console.error('Error loading activity data from Firestore:', error);
+  }
+}
+
 function readOptionalString(value: unknown): string | undefined {
   return typeof value === 'string' ? value : undefined;
 }
@@ -107,6 +138,7 @@ export async function syncUserFromFirebase(uid: string) {
         ...profile,
       };
       saveState();
+      await loadActivityFromFirestore(uid);
     }
   } catch (error) {
     console.error("Error syncing user:", error);
@@ -118,13 +150,18 @@ export function getState() { return state; }
 export async function logout() {
   await signOut(auth);
   state.currentUser = null;
+  clearActivityData();
   saveState();
 }
 
-export function updateProfile(updates: Partial<User>) {
-  if (state.currentUser) {
-    state.currentUser = { ...state.currentUser, ...updates };
-    saveState();
+export async function updateProfile(updates: Partial<User>) {
+  if (!state.currentUser) return;
+  state.currentUser = { ...state.currentUser, ...updates };
+  saveState();
+  try {
+    await persistUserProfile(state.currentUser.id, updates);
+  } catch (error) {
+    console.error('Error persisting profile to Firestore:', error);
   }
 }
 
@@ -146,6 +183,11 @@ export function addBodyLog(log: Omit<BodyLog, 'id' | 'userId'>) {
   };
   state.bodyLogs.push(entry);
   saveState();
+  if (entry.userId) {
+    void persistBodyLog(entry).catch((error) => {
+      console.error('Error persisting body log:', error);
+    });
+  }
 }
 
 export function addExerciseLog(log: Omit<ExerciseLog, 'id' | 'userId'>) {
@@ -156,16 +198,27 @@ export function addExerciseLog(log: Omit<ExerciseLog, 'id' | 'userId'>) {
   };
   state.exerciseLogs.push(entry);
   saveState();
+  if (entry.userId) {
+    void persistExerciseLog(entry).catch((error) => {
+      console.error('Error persisting exercise log:', error);
+    });
+  }
 }
 
-export function addCalculatorResult(result: Omit<CalculatorResult, 'id' | 'createdAt'>) {
+export function addCalculatorResult(result: Omit<CalculatorResult, 'id' | 'createdAt' | 'userId'>) {
   const entry: CalculatorResult = {
     ...result,
     id: generateId('cr'),
+    userId: state.currentUser?.id || '',
     createdAt: new Date().toISOString(),
   };
   state.calculatorResults.push(entry);
   saveState();
+  if (entry.userId) {
+    void persistCalculatorResult(entry).catch((error) => {
+      console.error('Error persisting calculator result:', error);
+    });
+  }
 }
 
 export function addTicket(subject: string, message: string) {
@@ -186,6 +239,11 @@ export function addTicket(subject: string, message: string) {
   };
   state.tickets.push(ticket);
   saveState();
+  if (ticket.userId) {
+    void persistTicket(ticket).catch((error) => {
+      console.error('Error persisting ticket:', error);
+    });
+  }
 }
 
 export function addMessageToTicket(ticketId: string, content: string, asSender?: string) {
@@ -194,7 +252,7 @@ export function addMessageToTicket(ticketId: string, content: string, asSender?:
     let senderName = state.currentUser?.name || 'User';
     if (asSender === 'coach') senderName = 'Coach Smith';
     else if (asSender === 'support') senderName = 'EsiFit Support';
-    
+
     ticket.messages.push({
       id: generateId('msg'),
       ticketId,
@@ -204,6 +262,11 @@ export function addMessageToTicket(ticketId: string, content: string, asSender?:
       createdAt: new Date().toISOString(),
     });
     saveState();
+    if (ticket.userId) {
+      void persistTicket(ticket).catch((error) => {
+        console.error('Error persisting ticket message:', error);
+      });
+    }
   }
 }
 
@@ -212,6 +275,12 @@ export function toggleSavedExercise(exerciseId: string) {
   if (idx >= 0) state.savedExercises.splice(idx, 1);
   else state.savedExercises.push(exerciseId);
   saveState();
+  const userId = state.currentUser?.id;
+  if (userId) {
+    void persistSavedExercises(userId, [...state.savedExercises]).catch((error) => {
+      console.error('Error persisting saved exercises:', error);
+    });
+  }
 }
 
 export function getStreak(): number {
