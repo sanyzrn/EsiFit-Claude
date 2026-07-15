@@ -72,36 +72,36 @@ export function ExerciseList() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-8">
         <h1 className="text-4xl font-black mb-4">{t({ en: 'Exercise Library', fa: 'کتابخانه تمرین‌ها' })}</h1>
-        <p className="text-gray-400 text-lg">{t({ en: 'Browse our comprehensive database of exercises with detailed instructions.', fa: 'پایگاه داده جامع تمرین‌های ما را با دستورالعمل‌های دقیق مرور کنید.' })}</p>
+        <p className="text-fg-subtle text-lg">{t({ en: 'Browse our comprehensive database of exercises with detailed instructions.', fa: 'پایگاه داده جامع تمرین‌های ما را با دستورالعمل‌های دقیق مرور کنید.' })}</p>
       </div>
 
       {/* Search and Filters */}
       <div className="flex flex-col mb-6 gap-3">
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-fg-subtle" />
             <input
               value={search}
               onChange={e => { setSearch(e.target.value); updateParams('q', e.target.value); }}
               placeholder={t({ en: 'Search exercises...', fa: 'جستجوی تمرین‌ها...' })}
-              className="w-full pl-10 rtl:pr-10 rtl:pl-4 pr-4 py-2.5 bg-gray-900 border border-gray-700 rounded-lg text-white focus:border-orange-500 outline-none"
+              className="w-full pl-10 rtl:pr-10 rtl:pl-4 pr-4 py-2.5 bg-surface border border-strong rounded-lg text-fg focus:border-orange-500 outline-none"
             />
           </div>
-          <button onClick={() => setShowFilters(!showFilters)} className="flex items-center gap-2 px-4 py-2.5 bg-gray-900 border border-gray-700 rounded-lg hover:bg-gray-800 transition-colors">
+          <button onClick={() => setShowFilters(!showFilters)} className="flex items-center gap-2 px-4 py-2.5 bg-surface border border-strong rounded-lg hover:bg-elevated transition-colors">
             <Filter className="w-4 h-4" /> {t({ en: 'Filters', fa: 'فیلترها' })}
           </button>
         </div>
 
-        <div className="flex p-1 bg-gray-900 rounded-lg w-fit">
+        <div className="flex p-1 bg-surface rounded-lg w-fit">
           <button 
             onClick={() => setViewMode('list')} 
-            className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${viewMode === 'list' ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-gray-200'}`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${viewMode === 'list' ? 'bg-elevated text-fg' : 'text-fg-subtle hover:text-fg-muted'}`}
           >
             <LayoutGrid className="w-4 h-4" /> {t({ en: 'List View', fa: 'نمایش لیستی' })}
           </button>
           <button 
             onClick={() => setViewMode('anatomy')} 
-            className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${viewMode === 'anatomy' ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-gray-200'}`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${viewMode === 'anatomy' ? 'bg-elevated text-fg' : 'text-fg-subtle hover:text-fg-muted'}`}
           >
             <PersonStanding className="w-4 h-4" /> {t({ en: 'Anatomy View', fa: 'نمایش آناتومی' })}
           </button>
@@ -110,21 +110,21 @@ export function ExerciseList() {
 
       {showFilters && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 animate-fade-in">
-          <select value={muscle} onChange={e => { setMuscle(e.target.value); updateParams('muscle', e.target.value); }} className="px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white text-sm">
+          <select value={muscle} onChange={e => { setMuscle(e.target.value); updateParams('muscle', e.target.value); }} className="px-3 py-2 bg-surface border border-strong rounded-lg text-fg text-sm">
             <option value="">{t({ en: 'All Muscles', fa: 'همه عضلات' })}</option>
             {ALL_MUSCLE_GROUPS.map(m => <option key={m} value={m}>{localizedMuscleGroup(lang, m)}</option>)}
           </select>
-          <select value={equip} onChange={e => { setEquip(e.target.value); updateParams('equipment', e.target.value); }} className="px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white text-sm">
+          <select value={equip} onChange={e => { setEquip(e.target.value); updateParams('equipment', e.target.value); }} className="px-3 py-2 bg-surface border border-strong rounded-lg text-fg text-sm">
             <option value="">{t({ en: 'All Equipment', fa: 'همه تجهیزات' })}</option>
             {ALL_EQUIPMENT.map(e => <option key={e} value={e}>{localizedEquipment(lang, e)}</option>)}
           </select>
-          <select value={diff} onChange={e => { setDiff(e.target.value); updateParams('difficulty', e.target.value); }} className="px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white text-sm">
+          <select value={diff} onChange={e => { setDiff(e.target.value); updateParams('difficulty', e.target.value); }} className="px-3 py-2 bg-surface border border-strong rounded-lg text-fg text-sm">
             <option value="">{t({ en: 'All Difficulties', fa: 'همه سختی‌ها' })}</option>
             <option value="beginner">{t({ en: 'Beginner', fa: 'مبتدی' })}</option>
             <option value="intermediate">{t({ en: 'Intermediate', fa: 'متوسط' })}</option>
             <option value="advanced">{t({ en: 'Advanced', fa: 'پیشرفته' })}</option>
           </select>
-          <select value={type} onChange={e => { setType(e.target.value); updateParams('type', e.target.value); }} className="px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white text-sm">
+          <select value={type} onChange={e => { setType(e.target.value); updateParams('type', e.target.value); }} className="px-3 py-2 bg-surface border border-strong rounded-lg text-fg text-sm">
             <option value="">{t({ en: 'All Types', fa: 'همه انواع' })}</option>
             <option value="strength">{t({ en: 'Strength', fa: 'قدرتی' })}</option>
             <option value="cardio">{t({ en: 'Cardio', fa: 'هوازی' })}</option>
@@ -135,11 +135,11 @@ export function ExerciseList() {
       )}
 
       {viewMode === 'anatomy' && (
-        <div className="mb-10 bg-gray-900/50 border border-gray-800 rounded-2xl p-6 flex flex-col md:flex-row gap-8 items-center md:items-start animate-fade-in max-w-full min-w-0 overflow-hidden">
+        <div className="mb-10 bg-surface/50 border border-border rounded-2xl p-6 flex flex-col md:flex-row gap-8 items-center md:items-start animate-fade-in max-w-full min-w-0 overflow-hidden">
           <div className="flex-1 flex flex-col items-center">
-            <div className="flex gap-2 mb-6 p-1 bg-gray-900 rounded-lg">
-              <button onClick={() => setAnatomyGender('male')} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${anatomyGender === 'male' ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-gray-200'}`}>{t({ en: 'Male', fa: 'آقا' })}</button>
-              <button onClick={() => setAnatomyGender('female')} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${anatomyGender === 'female' ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-gray-200'}`}>{t({ en: 'Female', fa: 'خانم' })}</button>
+            <div className="flex gap-2 mb-6 p-1 bg-surface rounded-lg">
+              <button onClick={() => setAnatomyGender('male')} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${anatomyGender === 'male' ? 'bg-elevated text-fg' : 'text-fg-subtle hover:text-fg-muted'}`}>{t({ en: 'Male', fa: 'آقا' })}</button>
+              <button onClick={() => setAnatomyGender('female')} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${anatomyGender === 'female' ? 'bg-elevated text-fg' : 'text-fg-subtle hover:text-fg-muted'}`}>{t({ en: 'Female', fa: 'خانم' })}</button>
             </div>
             
             <div className="h-[400px] w-full max-w-full overflow-hidden flex items-center justify-center">
@@ -155,20 +155,20 @@ export function ExerciseList() {
               />
             </div>
             
-            <div className="flex gap-2 mt-6 p-1 bg-gray-900 rounded-lg">
-              <button onClick={() => setAnatomySide('front')} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${anatomySide === 'front' ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-gray-200'}`}>{t({ en: 'Front', fa: 'جلو' })}</button>
-              <button onClick={() => setAnatomySide('back')} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${anatomySide === 'back' ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-gray-200'}`}>{t({ en: 'Back', fa: 'پشت' })}</button>
+            <div className="flex gap-2 mt-6 p-1 bg-surface rounded-lg">
+              <button onClick={() => setAnatomySide('front')} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${anatomySide === 'front' ? 'bg-elevated text-fg' : 'text-fg-subtle hover:text-fg-muted'}`}>{t({ en: 'Front', fa: 'جلو' })}</button>
+              <button onClick={() => setAnatomySide('back')} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${anatomySide === 'back' ? 'bg-elevated text-fg' : 'text-fg-subtle hover:text-fg-muted'}`}>{t({ en: 'Back', fa: 'پشت' })}</button>
             </div>
           </div>
           
           <div className="flex-1 w-full md:w-auto">
             <h3 className="text-xl font-bold mb-4">{t({ en: 'Selected Muscle', fa: 'عضله انتخاب شده' })}: <span className="text-orange-500">{muscle ? localizedMuscleGroup(lang, muscle) : t({ en: 'None (Showing All)', fa: 'هیچ (نمایش همه)' })}</span></h3>
-            <p className="text-gray-400 mb-6">{t({ en: 'Click on a muscle group on the model to filter exercises specifically for that area.', fa: 'روی یک گروه عضلانی در مدل کلیک کنید تا تمرینات مخصوص آن قسمت فیلتر شود.' })}</p>
+            <p className="text-fg-subtle mb-6">{t({ en: 'Click on a muscle group on the model to filter exercises specifically for that area.', fa: 'روی یک گروه عضلانی در مدل کلیک کنید تا تمرینات مخصوص آن قسمت فیلتر شود.' })}</p>
             
             {muscle && (
               <button 
                 onClick={() => { setMuscle(''); updateParams('muscle', ''); }}
-                className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium"
+                className="px-4 py-2 bg-elevated text-fg rounded-lg hover:bg-elevated-hover transition-colors text-sm font-medium"
               >
                 {t({ en: 'Clear Selection', fa: 'پاک کردن انتخاب' })}
               </button>
@@ -177,25 +177,25 @@ export function ExerciseList() {
         </div>
       )}
 
-      <div className="text-sm text-gray-400 mb-4">{filtered.length} {t({ en: 'exercises found', fa: 'تمرین یافت شد' })}</div>
+      <div className="text-sm text-fg-subtle mb-4">{filtered.length} {t({ en: 'exercises found', fa: 'تمرین یافت شد' })}</div>
 
       {/* Exercise Grid */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {filtered.map(ex => {
           const copy = localizedExercise(ex, lang);
           return (
-          <div key={ex.id} className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden hover:border-gray-700 transition-all group">
-            <div className="h-40 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center relative">
-              <Dumbbell className="w-12 h-12 text-gray-600" />
+          <div key={ex.id} className="bg-surface border border-border rounded-xl overflow-hidden hover:border-strong transition-all group">
+            <div className="h-40 bg-gradient-to-br from-elevated to-surface flex items-center justify-center relative">
+              <Dumbbell className="w-12 h-12 text-fg-faint" />
               {state.currentUser && (
                 <button
                   onClick={(e) => { e.preventDefault(); toggleSavedExercise(ex.id); }}
-                  className="absolute top-3 right-3 p-2 rounded-lg bg-gray-800/80 hover:bg-gray-700 transition-colors"
+                  className="absolute top-3 right-3 p-2 rounded-lg bg-elevated/80 hover:bg-elevated-hover transition-colors"
                 >
                   {state.savedExercises.includes(ex.id) ? (
                     <BookmarkCheck className="w-4 h-4 text-orange-400" />
                   ) : (
-                    <Bookmark className="w-4 h-4 text-gray-400" />
+                    <Bookmark className="w-4 h-4 text-fg-subtle" />
                   )}
                 </button>
               )}
@@ -205,7 +205,7 @@ export function ExerciseList() {
                 <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${diffColors[ex.difficulty]}`}>
                   {copy.difficulty}
                 </span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-gray-700 text-gray-300 capitalize">{copy.type}</span>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-elevated-hover text-fg-muted capitalize">{copy.type}</span>
               </div>
               <h3 className="font-bold text-lg mb-2 group-hover:text-orange-400 transition-colors">{copy.name}</h3>
               <div className="flex flex-wrap gap-1">
@@ -221,9 +221,9 @@ export function ExerciseList() {
 
       {filtered.length === 0 && (
         <div className="text-center py-16">
-          <Dumbbell className="w-12 h-12 text-gray-600 mx-auto mb-4" />
-          <h3 className="text-lg font-bold text-gray-400">{t({ en: 'No exercises found', fa: 'هیچ تمرینی یافت نشد' })}</h3>
-          <p className="text-gray-500 text-sm">{t({ en: 'Try adjusting your filters', fa: 'سعی کنید فیلترهای خود را تنظیم کنید' })}</p>
+          <Dumbbell className="w-12 h-12 text-fg-faint mx-auto mb-4" />
+          <h3 className="text-lg font-bold text-fg-subtle">{t({ en: 'No exercises found', fa: 'هیچ تمرینی یافت نشد' })}</h3>
+          <p className="text-fg-faint text-sm">{t({ en: 'Try adjusting your filters', fa: 'سعی کنید فیلترهای خود را تنظیم کنید' })}</p>
         </div>
       )}
     </div>
@@ -252,22 +252,22 @@ export function ExerciseDetail() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <button onClick={() => navigate('/exercises')} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-6">
+      <button onClick={() => navigate('/exercises')} className="flex items-center gap-2 text-fg-subtle hover:text-fg transition-colors mb-6">
         <ArrowLeft className="w-4 h-4 rtl:rotate-180" /> {t({ en: 'Back to Exercises', fa: 'بازگشت به تمرین‌ها' })}
       </button>
 
-      <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
-        <div className="h-64 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center relative">
-          <Dumbbell className="w-20 h-20 text-gray-600" />
+      <div className="bg-surface border border-border rounded-2xl overflow-hidden">
+        <div className="h-64 bg-gradient-to-br from-elevated to-surface flex items-center justify-center relative">
+          <Dumbbell className="w-20 h-20 text-fg-faint" />
           {state.currentUser && (
             <button
               onClick={() => toggleSavedExercise(exercise.id)}
-              className="absolute top-4 right-4 flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-800/80 hover:bg-gray-700 transition-colors"
+              className="absolute top-4 right-4 flex items-center gap-2 px-4 py-2 rounded-lg bg-elevated/80 hover:bg-elevated-hover transition-colors"
             >
               {state.savedExercises.includes(exercise.id) ? (
                 <><BookmarkCheck className="w-4 h-4 text-orange-400" /> {t({ en: 'Saved', fa: 'ذخیره شد' })}</>
               ) : (
-                <><Bookmark className="w-4 h-4 text-gray-400" /> {t({ en: 'Save', fa: 'ذخیره' })}</>
+                <><Bookmark className="w-4 h-4 text-fg-subtle" /> {t({ en: 'Save', fa: 'ذخیره' })}</>
               )}
             </button>
           )}
@@ -276,13 +276,13 @@ export function ExerciseDetail() {
         <div className="p-6 md:p-8">
           <div className="flex items-center gap-2 mb-3">
             <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${diffColors[exercise.difficulty]}`}>{copy.difficulty}</span>
-            <span className="text-xs px-2.5 py-1 rounded-full bg-gray-700 text-gray-300 capitalize">{copy.type}</span>
+            <span className="text-xs px-2.5 py-1 rounded-full bg-elevated-hover text-fg-muted capitalize">{copy.type}</span>
           </div>
           <h1 className="text-3xl font-black mb-4">{copy.name}</h1>
 
           <div className="grid md:grid-cols-2 gap-4 mb-6">
             <div>
-              <h3 className="text-sm font-medium text-gray-400 mb-2">{t({ en: 'Target Muscles', fa: 'عضلات هدف' })}</h3>
+              <h3 className="text-sm font-medium text-fg-subtle mb-2">{t({ en: 'Target Muscles', fa: 'عضلات هدف' })}</h3>
               <div className="flex flex-wrap gap-2">
                 {copy.muscleGroups.map(mg => (
                   <span key={mg} className="px-3 py-1.5 rounded-lg bg-orange-500/10 text-orange-400 text-sm font-medium">{mg}</span>
@@ -290,10 +290,10 @@ export function ExerciseDetail() {
               </div>
             </div>
             <div>
-              <h3 className="text-sm font-medium text-gray-400 mb-2">{t({ en: 'Equipment', fa: 'تجهیزات' })}</h3>
+              <h3 className="text-sm font-medium text-fg-subtle mb-2">{t({ en: 'Equipment', fa: 'تجهیزات' })}</h3>
               <div className="flex flex-wrap gap-2">
                 {copy.equipment.map(eq => (
-                  <span key={eq} className="px-3 py-1.5 rounded-lg bg-gray-700 text-gray-300 text-sm">{eq}</span>
+                  <span key={eq} className="px-3 py-1.5 rounded-lg bg-elevated-hover text-fg-muted text-sm">{eq}</span>
                 ))}
               </div>
             </div>
@@ -301,13 +301,13 @@ export function ExerciseDetail() {
 
           <div className="mb-6">
             <h2 className="text-lg font-bold mb-3">{t({ en: 'Instructions', fa: 'دستورالعمل‌ها' })}</h2>
-            <p className="text-gray-300 leading-relaxed whitespace-pre-line">{copy.instructions}</p>
+            <p className="text-fg-muted leading-relaxed whitespace-pre-line">{copy.instructions}</p>
           </div>
 
           {copy.commonMistakes && (
             <div className="bg-red-500/5 border border-red-500/20 rounded-xl p-5">
               <h2 className="text-lg font-bold mb-3 text-red-400">{t({ en: 'Common Mistakes', fa: 'اشتباهات رایج' })}</h2>
-              <p className="text-gray-300 leading-relaxed">{copy.commonMistakes}</p>
+              <p className="text-fg-muted leading-relaxed">{copy.commonMistakes}</p>
             </div>
           )}
         </div>

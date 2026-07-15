@@ -14,7 +14,7 @@ export default function NotFound() {
       <h2 className="text-2xl font-bold mb-6">
         {t({ en: 'Page Not Found', fa: 'صفحه پیدا نشد' })}
       </h2>
-      <p className="text-gray-400 max-w-md mb-8">
+      <p className="text-fg-subtle max-w-md mb-8">
         {t({ 
           en: "The page you're looking for doesn't exist or has been moved.", 
           fa: 'صفحه‌ای که به دنبال آن هستید وجود ندارد یا منتقل شده است.' 

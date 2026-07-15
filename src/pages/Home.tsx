@@ -35,7 +35,7 @@ export default function Home() {
         <div className="absolute inset-0">
           <img src="/images/hero-bg.jpg" alt="" aria-hidden="true" className="w-full h-full object-cover opacity-20" />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-gray-950/80 via-gray-950/60 to-gray-950" />
+        <div className="absolute inset-0 bg-gradient-to-b from-app/80 via-app/60 to-app" />
         <div className="absolute top-20 start-1/4 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl" />
         <div className="absolute bottom-20 end-1/4 w-72 h-72 bg-orange-600/10 rounded-full blur-3xl" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
@@ -51,7 +51,7 @@ export default function Home() {
                 {t({ en: 'Grow Stronger.', fa: 'قوی‌تر شوید.' })}
               </span>
             </h1>
-            <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10">
+            <p className="text-lg md:text-xl text-fg-subtle max-w-2xl mx-auto mb-10">
               {t({ en: 'Programs, nutrition, calculators, and coaching — all in one platform. From your first rep to your personal records.', fa: 'برنامه‌ها، تغذیه، ماشین‌حساب‌ها، و مربی‌گری - همه در یک پلتفرم. از اولین تکرار تا ثبت رکوردهای شخصی شما.' })}
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -63,7 +63,7 @@ export default function Home() {
               </Link>
               <Link
                 to="/calculators"
-                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 bg-gray-800 text-white font-bold text-lg rounded-xl hover:bg-gray-700 transition-colors border border-gray-700"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 bg-elevated text-fg font-bold text-lg rounded-xl hover:bg-elevated-hover transition-colors border border-strong"
               >
                 {t({ en: 'Try Free Calculators', fa: 'ماشین‌حساب‌های رایگان را امتحان کنید' })} <ChevronRight className="w-5 h-5 rtl:!rotate-180" />
               </Link>
@@ -73,13 +73,13 @@ export default function Home() {
       </section>
 
       {/* Stats Bar */}
-      <section className="border-y border-gray-800 bg-gray-900/50">
+      <section className="border-y border-border bg-surface/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map(stat => (
               <div key={stat.label} className="text-center">
                 <div className="text-3xl md:text-4xl font-black text-orange-400">{stat.value}</div>
-                <div className="text-sm text-gray-400 mt-1">{stat.label}</div>
+                <div className="text-sm text-fg-subtle mt-1">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -90,7 +90,7 @@ export default function Home() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-black mb-4">{t({ en: 'Everything You Need to Succeed', fa: 'هر آنچه برای موفقیت نیاز دارید' })}</h2>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+          <p className="text-fg-subtle text-lg max-w-2xl mx-auto">
             {t({ en: 'A comprehensive suite of tools designed to support every aspect of your fitness journey.', fa: 'مجموعه‌ای جامع از ابزارهایی که برای پشتیبانی از تمام جنبه‌های سفر تناسب اندام شما طراحی شده‌اند.' })}
           </p>
         </div>
@@ -99,13 +99,13 @@ export default function Home() {
             <Link
               key={feat.title}
               to={feat.link}
-              className="group bg-gray-900 border border-gray-800 rounded-2xl p-6 hover:border-orange-500/50 hover:bg-gray-900/80 transition-all"
+              className="group bg-surface border border-border rounded-2xl p-6 hover:border-orange-500/50 hover:bg-surface/80 transition-all"
             >
               <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center mb-4 group-hover:bg-orange-500/20 transition-colors">
                 <feat.icon className="w-6 h-6 text-orange-400" />
               </div>
               <h3 className="text-lg font-bold mb-2 group-hover:text-orange-400 transition-colors">{feat.title}</h3>
-              <p className="text-gray-400 text-sm">{feat.desc}</p>
+              <p className="text-fg-subtle text-sm">{feat.desc}</p>
             </Link>
           ))}
         </div>
@@ -118,7 +118,7 @@ export default function Home() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-black mb-4">{t({ en: 'Plans for Every Level', fa: 'برنامه‌هایی برای هر سطح' })}</h2>
-          <p className="text-gray-400 text-lg">{t({ en: 'Start free, upgrade as you grow. No commitment required.', fa: 'رایگان شروع کنید، با پیشرفت خود ارتقا دهید. بدون هیچ تعهدی.' })}</p>
+          <p className="text-fg-subtle text-lg">{t({ en: 'Start free, upgrade as you grow. No commitment required.', fa: 'رایگان شروع کنید، با پیشرفت خود ارتقا دهید. بدون هیچ تعهدی.' })}</p>
         </div>
         <div className="grid md:grid-cols-4 gap-4">
           {[
@@ -132,7 +132,7 @@ export default function Home() {
               className={`rounded-2xl p-6 border text-center ${
                 p.highlight
                   ? 'bg-gradient-to-b from-orange-500/10 to-orange-600/5 border-orange-500/50'
-                  : 'bg-gray-900 border-gray-800'
+                  : 'bg-surface border-border'
               }`}
             >
               {p.highlight && (
@@ -140,7 +140,7 @@ export default function Home() {
               )}
               <div className="text-lg font-bold mb-1">{p.tier}</div>
               <div className="text-2xl font-black text-orange-400">{p.price}</div>
-              <div className="text-xs text-gray-400">{t({ en: '/month', fa: '/ماهیانه' })}</div>
+              <div className="text-xs text-fg-subtle">{t({ en: '/month', fa: '/ماهیانه' })}</div>
             </div>
           ))}
         </div>
@@ -152,23 +152,23 @@ export default function Home() {
       </section>
 
       {/* Testimonials */}
-      <section className="bg-gray-900/50 border-y border-gray-800 py-20">
+      <section className="bg-surface/50 border-y border-border py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-black mb-4">{t({ en: 'Trusted by Fitness Enthusiasts', fa: 'مورد اعتماد ورزشکاران' })}</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {testimonials.map(tval => (
-              <div key={tval.name} className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+              <div key={tval.name} className="bg-surface border border-border rounded-2xl p-6">
                 <div className="flex gap-1 mb-4">
                   {Array.from({ length: tval.rating }).map((_, i) => (
                     <Star key={i} className="w-4 h-4 fill-orange-400 text-orange-400" />
                   ))}
                 </div>
-                <p className="text-gray-300 text-sm mb-4">"{tval.text}"</p>
+                <p className="text-fg-muted text-sm mb-4">"{tval.text}"</p>
                 <div>
                   <div className="font-bold text-sm">{tval.name}</div>
-                  <div className="text-xs text-gray-400">{tval.role}</div>
+                  <div className="text-xs text-fg-subtle">{tval.role}</div>
                 </div>
               </div>
             ))}
@@ -184,7 +184,7 @@ export default function Home() {
             <Users className="w-8 h-8 text-orange-400" />
           </div>
           <h2 className="text-3xl md:text-4xl font-black mb-4">{t({ en: 'Ready to Transform?', fa: 'آماده برای تغییر هستید؟' })}</h2>
-          <p className="text-gray-400 text-lg max-w-xl mx-auto mb-8">
+          <p className="text-fg-subtle text-lg max-w-xl mx-auto mb-8">
             {t({ en: 'Join EsiFit today and get access to programs, calculators, and coaching tools — all for free to start.', fa: 'همین امروز به اسی‌فیت بپیوندید و به برنامه‌ها، ماشین‌حساب‌ها و ابزارهای مربی‌گری دسترسی پیدا کنید - شروع کاملا رایگان است.' })}
           </p>
           <Link

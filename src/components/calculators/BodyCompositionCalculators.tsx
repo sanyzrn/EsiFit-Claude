@@ -179,23 +179,23 @@ export function BodyTypeQuiz() {
   };
 
   return (
-    <div className="bg-gray-900 rounded-2xl p-6 border border-gray-800">
+    <div className="bg-surface rounded-2xl p-6 border border-border">
       <h3 className="text-xl font-bold mb-2">{t({ en: 'Body Type Quiz', fa: 'آزمون تیپ بدنی' })}</h3>
-      <p className="text-gray-400 text-sm mb-6">{t({ en: 'Find out your natural body type.', fa: 'تیپ بدنی طبیعی خود را پیدا کنید.' })}</p>
+      <p className="text-fg-subtle text-sm mb-6">{t({ en: 'Find out your natural body type.', fa: 'تیپ بدنی طبیعی خود را پیدا کنید.' })}</p>
       
       {!isComplete ? (
         <div className="space-y-6">
           {BODY_TYPE_QUESTIONS.map((q, qIdx) => {
             if (answers.findIndex(a => a === -1) !== qIdx && answers[qIdx] === -1) return null; // Show one by one or all? Let's show all for simplicity
             return (
-              <div key={qIdx} className="bg-gray-800/50 p-4 rounded-xl">
+              <div key={qIdx} className="bg-elevated/50 p-4 rounded-xl">
                 <p className="font-medium mb-3">{translateQuizText(q.question)}</p>
                 <div className="space-y-2">
                   {q.options.map((opt, aIdx) => (
                     <button
                       key={aIdx}
                       onClick={() => handleAnswer(qIdx, aIdx)}
-                      className={`w-full text-left rtl:text-right p-3 rounded-lg border transition-colors ${answers[qIdx] === aIdx ? 'bg-orange-500/20 border-orange-500 text-orange-400' : 'bg-gray-800 border-gray-700 hover:border-gray-500'}`}
+                      className={`w-full text-left rtl:text-right p-3 rounded-lg border transition-colors ${answers[qIdx] === aIdx ? 'bg-orange-500/20 border-orange-500 text-orange-400' : 'bg-elevated border-strong hover:border-strong'}`}
                     >
                       {translateQuizText(opt.text)}
                     </button>
@@ -206,14 +206,14 @@ export function BodyTypeQuiz() {
           })}
         </div>
       ) : (
-        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center bg-gray-800 p-8 rounded-2xl border border-gray-700">
+        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center bg-elevated p-8 rounded-2xl border border-strong">
           <div className="text-3xl font-black text-orange-400 uppercase mb-4">
             {result ? t(bodyTypeLabels[result.type]) : ''}
           </div>
-          <p className="text-gray-300 leading-relaxed mb-6">
+          <p className="text-fg-muted leading-relaxed mb-6">
             {result ? t(bodyTypeDescriptions[result.type]) : ''}
           </p>
-          <button onClick={() => setAnswers(Array(BODY_TYPE_QUESTIONS.length).fill(-1))} className="px-6 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm font-bold">
+          <button onClick={() => setAnswers(Array(BODY_TYPE_QUESTIONS.length).fill(-1))} className="px-6 py-2 bg-elevated-hover hover:bg-elevated-hover rounded-lg text-sm font-bold">
             {t({ en: 'Retake Quiz', fa: 'تکرار آزمون' })}
           </button>
         </motion.div>

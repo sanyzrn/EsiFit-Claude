@@ -26,7 +26,7 @@ export default function TierGate({ minTier, children, showBlur = true }: TierGat
   if (loading) {
     return showBlur ? (
       <div className="relative min-h-[12rem] flex items-center justify-center">
-        <div className="text-gray-400 text-sm">{t({ en: 'Loading access…', fa: 'در حال بررسی دسترسی…' })}</div>
+        <div className="text-fg-subtle text-sm">{t({ en: 'Loading access…', fa: 'در حال بررسی دسترسی…' })}</div>
       </div>
     ) : null;
   }
@@ -39,12 +39,12 @@ export default function TierGate({ minTier, children, showBlur = true }: TierGat
     <div className="relative min-h-[12rem] flex items-center justify-center">
       {showBlur && (
         <div
-          className="absolute inset-0 rounded-xl border border-dashed border-gray-800 bg-gray-900/70"
+          className="absolute inset-0 rounded-xl border border-dashed border-border bg-surface/70"
           aria-hidden="true"
         />
       )}
       <div
-        className="relative z-10 bg-gray-900/95 border border-gray-700 rounded-2xl p-8 text-center max-w-sm mx-4 shadow-xl"
+        className="relative z-10 bg-surface/95 border border-strong rounded-2xl p-8 text-center max-w-sm mx-4 shadow-xl"
         role="region"
         aria-labelledby="tier-gate-title"
       >
@@ -58,7 +58,7 @@ export default function TierGate({ minTier, children, showBlur = true }: TierGat
         <h3 id="tier-gate-title" className="text-lg font-bold mb-2">
           {t({ en: `${minTier} Content`, fa: `محتوای ${tierLabel}` })}
         </h3>
-        <p className="text-gray-400 text-sm mb-4">
+        <p className="text-fg-subtle text-sm mb-4">
           {t({
             en: `This content requires a ${minTier} subscription or higher. Upgrade now to unlock.`,
             fa: `این محتوا به اشتراک ${tierLabel} یا بالاتر نیاز دارد. برای باز کردن، هم‌اکنون ارتقا دهید.`,

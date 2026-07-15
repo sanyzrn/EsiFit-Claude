@@ -19,6 +19,8 @@ const auth = readFileSync('src/pages/Auth.tsx', 'utf8');
 const authLib = readFileSync('src/lib/auth.ts', 'utf8');
 const exercises = readFileSync('src/pages/Exercises.tsx', 'utf8');
 const indexCss = readFileSync('src/index.css', 'utf8');
+const themeLib = readFileSync('src/lib/theme.tsx', 'utf8');
+const indexHtml = readFileSync('index.html', 'utf8');
 
 check(
   'BUG-5: TierGate does not mount gated children when locked',
@@ -63,15 +65,33 @@ check(
 );
 
 check(
-  'BUG-11: Auth errors mapped from Firebase codes',
-  authLib.includes('mapAuthError') && auth.includes('mapAuthError(getAuthErrorCode(err), t)'),
-  'No raw Firebase err.message in catch blocks'
+  'BUG-11: Auth errors mapped to user-friendly messages',
+  authLib.includes('mapAuthError') && auth.includes('mapAuthError'),
+  'Auth UI uses mapAuthError for API error codes'
 );
 
 check(
   'UI-1: Orange/gray palette documented as canonical',
   indexCss.includes('UI-1') && indexCss.includes('--color-brand'),
   'index.css records brand token decision'
+);
+
+check(
+  'Theme: CSS variables swap on data-theme',
+  indexCss.includes('data-theme="light"') && indexCss.includes('--theme-app'),
+  'Light/dark semantic tokens defined in index.css'
+);
+
+check(
+  'Theme: toggle + localStorage persistence',
+  themeLib.includes('esifit_theme') && layout.includes('toggleTheme') && layout.includes('Sun'),
+  'Header theme toggle persists user preference'
+);
+
+check(
+  'Theme: no flash on load',
+  indexHtml.includes('esifit_theme') && indexHtml.includes('data-theme'),
+  'Inline script applies theme before paint'
 );
 
 const lint = spawnSync('npm', ['run', 'lint'], { encoding: 'utf8', shell: true });

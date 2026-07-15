@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { lazy, Suspense, useEffect } from 'react';
 import { I18nProvider } from './lib/i18n';
+import { ThemeProvider } from './lib/theme';
 import Layout from './components/Layout';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { AuthBootstrap } from './components/AuthBootstrap';
@@ -49,8 +50,9 @@ function RouteFallback() {
 
 export default function App() {
   return (
-    <I18nProvider>
-      <BrowserRouter>
+    <ThemeProvider>
+      <I18nProvider>
+        <BrowserRouter>
         <AuthBootstrap />
         <ScrollToTop />
         <ErrorBoundary>
@@ -88,5 +90,6 @@ export default function App() {
         </ErrorBoundary>
       </BrowserRouter>
     </I18nProvider>
+    </ThemeProvider>
   );
 }

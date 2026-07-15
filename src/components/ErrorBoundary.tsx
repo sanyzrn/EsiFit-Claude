@@ -25,9 +25,9 @@ export class ErrorBoundary extends Component<Props, State> {
   public render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-gray-950 flex flex-col items-center justify-center p-4 text-center">
+        <div className="min-h-screen bg-app flex flex-col items-center justify-center p-4 text-center">
           <h1 className="text-4xl font-black text-red-500 mb-4">Something went wrong</h1>
-          <p className="text-gray-400 mb-8 max-w-md">
+          <p className="text-fg-subtle mb-8 max-w-md">
             We've encountered an unexpected error. Please try refreshing the page.
           </p>
           <button
@@ -37,7 +37,7 @@ export class ErrorBoundary extends Component<Props, State> {
             Refresh Page
           </button>
           {process.env.NODE_ENV !== 'production' && this.state.error && (
-            <pre className="mt-8 p-4 bg-gray-900 rounded-lg text-left text-red-400 text-sm overflow-auto max-w-2xl w-full">
+            <pre className="mt-8 p-4 bg-surface rounded-lg text-left text-red-400 text-sm overflow-auto max-w-2xl w-full">
               {this.state.error.stack}
             </pre>
           )}

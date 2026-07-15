@@ -79,7 +79,7 @@ export default function Pricing() {
   };
 
   const tierColors: Record<string, string> = {
-    FREE: 'border-gray-700',
+    FREE: 'border-strong',
     ECONOMY: 'border-blue-500/30',
     VIP: 'border-orange-500/50 ring-2 ring-orange-500/20',
     ELITE: 'border-purple-500/30',
@@ -96,7 +96,7 @@ export default function Pricing() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-black mb-4">{t({ en: 'Choose Your Plan', fa: 'طرح خود را انتخاب کنید' })}</h1>
-        <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+        <p className="text-fg-subtle text-lg max-w-2xl mx-auto">
           {t({ en: 'Start free, upgrade anytime. All plans include access to our calculator suite and exercise library.', fa: 'رایگان شروع کنید، هر زمان خواستید ارتقا دهید. همه طرح‌ها شامل دسترسی به ماشین‌حساب‌ها و کتابخانه حرکات ورزشی است.' })}
         </p>
       </div>
@@ -119,7 +119,7 @@ export default function Pricing() {
           return (
             <div
               key={plan.id}
-              className={`relative bg-gray-900 border rounded-2xl p-6 flex flex-col ${tierColors[plan.tier]} ${
+              className={`relative bg-surface border rounded-2xl p-6 flex flex-col ${tierColors[plan.tier]} ${
                 isPopular ? 'lg:-mt-4 lg:mb-4' : ''
               }`}
             >
@@ -133,16 +133,16 @@ export default function Pricing() {
                   plan.tier === 'VIP' ? 'bg-orange-500/20 text-orange-400' :
                   plan.tier === 'ELITE' ? 'bg-purple-500/20 text-purple-400' :
                   plan.tier === 'ECONOMY' ? 'bg-blue-500/20 text-blue-400' :
-                  'bg-gray-700 text-gray-300'
+                  'bg-elevated-hover text-fg-muted'
                 }`}>
                   {tierIcons[plan.tier]}
                 </div>
                 <h3 className="text-xl font-bold mb-1">{plan.name}</h3>
                 <div className="flex items-baseline justify-center gap-1 flex-row-reverse">
-                  <span className="text-4xl font-black text-white">
+                  <span className="text-4xl font-black text-fg">
                     ${(plan.priceMonthly / 100).toFixed(plan.priceMonthly === 0 ? 0 : 2)}
                   </span>
-                  {plan.priceMonthly > 0 && <span className="text-gray-400 text-sm">/{t({ en: 'mo', fa: 'ماه' })}</span>}
+                  {plan.priceMonthly > 0 && <span className="text-fg-subtle text-sm">/{t({ en: 'mo', fa: 'ماه' })}</span>}
                 </div>
               </div>
 
@@ -150,7 +150,7 @@ export default function Pricing() {
                 {plan.features.map(f => (
                   <li key={f} className="flex items-start gap-2 text-sm">
                     <Check className="w-4 h-4 text-green-400 mt-0.5 shrink-0" />
-                    <span className="text-gray-300">
+                    <span className="text-fg-muted">
                       {t({
                         en: f,
                         fa: faDict[f] || f
@@ -165,12 +165,12 @@ export default function Pricing() {
                 disabled={checkoutDisabled || loadingTier === plan.tier}
                 className={`w-full py-3 rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-2 ${
                   isCurrent
-                    ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                    ? 'bg-elevated-hover text-fg-subtle cursor-not-allowed'
                     : checkoutDisabled
-                    ? 'bg-gray-800 text-gray-500 cursor-not-allowed border border-gray-700'
+                    ? 'bg-elevated text-fg-faint cursor-not-allowed border border-strong'
                     : isPopular
                     ? 'bg-orange-500 text-white hover:bg-orange-600'
-                    : 'bg-gray-800 text-white hover:bg-gray-700 border border-gray-700'
+                    : 'bg-elevated text-fg hover:bg-elevated-hover border border-strong'
                 }`}
               >
                 {loadingTier === plan.tier && <Loader2 className="w-4 h-4 animate-spin" />}
@@ -182,17 +182,17 @@ export default function Pricing() {
       </div>
 
       {/* Feature Comparison */}
-      <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
-        <div className="p-6 border-b border-gray-800">
+      <div className="bg-surface border border-border rounded-2xl overflow-hidden">
+        <div className="p-6 border-b border-border">
           <h2 className="text-2xl font-black">{t({ en: 'Feature Comparison', fa: 'مقایسه امکانات' })}</h2>
         </div>
         <div className="overflow-x-auto max-w-full min-w-0">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-800">
-                <th className="text-left rtl:text-right p-4 font-medium text-gray-400">{t({ en: 'Feature', fa: 'ویژگی' })}</th>
-                <th className="p-4 text-center font-medium text-gray-400">{t({ en: 'Free', fa: 'رایگان' })}</th>
-                <th className="p-4 text-center font-medium text-gray-400">{t({ en: 'Economy', fa: 'اقتصادی' })}</th>
+              <tr className="border-b border-border">
+                <th className="text-left rtl:text-right p-4 font-medium text-fg-subtle">{t({ en: 'Feature', fa: 'ویژگی' })}</th>
+                <th className="p-4 text-center font-medium text-fg-subtle">{t({ en: 'Free', fa: 'رایگان' })}</th>
+                <th className="p-4 text-center font-medium text-fg-subtle">{t({ en: 'Economy', fa: 'اقتصادی' })}</th>
                 <th className="p-4 text-center font-medium text-orange-400">VIP</th>
                 <th className="p-4 text-center font-medium text-purple-400">Elite</th>
               </tr>
@@ -210,13 +210,13 @@ export default function Pricing() {
                 { feature: t({ en: '1-on-1 Coaching', fa: 'مربیگری ۱ به ۱' }), free: false, economy: false, vip: false, elite: true },
                 { feature: t({ en: 'Weekly Adjustments', fa: 'تغییرات هفتگی' }), free: false, economy: false, vip: false, elite: true },
               ].map(row => (
-                <tr key={row.feature} className="border-b border-gray-800 last:border-0">
+                <tr key={row.feature} className="border-b border-border last:border-0">
                   <td className="p-4 font-medium">{row.feature}</td>
                   {[row.free, row.economy, row.vip, row.elite].map((val, i) => (
                     <td key={i} className="p-4 text-center">
                       {val === true ? <Check className="w-5 h-5 text-green-400 mx-auto" /> :
-                       val === false ? <span className="text-gray-600">—</span> :
-                       <span className="text-gray-300">{val}</span>}
+                       val === false ? <span className="text-fg-faint">—</span> :
+                       <span className="text-fg-muted">{val}</span>}
                     </td>
                   ))}
                 </tr>

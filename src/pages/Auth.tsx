@@ -79,46 +79,46 @@ function PhoneOtpSection({
   };
 
   return (
-    <div className="mt-6 pt-6 border-t border-gray-800 space-y-4">
-      <p className="text-sm text-gray-400 text-center">
+    <div className="mt-6 pt-6 border-t border-border space-y-4">
+      <p className="text-sm text-fg-subtle text-center">
         {t({ en: 'Or sign in with phone (SMS)', fa: 'یا ورود با شماره موبایل (پیامک)' })}
       </p>
       {mode === 'register' && (
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">{t({ en: 'Full Name', fa: 'نام کامل' })}</label>
+          <label className="block text-sm font-medium text-fg-muted mb-1">{t({ en: 'Full Name', fa: 'نام کامل' })}</label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-orange-500 outline-none"
+            className="w-full px-4 py-2.5 bg-elevated border border-strong rounded-lg text-fg focus:border-orange-500 outline-none"
             disabled={loading}
           />
         </div>
       )}
       <div>
-        <label className="block text-sm font-medium text-gray-300 mb-1">{t({ en: 'Phone', fa: 'شماره موبایل' })}</label>
+        <label className="block text-sm font-medium text-fg-muted mb-1">{t({ en: 'Phone', fa: 'شماره موبایل' })}</label>
         <div className="relative">
-          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-subtle" />
           <input
             type="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder={t({ en: '09123456789', fa: '۰۹۱۲۳۴۵۶۷۸۹' })}
-            className="w-full pl-10 pr-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-orange-500 outline-none"
+            className="w-full pl-10 pr-4 py-2.5 bg-elevated border border-strong rounded-lg text-fg focus:border-orange-500 outline-none"
             disabled={loading || otpSent}
           />
         </div>
       </div>
       {otpSent && (
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">{t({ en: 'Verification code', fa: 'کد تأیید' })}</label>
+          <label className="block text-sm font-medium text-fg-muted mb-1">{t({ en: 'Verification code', fa: 'کد تأیید' })}</label>
           <input
             type="text"
             inputMode="numeric"
             value={code}
             onChange={(e) => setCode(e.target.value)}
             placeholder={t({ en: '123456', fa: '۱۲۳۴۵۶' })}
-            className="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-orange-500 outline-none"
+            className="w-full px-4 py-2.5 bg-elevated border border-strong rounded-lg text-fg focus:border-orange-500 outline-none"
             disabled={loading}
           />
         </div>
@@ -127,7 +127,7 @@ function PhoneOtpSection({
         type="button"
         onClick={otpSent ? handleVerifyOtp : handleRequestOtp}
         disabled={loading}
-        className="w-full py-2.5 bg-gray-800 border border-gray-700 text-white font-medium rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50"
+        className="w-full py-2.5 bg-elevated border border-strong text-fg font-medium rounded-lg hover:bg-elevated-hover transition-colors disabled:opacity-50"
       >
         {otpSent
           ? (loading ? t({ en: 'Verifying...', fa: 'در حال تأیید...' }) : t({ en: 'Verify & Sign In', fa: 'تأیید و ورود' }))
@@ -176,10 +176,10 @@ export function Login() {
             <Dumbbell className="w-7 h-7 text-white" />
           </div>
           <h1 className="text-2xl font-black">{t({ en: 'Welcome Back', fa: 'خوش آمدید' })}</h1>
-          <p className="text-gray-400 text-sm mt-1">{t({ en: 'Sign in to your EsiFit account', fa: 'به حساب اسی‌فیت خود وارد شوید' })}</p>
+          <p className="text-fg-subtle text-sm mt-1">{t({ en: 'Sign in to your EsiFit account', fa: 'به حساب اسی‌فیت خود وارد شوید' })}</p>
         </div>
 
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 md:p-8">
+        <div className="bg-surface border border-border rounded-2xl p-6 md:p-8">
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
               <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm">
@@ -187,19 +187,19 @@ export function Login() {
               </div>
             )}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">{t({ en: 'Email', fa: 'ایمیل' })}</label>
+              <label className="block text-sm font-medium text-fg-muted mb-1">{t({ en: 'Email', fa: 'ایمیل' })}</label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-subtle" />
                 <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder={t({ en: 'you@example.com', fa: 'nama@example.ir' })}
-                  className="w-full pl-10 pr-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none" disabled={loading} />
+                  className="w-full pl-10 pr-4 py-2.5 bg-elevated border border-strong rounded-lg text-fg focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none" disabled={loading} />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">{t({ en: 'Password', fa: 'رمز عبور' })}</label>
+              <label className="block text-sm font-medium text-fg-muted mb-1">{t({ en: 'Password', fa: 'رمز عبور' })}</label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-subtle" />
                 <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••"
-                  className="w-full pl-10 pr-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none" disabled={loading} />
+                  className="w-full pl-10 pr-4 py-2.5 bg-elevated border border-strong rounded-lg text-fg focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none" disabled={loading} />
               </div>
             </div>
             <button type="submit" className="w-full py-3 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50" disabled={loading}>
@@ -207,7 +207,7 @@ export function Login() {
             </button>
           </form>
 
-          <div className="mt-4 text-center text-sm text-gray-400">
+          <div className="mt-4 text-center text-sm text-fg-subtle">
             <Link to="/forgot-password" className="text-orange-400 hover:text-orange-300">{t({ en: 'Forgot password?', fa: 'رمز عبور را فراموش کرده‌اید؟' })}</Link>
           </div>
 
@@ -220,7 +220,7 @@ export function Login() {
           />
         </div>
 
-        <p className="text-center text-sm text-gray-400 mt-6">
+        <p className="text-center text-sm text-fg-subtle mt-6">
           {t({ en: "Don't have an account?", fa: 'حساب کاربری ندارید؟' })}{' '}
           <Link to="/register" className="text-orange-400 hover:text-orange-300 font-medium">{t({ en: 'Sign up', fa: 'ثبت‌نام' })}</Link>
         </p>
@@ -271,10 +271,10 @@ export function Register() {
             <Dumbbell className="w-7 h-7 text-white" />
           </div>
           <h1 className="text-2xl font-black">{t({ en: 'Create Your Account', fa: 'حساب خود را بسازید' })}</h1>
-          <p className="text-gray-400 text-sm mt-1">{t({ en: 'Start your fitness journey with EsiFit', fa: 'سفر تناسب اندام خود را با اسی‌فیت آغاز کنید' })}</p>
+          <p className="text-fg-subtle text-sm mt-1">{t({ en: 'Start your fitness journey with EsiFit', fa: 'سفر تناسب اندام خود را با اسی‌فیت آغاز کنید' })}</p>
         </div>
 
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 md:p-8">
+        <div className="bg-surface border border-border rounded-2xl p-6 md:p-8">
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
               <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm">
@@ -282,42 +282,54 @@ export function Register() {
               </div>
             )}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">{t({ en: 'Full Name', fa: 'نام کامل' })}</label>
+              <label className="block text-sm font-medium text-fg-muted mb-1">{t({ en: 'Full Name', fa: 'نام کامل' })}</label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-subtle" />
                 <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder={t({ en: 'Ali Rezaei', fa: 'علی رضایی' })}
-                  className="w-full pl-10 pr-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none" disabled={loading} />
+                  className="w-full pl-10 pr-4 py-2.5 bg-elevated border border-strong rounded-lg text-fg focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none" disabled={loading} />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">{t({ en: 'Email', fa: 'ایمیل' })}</label>
+              <label className="block text-sm font-medium text-fg-muted mb-1">{t({ en: 'Email', fa: 'ایمیل' })}</label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-subtle" />
                 <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder={t({ en: 'you@example.com', fa: 'nama@example.ir' })}
-                  className="w-full pl-10 pr-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none" disabled={loading} />
+                  className="w-full pl-10 pr-4 py-2.5 bg-elevated border border-strong rounded-lg text-fg focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none" disabled={loading} />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">{t({ en: 'Password', fa: 'رمز عبور' })}</label>
+              <label className="block text-sm font-medium text-fg-muted mb-1">{t({ en: 'Password', fa: 'رمز عبور' })}</label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-subtle" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   placeholder={t({ en: 'Min. 6 characters', fa: 'حداقل ۶ کاراکتر' })}
-                  className="w-full pl-10 pr-10 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none"
+                  className="w-full pl-10 pr-10 py-2.5 bg-elevated border border-strong rounded-lg text-fg focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none"
                   disabled={loading}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((visible) => !visible)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-200"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-fg-subtle hover:text-fg-muted"
                   aria-label={showPassword ? t({ en: 'Hide password', fa: 'مخفی کردن رمز' }) : t({ en: 'Show password', fa: 'نمایش رمز' })}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
+              {password.length > 0 && (
+                <p
+                  className={`text-xs mt-1 ${password.length < 6 ? 'text-red-400' : password.length < 10 ? 'text-yellow-400' : 'text-green-400'}`}
+                  aria-live="polite"
+                >
+                  {password.length < 6
+                    ? t({ en: 'Too short (min. 6 characters)', fa: 'کوتاه است (حداقل ۶ کاراکتر)' })
+                    : password.length < 10
+                      ? t({ en: 'Fair strength', fa: 'قدرت متوسط' })
+                      : t({ en: 'Strong password', fa: 'رمز قوی' })}
+                </p>
+              )}
             </div>
             <button type="submit" className="w-full py-3 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50" disabled={loading}>
               {loading ? t({ en: 'Creating account...', fa: 'در حال ایجاد حساب...' }) : t({ en: 'Create Account', fa: 'ایجاد حساب' })}
@@ -333,7 +345,7 @@ export function Register() {
           />
         </div>
 
-        <p className="text-center text-sm text-gray-400 mt-6">
+        <p className="text-center text-sm text-fg-subtle mt-6">
           {t({ en: 'Already have an account?', fa: 'قبلاً حساب دارید؟' })}{' '}
           <Link to="/login" className="text-orange-400 hover:text-orange-300 font-medium">{t({ en: 'Sign in', fa: 'ورود' })}</Link>
         </p>
@@ -372,14 +384,14 @@ export function ForgotPassword() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-2xl font-black">{t({ en: 'Reset Password', fa: 'بازیابی رمز عبور' })}</h1>
-          <p className="text-gray-400 text-sm mt-1">{t({ en: 'Enter your email to receive a reset link', fa: 'ایمیل خود را برای دریافت لینک بازیابی وارد کنید' })}</p>
+          <p className="text-fg-subtle text-sm mt-1">{t({ en: 'Enter your email to receive a reset link', fa: 'ایمیل خود را برای دریافت لینک بازیابی وارد کنید' })}</p>
         </div>
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 md:p-8">
+        <div className="bg-surface border border-border rounded-2xl p-6 md:p-8">
           {sent ? (
             <div className="text-center py-4">
               <div className="text-4xl mb-4">📧</div>
               <h3 className="font-bold text-lg mb-2">{t({ en: 'Check your email', fa: 'ایمیل خود را بررسی کنید' })}</h3>
-              <p className="text-gray-400 text-sm">{t({ en: `We've sent a password reset link to ${email}`, fa: `لینک بازیابی رمز عبور به ${email} ارسال شد` })}</p>
+              <p className="text-fg-subtle text-sm">{t({ en: `We've sent a password reset link to ${email}`, fa: `لینک بازیابی رمز عبور به ${email} ارسال شد` })}</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -389,9 +401,9 @@ export function ForgotPassword() {
                 </div>
               )}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">{t({ en: 'Email', fa: 'ایمیل' })}</label>
+                <label className="block text-sm font-medium text-fg-muted mb-1">{t({ en: 'Email', fa: 'ایمیل' })}</label>
                 <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder={t({ en: 'you@example.com', fa: 'nama@example.ir' })}
-                  className="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-orange-500 outline-none" disabled={loading} />
+                  className="w-full px-4 py-2.5 bg-elevated border border-strong rounded-lg text-fg focus:border-orange-500 outline-none" disabled={loading} />
               </div>
               <button type="submit" disabled={loading} className="w-full py-3 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50">
                 {loading ? t({ en: 'Sending...', fa: 'در حال ارسال...' }) : t({ en: 'Send Reset Link', fa: 'ارسال لینک بازیابی' })}
@@ -399,7 +411,7 @@ export function ForgotPassword() {
             </form>
           )}
           <div className="mt-4 text-center">
-            <Link to="/login" className="text-sm text-gray-400 hover:text-white">{t({ en: '← Back to sign in', fa: '← بازگشت به ورود' })}</Link>
+            <Link to="/login" className="text-sm text-fg-subtle hover:text-fg">{t({ en: '← Back to sign in', fa: '← بازگشت به ورود' })}</Link>
           </div>
         </div>
       </div>
@@ -449,10 +461,10 @@ export function ResetPassword() {
         <div className="text-center mb-8">
           <h1 className="text-2xl font-black">{t({ en: 'Set New Password', fa: 'رمز عبور جدید' })}</h1>
         </div>
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 md:p-8">
+        <div className="bg-surface border border-border rounded-2xl p-6 md:p-8">
           {done ? (
             <div className="text-center py-4 space-y-4">
-              <p className="text-gray-300">{t({ en: 'Your password has been updated.', fa: 'رمز عبور شما به‌روزرسانی شد.' })}</p>
+              <p className="text-fg-muted">{t({ en: 'Your password has been updated.', fa: 'رمز عبور شما به‌روزرسانی شد.' })}</p>
               <Link to="/login" className="inline-block py-2 px-4 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600">
                 {t({ en: 'Sign In', fa: 'ورود' })}
               </Link>
@@ -465,14 +477,14 @@ export function ResetPassword() {
                 </div>
               )}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">{t({ en: 'New password', fa: 'رمز عبور جدید' })}</label>
+                <label className="block text-sm font-medium text-fg-muted mb-1">{t({ en: 'New password', fa: 'رمز عبور جدید' })}</label>
                 <input type="password" value={password} onChange={e => setPassword(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-orange-500 outline-none" disabled={loading} />
+                  className="w-full px-4 py-2.5 bg-elevated border border-strong rounded-lg text-fg focus:border-orange-500 outline-none" disabled={loading} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">{t({ en: 'Confirm password', fa: 'تأیید رمز عبور' })}</label>
+                <label className="block text-sm font-medium text-fg-muted mb-1">{t({ en: 'Confirm password', fa: 'تأیید رمز عبور' })}</label>
                 <input type="password" value={confirm} onChange={e => setConfirm(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-orange-500 outline-none" disabled={loading} />
+                  className="w-full px-4 py-2.5 bg-elevated border border-strong rounded-lg text-fg focus:border-orange-500 outline-none" disabled={loading} />
               </div>
               <button type="submit" disabled={loading} className="w-full py-3 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50">
                 {loading ? t({ en: 'Updating...', fa: 'در حال به‌روزرسانی...' }) : t({ en: 'Update Password', fa: 'به‌روزرسانی رمز' })}
