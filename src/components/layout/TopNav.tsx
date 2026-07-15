@@ -41,8 +41,8 @@ export function TopNav({ user }: TopNavProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <div className="w-9 h-9 rounded-lg gradient-brand flex items-center justify-center shadow-md shadow-brand/20">
-              <Dumbbell className="w-5 h-5 text-white" />
+            <div className="w-9 h-9 rounded-[12px] bg-brand flex items-center justify-center">
+              <Dumbbell className="w-5 h-5 text-brand-fg" />
             </div>
             <span className="text-xl font-extrabold tracking-tight">
               Esi<span className="text-brand">Fit</span>
@@ -55,7 +55,7 @@ export function TopNav({ user }: TopNavProps) {
               <Link
                 key={link.href}
                 to={link.href}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${navLinkClass(link.href)}`}
+                className={`px-3 py-2 rounded-[12px] text-sm font-medium transition-colors duration-[180ms] ${navLinkClass(link.href)}`}
               >
                 {t(link.label)}
               </Link>
@@ -65,7 +65,7 @@ export function TopNav({ user }: TopNavProps) {
               <Link
                 key={link.href}
                 to={link.href}
-                className={`px-2.5 py-2 rounded-lg text-sm transition-colors ${navLinkClass(link.href, true)}`}
+                className={`px-2.5 py-2 rounded-[12px] text-sm transition-colors duration-[180ms] ${navLinkClass(link.href, true)}`}
               >
                 {t(link.label)}
               </Link>
@@ -77,7 +77,7 @@ export function TopNav({ user }: TopNavProps) {
               <Link
                 key={link.href}
                 to={link.href}
-                className={`flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-sm font-medium transition-colors ${navLinkClass(link.href)}`}
+                className={`flex items-center gap-1.5 px-2.5 py-2 rounded-[12px] text-sm font-medium transition-colors duration-[180ms] ${navLinkClass(link.href)}`}
               >
                 {link.href.includes('chat') ? (
                   <MessageSquare className="w-4 h-4" />
@@ -91,7 +91,7 @@ export function TopNav({ user }: TopNavProps) {
             <button
               type="button"
               onClick={toggleTheme}
-              className="flex items-center justify-center p-2 rounded-lg hover:bg-elevated transition-colors text-fg-muted"
+              className="flex items-center justify-center p-2 rounded-[12px] hover:bg-elevated transition-colors duration-[180ms] text-fg-muted"
               aria-label={theme === 'dark'
                 ? t({ en: 'Switch to light theme', fa: 'تغییر به تم روشن' })
                 : t({ en: 'Switch to dark theme', fa: 'تغییر به تم تیره' })}
@@ -103,25 +103,25 @@ export function TopNav({ user }: TopNavProps) {
               <button
                 type="button"
                 onClick={() => { setLangMenuOpen(!langMenuOpen); setUserMenuOpen(false); }}
-                className="flex items-center gap-2 px-2 py-2 rounded-lg hover:bg-elevated transition-colors text-fg-muted"
+                className="flex items-center gap-2 px-2 py-2 rounded-[12px] hover:bg-elevated transition-colors duration-[180ms] text-fg-muted"
                 aria-expanded={langMenuOpen}
               >
                 <Globe className="w-5 h-5" />
                 <span className="text-sm font-medium uppercase">{lang}</span>
               </button>
               {langMenuOpen && (
-                <div className="absolute end-0 top-12 w-32 bg-surface border border-strong rounded-xl shadow-xl py-2 animate-fade-in z-50">
+                <div className="absolute end-0 top-12 w-32 bg-surface border border-border rounded-[24px] py-2 animate-fade-in z-50">
                   <button
                     type="button"
                     onClick={() => { setLang('en'); setLangMenuOpen(false); }}
-                    className={`w-full text-start px-4 py-2 text-sm transition-colors ${lang === 'en' ? 'text-brand bg-elevated' : 'hover:bg-elevated'}`}
+                    className={`w-full text-start px-4 py-2 text-sm transition-colors duration-[180ms] ${lang === 'en' ? 'text-brand bg-elevated' : 'hover:bg-elevated'}`}
                   >
                     English
                   </button>
                   <button
                     type="button"
                     onClick={() => { setLang('fa'); setLangMenuOpen(false); }}
-                    className={`w-full text-start px-4 py-2 text-sm transition-colors ${lang === 'fa' ? 'text-brand bg-elevated' : 'hover:bg-elevated'}`}
+                    className={`w-full text-start px-4 py-2 text-sm transition-colors duration-[180ms] ${lang === 'fa' ? 'text-brand bg-elevated' : 'hover:bg-elevated'}`}
                   >
                     فارسی
                   </button>
@@ -140,10 +140,10 @@ export function TopNav({ user }: TopNavProps) {
               />
             ) : (
               <div className="flex items-center gap-2">
-                <Link to="/login" className="px-4 py-2 text-sm font-medium text-fg-muted hover:text-fg transition-colors">
+                <Link to="/login" className="px-4 py-2 text-sm font-medium text-fg-muted hover:text-fg transition-colors duration-[180ms]">
                   {t({ en: 'Sign In', fa: 'ورود' })}
                 </Link>
-                <Link to="/register" className="px-4 py-2 text-sm font-bold rounded-lg gradient-brand text-[#1a1410] hover:brightness-110 transition-all">
+                <Link to="/register" className="px-4 py-2 text-sm font-bold rounded-[12px] bg-brand text-brand-fg hover:bg-brand-dark transition-colors duration-[180ms]">
                   {t({ en: 'Get Started', fa: 'شروع کنید' })}
                 </Link>
               </div>
@@ -155,7 +155,7 @@ export function TopNav({ user }: TopNavProps) {
             <button
               type="button"
               onClick={toggleTheme}
-              className="p-2 rounded-lg hover:bg-elevated text-fg-muted"
+              className="p-2 rounded-[12px] hover:bg-elevated text-fg-muted transition-colors duration-[180ms]"
               aria-label={theme === 'dark'
                 ? t({ en: 'Switch to light theme', fa: 'تغییر به تم روشن' })
                 : t({ en: 'Switch to dark theme', fa: 'تغییر به تم تیره' })}
@@ -165,10 +165,10 @@ export function TopNav({ user }: TopNavProps) {
             {user && (
               <Link
                 to="/dashboard"
-                className="p-2 rounded-lg hover:bg-elevated"
+                className="p-2 rounded-[12px] hover:bg-elevated transition-colors duration-[180ms]"
                 aria-label={t({ en: 'Dashboard', fa: 'داشبورد' })}
               >
-                <div className="w-8 h-8 rounded-full gradient-brand flex items-center justify-center text-xs font-bold text-[#1a1410]">
+                <div className="w-8 h-8 rounded-full bg-brand flex items-center justify-center text-xs font-bold text-brand-fg">
                   {user.name?.[0]?.toUpperCase() || 'U'}
                 </div>
               </Link>

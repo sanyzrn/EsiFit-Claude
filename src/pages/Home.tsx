@@ -1,8 +1,7 @@
 import { Link } from 'react-router-dom';
-import { Dumbbell, Calculator, TrendingUp, Users, ChevronRight, Star, Zap, Target, BarChart3, Apple, MessageSquare } from 'lucide-react';
+import { Dumbbell, Calculator, TrendingUp, Users, ChevronRight, Star, Target, BarChart3, Apple, MessageSquare } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import HomeSmartTools from '@/components/calculators/HomeSmartTools';
-import { PersianPattern } from '@/components/ui/PersianPattern';
 import { IconBadge } from '@/components/ui/IconBadge';
 import { IMAGES } from '@/lib/media';
 import { PAGE_CONTAINER_CLASS } from '@/components/ui/PageContainer';
@@ -38,28 +37,24 @@ export default function Home() {
   return (
     <div>
       {/* Hero Section */}
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-hidden min-h-[85vh] flex items-center">
         <div className="absolute inset-0">
           <img
             src={IMAGES.hero.src}
             alt={t(IMAGES.hero.alt)}
-            className="w-full h-full object-cover opacity-30 scale-105"
+            className="w-full h-full object-cover"
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-app/90 via-app/70 to-app" />
-        <PersianPattern opacity={0.6} />
-        <div className="absolute top-20 start-1/4 w-96 h-96 bg-brand/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 end-1/4 w-72 h-72 bg-accent/15 rounded-full blur-3xl" />
-        <div className={`relative ${PAGE_CONTAINER_CLASS} py-20 md:py-32`}>
+        <div className="absolute inset-0 bg-gradient-to-b from-app/90 via-app/75 to-app" />
+        <div className={`relative ${PAGE_CONTAINER_CLASS} py-20 md:py-28 w-full`}>
           <div className="text-center max-w-4xl mx-auto animate-slide-up">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-muted border border-brand/30 text-brand text-sm font-medium mb-6">
-              <Zap className="w-4 h-4" />
-              {t({ en: 'Your Complete Fitness Platform', fa: 'پلتفرم جامع تناسب اندام شما' })}
-            </div>
+            <p className="text-2xl md:text-3xl font-extrabold tracking-tight mb-4 font-display">
+              Esi<span className="text-brand">Fit</span>
+            </p>
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight mb-6 leading-[1.1] font-display">
               {t({ en: 'Train Smarter.', fa: 'هوشمندانه‌تر تمرین کنید.' })}
               <br />
-              <span className="text-gradient-brand">
+              <span className="text-brand">
                 {t({ en: 'Grow Stronger.', fa: 'قوی‌تر شوید.' })}
               </span>
             </h1>
@@ -69,13 +64,13 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 to="/register"
-                className="w-full sm:w-auto px-8 py-4 gradient-brand text-[#1a1410] font-bold text-lg rounded-xl hover:brightness-110 transition-all shadow-lg shadow-brand/30 animate-pulse-glow"
+                className="w-full sm:w-auto px-8 py-4 bg-brand text-brand-fg font-bold text-lg rounded-[12px] hover:bg-brand-dark transition-colors duration-[180ms]"
               >
                 {t({ en: 'Start Free Today', fa: 'همین امروز رایگان شروع کنید' })}
               </Link>
               <Link
                 to="/calculators"
-                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 bg-elevated text-fg font-bold text-lg rounded-xl hover:bg-elevated-hover transition-colors border border-strong"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 bg-elevated text-fg font-bold text-lg rounded-[12px] hover:bg-elevated-hover transition-colors duration-[180ms] border border-border-strong"
               >
                 {t({ en: 'Try Free Calculators', fa: 'ماشین‌حساب‌های رایگان را امتحان کنید' })} <ChevronRight className="w-5 h-5 rtl:!rotate-180" />
               </Link>
@@ -111,12 +106,12 @@ export default function Home() {
             <Link
               key={feat.title}
               to={feat.link}
-              className="group card-iranian p-6 hover:border-brand/40 transition-all"
+              className="group card-iranian p-6 hover:border-brand/40 transition-colors duration-[180ms]"
             >
               <div className="mb-4">
                 <IconBadge icon={feat.icon} variant={feat.link.includes('diet') ? 'firuze' : feat.link.includes('pricing') ? 'terracotta' : 'saffron'} />
               </div>
-              <h3 className="text-lg font-bold mb-2 group-hover:text-brand transition-colors font-display">{feat.title}</h3>
+              <h3 className="text-lg font-bold mb-2 group-hover:text-brand transition-colors duration-[180ms] font-display">{feat.title}</h3>
               <p className="text-fg-subtle text-sm">{feat.desc}</p>
             </Link>
           ))}
@@ -138,9 +133,9 @@ export default function Home() {
             return (
             <div
               key={plan.tier}
-              className={`rounded-2xl p-6 border text-center ${
+              className={`rounded-[20px] p-6 border text-center transition-colors duration-[180ms] ${
                 highlight
-                  ? 'bg-gradient-to-b from-brand-muted to-accent-muted border-brand/40'
+                  ? 'bg-brand-muted border-brand/40'
                   : 'bg-surface border-border'
               }`}
             >
@@ -155,7 +150,7 @@ export default function Home() {
           })}
         </div>
         <div className="text-center mt-8">
-          <Link to="/pricing" className="inline-flex items-center gap-2 text-brand font-medium hover:text-accent transition-colors">
+          <Link to="/pricing" className="inline-flex items-center gap-2 text-brand font-medium hover:text-accent transition-colors duration-[180ms]">
             {t({ en: 'View Full Plan Comparison', fa: 'مشاهده مقایسه کامل برنامه‌ها' })} <ChevronRight className="w-4 h-4 rtl:!rotate-180" />
           </Link>
         </div>
@@ -169,9 +164,7 @@ export default function Home() {
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {testimonials.map(tval => (
-              <div key={tval.name} className="card-iranian p-6 relative overflow-hidden">
-                <PersianPattern opacity={0.2} />
-                <div className="relative z-10">
+              <div key={tval.name} className="card-iranian p-6">
                 <div className="flex gap-1 mb-4">
                   {Array.from({ length: tval.rating }).map((_, i) => (
                     <Star key={i} className="w-4 h-4 fill-brand text-brand" />
@@ -182,7 +175,6 @@ export default function Home() {
                   <div className="font-bold text-sm">{tval.name}</div>
                   <div className="text-xs text-fg-subtle">{tval.role}</div>
                 </div>
-                </div>
               </div>
             ))}
           </div>
@@ -191,9 +183,7 @@ export default function Home() {
 
       {/* CTA */}
       <section className={`${PAGE_CONTAINER_CLASS} py-20`}>
-        <div className="relative card-iranian gradient-hero p-12 text-center overflow-hidden">
-          <PersianPattern opacity={0.35} />
-          <div className="relative z-10">
+        <div className="relative card-iranian gradient-hero p-12 text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
             <IconBadge icon={TrendingUp} variant="saffron" size="sm" />
             <IconBadge icon={Users} variant="firuze" size="sm" />
@@ -204,11 +194,10 @@ export default function Home() {
           </p>
           <Link
             to="/register"
-            className="inline-flex items-center gap-2 px-10 py-4 gradient-brand text-[#1a1410] font-bold text-lg rounded-xl hover:brightness-110 transition-all shadow-lg shadow-brand/25"
+            className="inline-flex items-center gap-2 px-10 py-4 bg-brand text-brand-fg font-bold text-lg rounded-[12px] hover:bg-brand-dark transition-colors duration-[180ms]"
           >
             {t({ en: 'Create Free Account', fa: 'ساخت حساب کاربری رایگان' })} <ChevronRight className="w-5 h-5 rtl:!rotate-180" />
           </Link>
-          </div>
         </div>
       </section>
     </div>

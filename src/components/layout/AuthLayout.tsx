@@ -9,8 +9,8 @@ export function AuthLayout() {
       <header className="border-b border-border bg-app/90 backdrop-blur-md">
         <div className={`${PAGE_CONTAINER_CLASS} h-14 flex items-center`}>
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg gradient-brand flex items-center justify-center">
-              <Dumbbell className="w-4 h-4 text-[#1a1410]" />
+            <div className="w-8 h-8 rounded-[12px] bg-brand flex items-center justify-center">
+              <Dumbbell className="w-4 h-4 text-brand-fg" />
             </div>
             <span className="text-lg font-extrabold tracking-tight">
               Esi<span className="text-brand">Fit</span>
