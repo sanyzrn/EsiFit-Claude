@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import {
   LayoutDashboard, User, Target, BarChart3, MessageSquare, CreditCard,
   Flame, TrendingUp, Dumbbell, Plus, Calendar, Save, Crown
@@ -13,19 +13,19 @@ import { useI18n, faDict } from '@/lib/i18n';
 import { ProgressCharts } from '@/components/charts/IranianCharts';
 import { useLocaleFormat } from '@/lib/locale-format-context';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { PageContainer } from '@/components/ui/PageContainer';
 import { useEntitlements } from '@/lib/entitlements';
 import { fetchPaymentsEnabled } from '@/lib/payments';
 import PaymentsNotice from '@/components/PaymentsNotice';
 
 function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState(getState());
-  const navigate = useNavigate();
   const location = useLocation();
   const { t } = useI18n();
   const { subscriptionTier } = useEntitlements();
   useEffect(() => { const u = subscribe(() => setState(getState())); return () => { u(); }; }, []);
-  useEffect(() => { if (!state.currentUser) navigate('/login'); }, [state.currentUser, navigate]);
 
+  // Auth redirect is handled by <ProtectedRoute> in App.tsx
   if (!state.currentUser) return null;
 
   const tabs = [
@@ -38,7 +38,7 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <PageContainer padY="md">
       <div className="flex flex-col md:flex-row gap-6">
         {/* Sidebar */}
         <div className="w-full md:w-56 shrink-0">
@@ -73,7 +73,7 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
         {/* Content */}
         <div className="flex-1 min-w-0">{children}</div>
       </div>
-    </div>
+    </PageContainer>
   );
 }
 

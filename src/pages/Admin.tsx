@@ -1,26 +1,59 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Shield, Users, DollarSign, TrendingUp, BarChart3, FileText, Dumbbell, Apple } from 'lucide-react';
 import { getState, subscribe, PLANS, EXERCISES, PROGRAMS, DIET_PLANS, ARTICLES } from '@/lib/store';
 import { useI18n } from '@/lib/i18n';
-import { useEntitlements } from '@/lib/entitlements';
 import { AdminCharts } from '@/components/charts/IranianCharts';
 import { IconBadge } from '@/components/ui/IconBadge';
+import { PageContainer } from '@/components/ui/PageContainer';
 import { useLocaleFormat } from '@/lib/locale-format-context';
+import { apiFetch } from '@/lib/api-client';
+import type { Role, SubscriptionTier } from '@/lib/types';
+
+type AdminUserRow = {
+  id: string;
+  name: string;
+  email: string | null;
+  role: Role;
+  subscriptionTier: SubscriptionTier;
+  createdAt: string;
+};
 
 export default function Admin() {
   const [state, setState] = useState(getState());
-  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
+  const [users, setUsers] = useState<AdminUserRow[]>([]);
+  const [usersLoading, setUsersLoading] = useState(true);
+  const [usersError, setUsersError] = useState('');
+  const [nowMs] = useState(() => Date.now());
   const { t } = useI18n();
-  const { formatToman, formatNumber } = useLocaleFormat();
-  const { role, loading } = useEntitlements();
-  useEffect(() => { const u = subscribe(() => setState(getState())); return () => { u(); }; }, []);
-  useEffect(() => {
-    if (!loading && (!state.currentUser || role !== 'ADMIN')) navigate('/');
-  }, [state.currentUser, role, loading, navigate]);
+  const { formatToman, formatNumber, formatDate } = useLocaleFormat();
 
-  if (loading || !state.currentUser || role !== 'ADMIN') return null;
+  useEffect(() => {
+    const u = subscribe(() => setState(getState()));
+    return () => { u(); };
+  }, []);
+
+  // RoleGate in App.tsx handles access; fetch real users from SQL admin API
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const data = await apiFetch<{ users: AdminUserRow[] }>('/admin/users');
+        if (cancelled) return;
+        setUsers(data.users ?? []);
+        setUsersError('');
+      } catch {
+        if (cancelled) return;
+        setUsers([]);
+        setUsersError(t({ en: 'Could not load users', fa: 'بارگذاری کاربران ممکن نشد' }));
+      } finally {
+        if (!cancelled) setUsersLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [t]);
+
+  if (!state.currentUser) return null;
 
   const tabs = [
     { id: 'overview', icon: BarChart3, label: t({ en: 'Overview', fa: 'نمای کلی' }) },
@@ -31,25 +64,15 @@ export default function Admin() {
     { id: 'articles', icon: FileText, label: t({ en: 'Articles', fa: 'مقاله‌ها' }) },
   ];
 
-  // Simulated users
-  const demoUsers = [
-    { id: '1', name: 'John Smith', email: 'john@example.com', role: 'USER', tier: 'VIP', created: '2024-10-15' },
-    { id: '2', name: 'Sarah Connor', email: 'sarah@example.com', role: 'USER', tier: 'ECONOMY', created: '2024-11-01' },
-    { id: '3', name: 'Mike Johnson', email: 'mike@example.com', role: 'USER', tier: 'FREE', created: '2024-11-20' },
-    { id: '4', name: 'Coach Smith', email: 'coach@esifit.com', role: 'COACH', tier: 'ELITE', created: '2024-09-01' },
-    { id: '5', name: 'Admin User', email: 'admin@esifit.com', role: 'ADMIN', tier: 'ELITE', created: '2024-08-01' },
-    { id: '6', name: 'Lisa Davis', email: 'lisa@example.com', role: 'USER', tier: 'ELITE', created: '2024-12-01' },
-  ];
-
-  const vipCount = demoUsers.filter(u => u.tier === 'VIP').length;
-  const economyCount = demoUsers.filter(u => u.tier === 'ECONOMY').length;
-  const eliteCount = demoUsers.filter(u => u.tier === 'ELITE' && u.role === 'USER').length;
+  const vipCount = users.filter(u => u.subscriptionTier === 'VIP').length;
+  const economyCount = users.filter(u => u.subscriptionTier === 'ECONOMY').length;
+  const eliteCount = users.filter(u => u.subscriptionTier === 'ELITE' && u.role === 'USER').length;
   const mrr = vipCount * PLANS.find(p => p.tier === 'VIP')!.priceMonthly
     + economyCount * PLANS.find(p => p.tier === 'ECONOMY')!.priceMonthly
     + eliteCount * PLANS.find(p => p.tier === 'ELITE')!.priceMonthly;
 
   const revenueByPlan = PLANS.filter(p => p.priceMonthly > 0).map((plan) => {
-    const count = demoUsers.filter(u => u.tier === plan.tier && u.role === 'USER').length;
+    const count = users.filter(u => u.subscriptionTier === plan.tier && u.role === 'USER').length;
     return {
       name: plan.name,
       revenue: plan.priceMonthly * count,
@@ -57,16 +80,30 @@ export default function Admin() {
     };
   });
 
-  const userGrowth = [
-    { month: 'Sep', users: 2, paid: 1 },
-    { month: 'Oct', users: 3, paid: 2 },
-    { month: 'Nov', users: 4, paid: 3 },
-    { month: 'Dec', users: 5, paid: 4 },
-    { month: 'Jan', users: 6, paid: 4 },
-  ];
+  const byMonth = new Map<string, { users: number; paid: number }>();
+  for (const u of users) {
+    const d = new Date(u.createdAt);
+    if (Number.isNaN(d.getTime())) continue;
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    const cur = byMonth.get(key) ?? { users: 0, paid: 0 };
+    cur.users += 1;
+    if (u.subscriptionTier !== 'FREE' && u.role === 'USER') cur.paid += 1;
+    byMonth.set(key, cur);
+  }
+  const userGrowth = [...byMonth.entries()]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .slice(-5)
+    .map(([key, v]) => ({
+      month: key.slice(5),
+      users: v.users,
+      paid: v.paid,
+    }));
+
+  const weekAgo = nowMs - 7 * 24 * 60 * 60 * 1000;
+  const newThisWeek = users.filter(u => new Date(u.createdAt).getTime() >= weekAgo).length;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <PageContainer padY="md">
       <div className="flex items-center gap-3 mb-8">
         <IconBadge icon={Shield} variant="terracotta" size="md" />
         <div>
@@ -98,25 +135,25 @@ export default function Admin() {
             </div>
             <div className="card-iranian p-5">
               <div className="flex items-center gap-2 mb-2"><Users className="w-5 h-5 text-accent" /><span className="text-sm text-fg-subtle">{t({ en: 'Total Users', fa: 'کل کاربران' })}</span></div>
-              <div className="text-3xl font-black font-display">{formatNumber(demoUsers.length)}</div>
+              <div className="text-3xl font-black font-display">{usersLoading ? '—' : formatNumber(users.length)}</div>
             </div>
             <div className="card-iranian p-5">
               <div className="flex items-center gap-2 mb-2"><TrendingUp className="w-5 h-5 text-brand" /><span className="text-sm text-fg-subtle">{t({ en: 'New This Week', fa: 'جدید در این هفته' })}</span></div>
-              <div className="text-3xl font-black font-display">{formatNumber(3)}</div>
+              <div className="text-3xl font-black font-display">{usersLoading ? '—' : formatNumber(newThisWeek)}</div>
             </div>
             <div className="card-iranian p-5">
               <div className="flex items-center gap-2 mb-2"><Users className="w-5 h-5 text-terracotta" /><span className="text-sm text-fg-subtle">{t({ en: 'Paid Subscribers', fa: 'مشترکین پولی' })}</span></div>
-              <div className="text-3xl font-black font-display">{formatNumber(vipCount + economyCount + eliteCount)}</div>
+              <div className="text-3xl font-black font-display">{usersLoading ? '—' : formatNumber(vipCount + economyCount + eliteCount)}</div>
             </div>
           </div>
 
-          <AdminCharts revenueByPlan={revenueByPlan} userGrowth={userGrowth} mrr={mrr} />
+          <AdminCharts revenueByPlan={revenueByPlan} userGrowth={userGrowth.length ? userGrowth : [{ month: '—', users: 0, paid: 0 }]} mrr={mrr} />
 
           <div className="grid md:grid-cols-2 gap-4">
             <div className="card-iranian p-5">
               <h3 className="font-bold mb-4">{t({ en: 'Revenue by Plan', fa: 'درآمد بر اساس طرح' })}</h3>
               {PLANS.filter(p => p.priceMonthly > 0).map(plan => {
-                const count = demoUsers.filter(u => u.tier === plan.tier && u.role === 'USER').length;
+                const count = users.filter(u => u.subscriptionTier === plan.tier && u.role === 'USER').length;
                 return (
                   <div key={plan.id} className="flex justify-between items-center py-2 border-b border-border last:border-0">
                     <span className="text-sm">{plan.name} ({count} {t({ en: 'users', fa: 'کاربران' })})</span>
@@ -152,47 +189,64 @@ export default function Admin() {
 
       {activeTab === 'users' && (
         <div className="bg-surface border border-border rounded-xl overflow-hidden animate-fade-in">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border bg-elevated/50">
-                  <th className="text-left rtl:text-right p-4 font-medium text-fg-subtle">{t({ en: 'Name', fa: 'نام' })}</th>
-                  <th className="text-left rtl:text-right p-4 font-medium text-fg-subtle">{t({ en: 'Email', fa: 'ایمیل' })}</th>
-                  <th className="p-4 text-center font-medium text-fg-subtle">{t({ en: 'Role', fa: 'نقش' })}</th>
-                  <th className="p-4 text-center font-medium text-fg-subtle">{t({ en: 'Tier', fa: 'طرح' })}</th>
-                  <th className="p-4 text-center font-medium text-fg-subtle">{t({ en: 'Joined', fa: 'تاریخ عضویت' })}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {demoUsers.map(u => (
-                  <tr key={u.id} className="border-b border-border last:border-0 hover:bg-elevated/50">
-                    <td className="p-4 font-medium">{u.name}</td>
-                    <td className="p-4 text-fg-subtle">{u.email}</td>
-                    <td className="p-4 text-center">
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                        u.role === 'ADMIN' ? 'bg-red-500/20 text-red-400' :
-                        u.role === 'COACH' ? 'bg-purple-500/20 text-purple-400' :
-                        'bg-elevated-hover text-fg-muted'
-                      }`}>
-                        {u.role}
-                      </span>
-                    </td>
-                    <td className="p-4 text-center">
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                        u.tier === 'ELITE' ? 'bg-purple-500/20 text-purple-400' :
-                        u.tier === 'VIP' ? 'bg-orange-500/20 text-orange-400' :
-                        u.tier === 'ECONOMY' ? 'bg-blue-500/20 text-blue-400' :
-                        'bg-elevated-hover text-fg-muted'
-                      }`}>
-                        {u.tier}
-                      </span>
-                    </td>
-                    <td className="p-4 text-center text-fg-subtle">{u.created}</td>
+          {usersError && (
+            <div className="p-4 text-sm text-red-400 border-b border-border">{usersError}</div>
+          )}
+          {usersLoading ? (
+            <div className="p-8 flex justify-center" role="status">
+              <div className="w-8 h-8 border-4 border-brand border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border bg-elevated/50">
+                    <th className="text-left rtl:text-right p-4 font-medium text-fg-subtle">{t({ en: 'Name', fa: 'نام' })}</th>
+                    <th className="text-left rtl:text-right p-4 font-medium text-fg-subtle">{t({ en: 'Email', fa: 'ایمیل' })}</th>
+                    <th className="p-4 text-center font-medium text-fg-subtle">{t({ en: 'Role', fa: 'نقش' })}</th>
+                    <th className="p-4 text-center font-medium text-fg-subtle">{t({ en: 'Tier', fa: 'طرح' })}</th>
+                    <th className="p-4 text-center font-medium text-fg-subtle">{t({ en: 'Joined', fa: 'تاریخ عضویت' })}</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {users.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="p-8 text-center text-fg-subtle">
+                        {t({ en: 'No users found', fa: 'کاربری یافت نشد' })}
+                      </td>
+                    </tr>
+                  ) : users.map(u => (
+                    <tr key={u.id} className="border-b border-border last:border-0 hover:bg-elevated/50">
+                      <td className="p-4 font-medium">{u.name}</td>
+                      <td className="p-4 text-fg-subtle">{u.email ?? '—'}</td>
+                      <td className="p-4 text-center">
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                          u.role === 'ADMIN' ? 'bg-red-500/20 text-red-400' :
+                          u.role === 'COACH' ? 'bg-purple-500/20 text-purple-400' :
+                          'bg-elevated-hover text-fg-muted'
+                        }`}>
+                          {u.role}
+                        </span>
+                      </td>
+                      <td className="p-4 text-center">
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                          u.subscriptionTier === 'ELITE' ? 'bg-purple-500/20 text-purple-400' :
+                          u.subscriptionTier === 'VIP' ? 'bg-orange-500/20 text-orange-400' :
+                          u.subscriptionTier === 'ECONOMY' ? 'bg-blue-500/20 text-blue-400' :
+                          'bg-elevated-hover text-fg-muted'
+                        }`}>
+                          {u.subscriptionTier}
+                        </span>
+                      </td>
+                      <td className="p-4 text-center text-fg-subtle">
+                        {formatDate(u.createdAt, { year: 'numeric', month: 'short', day: 'numeric' })}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       )}
 
@@ -275,6 +329,6 @@ export default function Admin() {
           </div>
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 }

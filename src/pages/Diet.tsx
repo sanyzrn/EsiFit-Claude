@@ -1,5 +1,5 @@
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Apple, Lock, UtensilsCrossed } from 'lucide-react';
+import { Apple, Lock, UtensilsCrossed } from 'lucide-react';
 import { DIET_PLANS } from '@/lib/store';
 import { hasTierAccess } from '@/lib/types';
 import TierGate from '@/components/TierGate';
@@ -7,6 +7,8 @@ import { useI18n } from '@/lib/i18n';
 import { localizedDietPlan } from '@/lib/content-i18n';
 import { useEntitlements } from '@/lib/entitlements';
 import { dietImage } from '@/lib/media';
+import { Breadcrumbs } from '@/components/ui/Breadcrumbs';
+import { PageContainer } from '@/components/ui/PageContainer';
 
 export function DietList() {
   const { t, lang } = useI18n();
@@ -14,7 +16,7 @@ export function DietList() {
   const userTier = subscriptionTier;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <PageContainer>
       <div className="mb-8">
         <h1 className="text-4xl font-black mb-4">{t({ en: 'Diet Plans', fa: 'برنامه‌های غذایی' })}</h1>
         <p className="text-fg-subtle text-lg">{t({ en: 'Calorie-calculated meal plans with macros broken down per meal.', fa: 'برنامه‌های غذایی با کالری محاسبه‌شده و درشت‌مغذی‌ها برای هر وعده.' })}</p>
@@ -66,7 +68,7 @@ export function DietList() {
           );
         })}
       </div>
-    </div>
+    </PageContainer>
   );
 }
 
@@ -80,10 +82,14 @@ export function DietDetail() {
   const plan = DIET_PLANS.find(p => p.slug === slug);
   if (!plan) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-12 text-center">
+      <PageContainer className="text-center">
+        <Breadcrumbs items={[
+          { label: t({ en: 'Diet', fa: 'تغذیه' }), href: '/diet' },
+          { label: t({ en: 'Not found', fa: 'یافت نشد' }) },
+        ]} />
         <h1 className="text-2xl font-bold mb-4">{t({ en: 'Diet plan not found', fa: 'برنامه غذایی یافت نشد' })}</h1>
         <button onClick={() => navigate('/diet')} className="text-orange-400">← {t({ en: 'Back to diet plans', fa: 'بازگشت به برنامه‌های غذایی' })}</button>
-      </div>
+      </PageContainer>
     );
   }
 
@@ -150,10 +156,12 @@ export function DietDetail() {
   );
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <button onClick={() => navigate('/diet')} className="flex items-center gap-2 text-fg-subtle hover:text-fg transition-colors mb-6">
-        <ArrowLeft className="w-4 h-4 rtl:rotate-180" /> {t({ en: 'Back to Diet Plans', fa: 'بازگشت به برنامه‌های غذایی' })}
-      </button>
+    <PageContainer>
+      <div className="max-w-4xl mx-auto">
+      <Breadcrumbs items={[
+        { label: t({ en: 'Diet', fa: 'تغذیه' }), href: '/diet' },
+        { label: copy.title },
+      ]} />
 
       <div className="bg-surface border border-border rounded-2xl p-6 md:p-8 mb-6">
         <h1 className="text-3xl font-black mb-4">{copy.title}</h1>
@@ -184,6 +192,7 @@ export function DietDetail() {
           {mealContent}
         </TierGate>
       )}
-    </div>
+      </div>
+    </PageContainer>
   );
 }

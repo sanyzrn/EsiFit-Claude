@@ -1,5 +1,3 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Check, Crown, Zap, Star, Loader2, type LucideIcon } from 'lucide-react';
 import { PLANS, getState, subscribe } from '@/lib/store';
 import type { SubscriptionTier } from '@/lib/types';
@@ -9,7 +7,10 @@ import { fetchPaymentsEnabled, startCheckout, PaymentsNotConfiguredError } from 
 import PaymentsNotice from '@/components/PaymentsNotice';
 import { IconBadge } from '@/components/ui/IconBadge';
 import { PersianPattern } from '@/components/ui/PersianPattern';
+import { PageContainer } from '@/components/ui/PageContainer';
 import { useLocaleFormat } from '@/lib/locale-format-context';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Pricing() {
   const { t } = useI18n();
@@ -104,7 +105,7 @@ export default function Pricing() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <PageContainer>
       <div className="text-center mb-12">
         <h1 className="text-4xl font-black mb-4">{t({ en: 'Choose Your Plan', fa: 'طرح خود را انتخاب کنید' })}</h1>
         <p className="text-fg-subtle text-lg max-w-2xl mx-auto">
@@ -238,6 +239,6 @@ export default function Pricing() {
           </table>
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }

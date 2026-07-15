@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Target, Calendar, Clock, CheckCircle2, Lock } from 'lucide-react';
+import { Target, Calendar, Clock, CheckCircle2, Lock } from 'lucide-react';
 import { PROGRAMS, getExerciseSlugById, getExerciseNameById, getState, addExerciseLog, subscribe } from '@/lib/store';
 import TierGate from '@/components/TierGate';
 import { hasTierAccess } from '@/lib/types';
@@ -8,6 +8,8 @@ import { useI18n } from '@/lib/i18n';
 import { localizedProgram } from '@/lib/content-i18n';
 import { useEntitlements } from '@/lib/entitlements';
 import { programImage } from '@/lib/media';
+import { Breadcrumbs } from '@/components/ui/Breadcrumbs';
+import { PageContainer } from '@/components/ui/PageContainer';
 
 const goalColors: Record<string, string> = { MUSCLE_GAIN: 'bg-blue-500/20 text-blue-400', FAT_LOSS: 'bg-red-500/20 text-red-400', GENERAL_FITNESS: 'bg-green-500/20 text-green-400', STRENGTH: 'bg-purple-500/20 text-purple-400' };
 
@@ -24,7 +26,7 @@ export function ProgramList() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <PageContainer>
       <div className="mb-8">
         <h1 className="text-4xl font-black mb-4">{t({ en: 'Training Programs', fa: 'برنامه‌های تمرینی' })}</h1>
         <p className="text-fg-subtle text-lg">{t({ en: 'Structured programs for every goal and experience level.', fa: 'برنامه‌های ساختاریافته برای هر هدف و سطح تجربه.' })}</p>
@@ -88,7 +90,7 @@ export function ProgramList() {
           );
         })}
       </div>
-    </div>
+    </PageContainer>
   );
 }
 
@@ -112,10 +114,14 @@ export function ProgramDetail() {
   const program = PROGRAMS.find(p => p.slug === slug);
   if (!program) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-12 text-center">
+      <PageContainer className="text-center">
+        <Breadcrumbs items={[
+          { label: t({ en: 'Programs', fa: 'برنامه‌ها' }), href: '/programs' },
+          { label: t({ en: 'Not found', fa: 'یافت نشد' }) },
+        ]} />
         <h1 className="text-2xl font-bold mb-4">{t({ en: 'Program not found', fa: 'برنامه یافت نشد' })}</h1>
         <button onClick={() => navigate('/programs')} className="text-orange-400">{t({ en: '← Back to programs', fa: '← بازگشت به برنامه‌ها' })}</button>
-      </div>
+      </PageContainer>
     );
   }
 
@@ -144,10 +150,12 @@ export function ProgramDetail() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <button onClick={() => navigate('/programs')} className="flex items-center gap-2 text-fg-subtle hover:text-fg transition-colors mb-6 flex-row-reverse rtl:flex-row justify-end rtl:justify-start">
-        <ArrowLeft className="w-4 h-4 ml-1 rtl:ml-0 rtl:mr-1 rtl:!rotate-180" /> {t({ en: 'Back to Programs', fa: 'بازگشت به برنامه‌ها' })}
-      </button>
+    <PageContainer>
+      <div className="max-w-4xl mx-auto">
+      <Breadcrumbs items={[
+        { label: t({ en: 'Programs', fa: 'برنامه‌ها' }), href: '/programs' },
+        { label: copy.title },
+      ]} />
 
       <div className="bg-surface border border-border rounded-2xl p-6 md:p-8 mb-6">
         <div className="flex items-center gap-2 mb-3">
@@ -226,6 +234,7 @@ export function ProgramDetail() {
           </div>
         </TierGate>
       )}
-    </div>
+      </div>
+    </PageContainer>
   );
 }

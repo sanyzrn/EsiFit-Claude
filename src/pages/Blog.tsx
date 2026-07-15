@@ -1,15 +1,17 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Calendar, Tag } from 'lucide-react';
+import { Calendar, Tag } from 'lucide-react';
 import { ARTICLES } from '@/lib/store';
 import { useI18n } from '@/lib/i18n';
 import { localizedArticle } from '@/lib/content-i18n';
 import { useLocaleFormat } from '@/lib/locale-format-context';
+import { Breadcrumbs } from '@/components/ui/Breadcrumbs';
+import { PageContainer } from '@/components/ui/PageContainer';
 
 export function BlogList() {
   const { t, lang } = useI18n();
   const { formatDate } = useLocaleFormat();
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <PageContainer>
       <div className="mb-8">
         <h1 className="text-4xl font-black mb-4">{t({ en: 'Blog', fa: 'وبلاگ' })}</h1>
         <p className="text-fg-subtle text-lg">{t({ en: 'Evidence-based articles on training, nutrition, and recovery.', fa: 'مقاله‌های مبتنی بر شواهد در زمینه تمرین، تغذیه و بازیابی.' })}</p>
@@ -43,7 +45,7 @@ export function BlogList() {
           );
         })}
       </div>
-    </div>
+    </PageContainer>
   );
 }
 
@@ -56,10 +58,14 @@ export function BlogDetail() {
 
   if (!article) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-12 text-center">
+      <PageContainer className="text-center">
+        <Breadcrumbs items={[
+          { label: t({ en: 'Blog', fa: 'وبلاگ' }), href: '/blog' },
+          { label: t({ en: 'Not found', fa: 'یافت نشد' }) },
+        ]} />
         <h1 className="text-2xl font-bold mb-4">{t({ en: 'Article not found', fa: 'مقاله یافت نشد' })}</h1>
         <button onClick={() => navigate('/blog')} className="text-orange-400">← {t({ en: 'Back to blog', fa: 'بازگشت به وبلاگ' })}</button>
-      </div>
+      </PageContainer>
     );
   }
 
@@ -90,10 +96,12 @@ export function BlogDetail() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <button onClick={() => navigate('/blog')} className="flex items-center gap-2 text-fg-subtle hover:text-fg transition-colors mb-6">
-        <ArrowLeft className="w-4 h-4 rtl:rotate-180" /> {t({ en: 'Back to Blog', fa: 'بازگشت به وبلاگ' })}
-      </button>
+    <PageContainer>
+      <div className="max-w-3xl mx-auto">
+      <Breadcrumbs items={[
+        { label: t({ en: 'Blog', fa: 'وبلاگ' }), href: '/blog' },
+        { label: copy.title },
+      ]} />
 
       <article className="bg-surface border border-border rounded-2xl p-6 md:p-10">
         <div className="flex items-center gap-3 mb-4 text-sm text-fg-subtle">
@@ -105,6 +113,7 @@ export function BlogDetail() {
           {renderContent(copy.content)}
         </div>
       </article>
-    </div>
+      </div>
+    </PageContainer>
   );
 }
