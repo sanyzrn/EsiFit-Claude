@@ -1,5 +1,5 @@
 import { useState, useEffect, type ReactNode } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { logout, getState, subscribe } from '@/lib/store';
 import { TopNav } from './TopNav';
 import { Footer } from './Footer';
@@ -7,7 +7,8 @@ import { MobileBottomNav } from './MobileBottomNav';
 import { MobileMoreSheet } from './MobileMoreSheet';
 import { HIDE_BOTTOM_NAV_PREFIXES } from './nav-config';
 
-export function AppShell({ children }: { children: ReactNode }) {
+/** Full site chrome. Prefer nested routes with `<Outlet />`; `children` kept for backward compat. */
+export function AppShell({ children }: { children?: ReactNode }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [state, setState] = useState(getState());
@@ -36,7 +37,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <TopNav user={state.currentUser} />
 
       <main className={`flex-1 ${showBottomPad ? 'pb-20 lg:pb-0' : ''}`}>
-        {children}
+        {children ?? <Outlet />}
       </main>
 
       <Footer />

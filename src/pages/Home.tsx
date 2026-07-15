@@ -5,6 +5,7 @@ import HomeSmartTools from '@/components/calculators/HomeSmartTools';
 import { PersianPattern } from '@/components/ui/PersianPattern';
 import { IconBadge } from '@/components/ui/IconBadge';
 import { IMAGES } from '@/lib/media';
+import { PAGE_CONTAINER_CLASS } from '@/components/ui/PageContainer';
 import { useLocaleFormat } from '@/lib/locale-format-context';
 import { PLANS } from '@/lib/store';
 
@@ -49,7 +50,7 @@ export default function Home() {
         <PersianPattern opacity={0.6} />
         <div className="absolute top-20 start-1/4 w-96 h-96 bg-brand/10 rounded-full blur-3xl" />
         <div className="absolute bottom-20 end-1/4 w-72 h-72 bg-accent/15 rounded-full blur-3xl" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
+        <div className={`relative ${PAGE_CONTAINER_CLASS} py-20 md:py-32`}>
           <div className="text-center max-w-4xl mx-auto animate-slide-up">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-muted border border-brand/30 text-brand text-sm font-medium mb-6">
               <Zap className="w-4 h-4" />
@@ -85,7 +86,7 @@ export default function Home() {
 
       {/* Stats Bar */}
       <section className="border-y border-border bg-surface/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className={`${PAGE_CONTAINER_CLASS} py-8`}>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map(stat => (
               <div key={stat.label} className="text-center">
@@ -98,7 +99,7 @@ export default function Home() {
       </section>
 
       {/* Features Grid */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <section className={`${PAGE_CONTAINER_CLASS} py-20`}>
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-black mb-4">{t({ en: 'Everything You Need to Succeed', fa: 'هر آنچه برای موفقیت نیاز دارید' })}</h2>
           <p className="text-fg-subtle text-lg max-w-2xl mx-auto">
@@ -126,7 +127,7 @@ export default function Home() {
       <HomeSmartTools />
 
       {/* Pricing Teaser */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <section className={`${PAGE_CONTAINER_CLASS} py-20`}>
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-black mb-4">{t({ en: 'Plans for Every Level', fa: 'برنامه‌هایی برای هر سطح' })}</h2>
           <p className="text-fg-subtle text-lg">{t({ en: 'Start free, upgrade as you grow. No commitment required.', fa: 'رایگان شروع کنید، با پیشرفت خود ارتقا دهید. بدون هیچ تعهدی.' })}</p>
@@ -162,7 +163,7 @@ export default function Home() {
 
       {/* Testimonials */}
       <section className="bg-surface/50 border-y border-border py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className={`${PAGE_CONTAINER_CLASS}`}>
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-black mb-4">{t({ en: 'Trusted by Fitness Enthusiasts', fa: 'مورد اعتماد ورزشکاران' })}</h2>
           </div>
@@ -189,7 +190,7 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <section className={`${PAGE_CONTAINER_CLASS} py-20`}>
         <div className="relative card-iranian gradient-hero p-12 text-center overflow-hidden">
           <PersianPattern opacity={0.35} />
           <div className="relative z-10">

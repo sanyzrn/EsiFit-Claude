@@ -1,9 +1,11 @@
 import { useState, useEffect, Suspense } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { Calculator, ArrowLeft } from 'lucide-react';
+import { Calculator } from 'lucide-react';
 import { subscribe } from '@/lib/store';
 import { useI18n } from '@/lib/i18n';
 import { CALC_COMPONENTS } from '@/components/calculators/lazy';
+import { Breadcrumbs } from '@/components/ui/Breadcrumbs';
+import { PageContainer } from '@/components/ui/PageContainer';
 
 function useCalculators() {
   const { t } = useI18n();
@@ -29,7 +31,7 @@ export function CalculatorIndex() {
   const { t } = useI18n();
   const CALC_LIST = useCalculators();
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <PageContainer>
       <div className="text-center mb-12">
         <h1 className="text-4xl font-black mb-4">{t({ en: 'Fitness Calculators', fa: 'ماشین‌حساب‌های فیتنس' })}</h1>
         <p className="text-fg-subtle text-lg max-w-2xl mx-auto">
@@ -51,7 +53,7 @@ export function CalculatorIndex() {
           </Link>
         ))}
       </div>
-    </div>
+    </PageContainer>
   );
 }
 
@@ -68,20 +70,26 @@ export function CalculatorDetail() {
 
   if (!calcInfo || !CalcComponent) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-12 text-center">
+      <PageContainer className="text-center">
+        <Breadcrumbs items={[
+          { label: t({ en: 'Calculators', fa: 'ماشین‌حساب‌ها' }), href: '/calculators' },
+          { label: t({ en: 'Not found', fa: 'یافت نشد' }) },
+        ]} />
         <h1 className="text-2xl font-bold mb-4">{t({ en: 'Calculator not found', fa: 'ماشین‌حساب یافت نشد' })}</h1>
         <button onClick={() => navigate('/calculators')} className="text-orange-400 hover:text-orange-300">
           {t({ en: '← Back to calculators', fa: 'بازگشت به ماشین‌حساب‌ها' })}
         </button>
-      </div>
+      </PageContainer>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <button onClick={() => navigate('/calculators')} className="flex items-center gap-2 text-fg-subtle hover:text-fg transition-colors mb-6">
-        <ArrowLeft className="w-4 h-4 rtl:!rotate-180" /> {t({ en: 'All Calculators', fa: 'همه ماشین‌حساب‌ها' })}
-      </button>
+    <PageContainer>
+      <div className="max-w-2xl mx-auto">
+      <Breadcrumbs items={[
+        { label: t({ en: 'Calculators', fa: 'ماشین‌حساب‌ها' }), href: '/calculators' },
+        { label: calcInfo.name },
+      ]} />
       <div className="bg-surface border border-border rounded-2xl p-6 md:p-8">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center">
@@ -100,6 +108,7 @@ export function CalculatorDetail() {
           <CalcComponent />
         </Suspense>
       </div>
-    </div>
+      </div>
+    </PageContainer>
   );
 }

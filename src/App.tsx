@@ -3,7 +3,9 @@ import { lazy, Suspense, useEffect } from 'react';
 import { I18nProvider } from './lib/i18n';
 import { ThemeProvider } from './lib/theme';
 import { LocaleFormatProvider } from './lib/locale-format-context';
-import Layout from './components/Layout';
+import { AppShell } from './components/layout/AppShell';
+import { AuthLayout } from './components/layout/AuthLayout';
+import { ProtectedRoute, RoleGate } from './components/ProtectedRoute';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { AuthBootstrap } from './components/AuthBootstrap';
 
@@ -44,7 +46,7 @@ function ScrollToTop() {
 function RouteFallback() {
   return (
     <div className="flex justify-center items-center min-h-[40vh]">
-      <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+      <div className="w-8 h-8 border-4 border-brand border-t-transparent rounded-full animate-spin" />
     </div>
   );
 }
@@ -58,9 +60,18 @@ export default function App() {
         <AuthBootstrap />
         <ScrollToTop />
         <ErrorBoundary>
-          <Layout>
-            <Suspense fallback={<RouteFallback />}>
-              <Routes>
+          <Suspense fallback={<RouteFallback />}>
+            <Routes>
+              {/* Auth: logo-only chrome — no full site nav */}
+              <Route element={<AuthLayout />}>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+              </Route>
+
+              {/* Main site shell */}
+              <Route element={<AppShell />}>
                 <Route path="/" element={<Home />} />
                 <Route path="/exercises" element={<ExerciseList />} />
                 <Route path="/exercises/:slug" element={<ExerciseDetail />} />
@@ -73,22 +84,20 @@ export default function App() {
                 <Route path="/blog" element={<BlogList />} />
                 <Route path="/blog/:slug" element={<BlogDetail />} />
                 <Route path="/pricing" element={<Pricing />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/dashboard" element={<DashboardOverview />} />
-                <Route path="/dashboard/profile" element={<DashboardProfile />} />
-                <Route path="/dashboard/programs" element={<DashboardPrograms />} />
-                <Route path="/dashboard/progress" element={<DashboardProgress />} />
-                <Route path="/dashboard/chat" element={<DashboardChat />} />
-                <Route path="/dashboard/billing" element={<DashboardBilling />} />
-                <Route path="/admin" element={<Admin />} />
-                <Route path="/coach" element={<Coach />} />
+
+                {/* Client-side gates are UX only; JWT is verified on protected APIs */}
+                <Route path="/dashboard" element={<ProtectedRoute><DashboardOverview /></ProtectedRoute>} />
+                <Route path="/dashboard/profile" element={<ProtectedRoute><DashboardProfile /></ProtectedRoute>} />
+                <Route path="/dashboard/programs" element={<ProtectedRoute><DashboardPrograms /></ProtectedRoute>} />
+                <Route path="/dashboard/progress" element={<ProtectedRoute><DashboardProgress /></ProtectedRoute>} />
+                <Route path="/dashboard/chat" element={<ProtectedRoute><DashboardChat /></ProtectedRoute>} />
+                <Route path="/dashboard/billing" element={<ProtectedRoute><DashboardBilling /></ProtectedRoute>} />
+                <Route path="/admin" element={<RoleGate roles={['ADMIN']}><Admin /></RoleGate>} />
+                <Route path="/coach" element={<RoleGate roles={['COACH']}><Coach /></RoleGate>} />
                 <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Suspense>
-          </Layout>
+              </Route>
+            </Routes>
+          </Suspense>
         </ErrorBoundary>
         </BrowserRouter>
         </LocaleFormatProvider>

@@ -1,23 +1,18 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { GraduationCap, Users, MessageSquare, BarChart3, User, Target } from 'lucide-react';
 import { getState, subscribe } from '@/lib/store';
 import { useI18n } from '@/lib/i18n';
-import { useEntitlements } from '@/lib/entitlements';
+import { PageContainer } from '@/components/ui/PageContainer';
 
 export default function Coach() {
   const [state, setState] = useState(getState());
-  const navigate = useNavigate();
   const { t } = useI18n();
   const [activeTab, setActiveTab] = useState('clients');
   const [selectedClient, setSelectedClient] = useState<string | null>(null);
-  const { role, loading } = useEntitlements();
   useEffect(() => { const u = subscribe(() => setState(getState())); return () => { u(); }; }, []);
-  useEffect(() => {
-    if (!loading && (!state.currentUser || role !== 'COACH')) navigate('/');
-  }, [state.currentUser, role, loading, navigate]);
 
-  if (loading || !state.currentUser || role !== 'COACH') return null;
+  // RoleGate in App.tsx handles access
+  if (!state.currentUser) return null;
 
   const clients = [
     { id: 'c1', name: 'John Smith', goal: 'Muscle Gain', tier: 'VIP', weight: '82 kg', lastActive: '2 hours ago', progress: '+3 kg muscle' },
@@ -34,7 +29,7 @@ export default function Coach() {
   const client = clients.find(c => c.id === selectedClient);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <PageContainer padY="md">
       <div className="flex items-center gap-3 mb-8">
         <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
           <GraduationCap className="w-5 h-5 text-purple-400" />
@@ -61,7 +56,6 @@ export default function Coach() {
 
       {activeTab === 'clients' && (
         <div className="grid md:grid-cols-3 gap-6 animate-fade-in">
-          {/* Client List */}
           <div className="space-y-3">
             <h3 className="font-bold text-sm text-fg-subtle uppercase tracking-wider">{t({ en: 'Active Clients', fa: 'مشتریان فعال' })} ({clients.length})</h3>
             {clients.map(c => (
@@ -86,7 +80,6 @@ export default function Coach() {
             ))}
           </div>
 
-          {/* Client Detail */}
           <div className="md:col-span-2">
             {client ? (
               <div className="space-y-4">
@@ -183,6 +176,6 @@ export default function Coach() {
           </button>
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 }

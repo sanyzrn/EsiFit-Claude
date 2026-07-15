@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { ArrowLeft, Search, Filter, Bookmark, BookmarkCheck, Dumbbell, LayoutGrid, PersonStanding } from 'lucide-react';
+import { Search, Filter, Bookmark, BookmarkCheck, Dumbbell, LayoutGrid, PersonStanding } from 'lucide-react';
 import Model, { ExtendedBodyPart, Slug } from 'react-muscle-highlighter';
 import { EXERCISES, ALL_MUSCLE_GROUPS, ALL_EQUIPMENT, getState, toggleSavedExercise, subscribe } from '@/lib/store';
 import { useI18n } from '@/lib/i18n';
 import { localizedExercise, localizedMuscleGroup, localizedEquipment } from '@/lib/content-i18n';
+import { Breadcrumbs } from '@/components/ui/Breadcrumbs';
+import { PageContainer } from '@/components/ui/PageContainer';
 
 const MUSCLE_MAPPING: Record<string, string> = {
   'abs': 'Core',
@@ -69,7 +71,7 @@ export function ExerciseList() {
   const diffColors = { beginner: 'bg-green-500/20 text-green-400', intermediate: 'bg-yellow-500/20 text-yellow-400', advanced: 'bg-red-500/20 text-red-400' };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <PageContainer>
       <div className="mb-8">
         <h1 className="text-4xl font-black mb-4">{t({ en: 'Exercise Library', fa: 'کتابخانه تمرین‌ها' })}</h1>
         <p className="text-fg-subtle text-lg">{t({ en: 'Browse our comprehensive database of exercises with detailed instructions.', fa: 'پایگاه داده جامع تمرین‌های ما را با دستورالعمل‌های دقیق مرور کنید.' })}</p>
@@ -226,7 +228,7 @@ export function ExerciseList() {
           <p className="text-fg-faint text-sm">{t({ en: 'Try adjusting your filters', fa: 'سعی کنید فیلترهای خود را تنظیم کنید' })}</p>
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 }
 
@@ -240,10 +242,14 @@ export function ExerciseDetail() {
 
   if (!exercise) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-12 text-center">
+      <PageContainer className="text-center">
+        <Breadcrumbs items={[
+          { label: t({ en: 'Exercises', fa: 'تمرین‌ها' }), href: '/exercises' },
+          { label: t({ en: 'Not found', fa: 'یافت نشد' }) },
+        ]} />
         <h1 className="text-2xl font-bold mb-4">{t({ en: 'Exercise not found', fa: 'تمرین یافت نشد' })}</h1>
         <button onClick={() => navigate('/exercises')} className="text-orange-400">← {t({ en: 'Back to exercises', fa: 'بازگشت به تمرین‌ها' })}</button>
-      </div>
+      </PageContainer>
     );
   }
 
@@ -251,10 +257,12 @@ export function ExerciseDetail() {
   const copy = localizedExercise(exercise, lang);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <button onClick={() => navigate('/exercises')} className="flex items-center gap-2 text-fg-subtle hover:text-fg transition-colors mb-6">
-        <ArrowLeft className="w-4 h-4 rtl:rotate-180" /> {t({ en: 'Back to Exercises', fa: 'بازگشت به تمرین‌ها' })}
-      </button>
+    <PageContainer>
+      <div className="max-w-4xl mx-auto">
+      <Breadcrumbs items={[
+        { label: t({ en: 'Exercises', fa: 'تمرین‌ها' }), href: '/exercises' },
+        { label: copy.name },
+      ]} />
 
       <div className="bg-surface border border-border rounded-2xl overflow-hidden">
         <div className="h-64 bg-gradient-to-br from-elevated to-surface flex items-center justify-center relative">
@@ -312,6 +320,7 @@ export function ExerciseDetail() {
           )}
         </div>
       </div>
-    </div>
+      </div>
+    </PageContainer>
   );
 }
