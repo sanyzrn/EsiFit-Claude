@@ -14,7 +14,7 @@ export function BmrCalculator() {
 
   return (
     <CalculatorLayout
-      title={t({ en: 'BMR Calculator', fa: 'محاسبه‌گر BMR' })}
+      title={t({ en: 'TDEE Calculator', fa: 'محاسبه‌گر TDEE' })}
       description={t({ en: 'Basal Metabolic Rate: calories burned at rest.', fa: 'میزان متابولیسم پایه: کالری سوزانده شده در حالت استراحت.' })}
       inputs={
         <>
@@ -26,8 +26,7 @@ export function BmrCalculator() {
       }
       results={
         <div className="flex flex-col items-center">
-          <div className="text-5xl font-black text-orange-400 mb-2"><PersianNumber value={result} /></div>
-          <div className="text-fg-subtle font-medium">{t({ en: 'kcal / day', fa: 'کالری در روز' })}</div>
+          <CircularGauge value={result} min={800} max={4000} label={t({ en: 'kcal / day', fa: 'کالری در روز' })} status="neutral" />
         </div>
       }
     />
@@ -69,8 +68,7 @@ export function TdeeCalculator() {
       }
       results={
         <div className="flex flex-col items-center">
-          <div className="text-5xl font-black text-orange-400 mb-2"><PersianNumber value={result} /></div>
-          <div className="text-fg-subtle font-medium">{t({ en: 'kcal / day', fa: 'کالری در روز' })}</div>
+          <CircularGauge value={result} min={1200} max={4500} label={t({ en: 'kcal / day', fa: 'کالری در روز' })} status="neutral" />
         </div>
       }
     />
@@ -107,11 +105,11 @@ export function MacrosCalculator() {
         <div className="flex flex-col items-center w-full">
           {result.ok ? (
             <>
-              <div className="text-3xl font-black text-orange-400 mb-4"><PersianNumber value={result.value.calories} /> kcal</div>
+              <div className="text-3xl font-black text-brand mb-4 font-display"><PersianNumber value={result.value.calories} /> kcal</div>
               <BarChart items={[
-                { label: t({ en: 'Protein', fa: 'پروتئین' }), value: result.value.protein, color: '#ef4444', unit: 'g' },
-                { label: t({ en: 'Carbs', fa: 'کربوهیدرات' }), value: result.value.carbs, color: '#3b82f6', unit: 'g' },
-                { label: t({ en: 'Fat', fa: 'چربی' }), value: result.value.fat, color: '#eab308', unit: 'g' },
+                { label: t({ en: 'Protein', fa: 'پروتئین' }), value: result.value.protein, unit: 'g' },
+                { label: t({ en: 'Carbs', fa: 'کربوهیدرات' }), value: result.value.carbs, unit: 'g' },
+                { label: t({ en: 'Fat', fa: 'چربی' }), value: result.value.fat, unit: 'g' },
               ]} />
             </>
           ) : (
@@ -138,7 +136,7 @@ export function WaterIntakeCalculator() {
       }
       results={
         <div className="flex flex-col items-center">
-          <CircularGauge value={result.liters} min={1} max={5} label={t({ en: 'Liters / day', fa: 'لیتر در روز' })} color="#0ea5e9" />
+          <CircularGauge value={result.liters} min={1} max={5} label={t({ en: 'Liters / day', fa: 'لیتر در روز' })} status="ok" />
         </div>
       }
     />

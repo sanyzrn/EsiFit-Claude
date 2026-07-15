@@ -64,17 +64,27 @@ export function getThemeCssVar(name: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
 
-/** Chart colors that follow the active theme. */
+/** Chart colors that follow the active Iranian palette (UI-12). */
 export function useChartTheme() {
-  useTheme(); // re-render when theme toggles
+  useTheme();
   return {
     grid: getThemeCssVar('--theme-chart-grid'),
     axis: getThemeCssVar('--theme-fg-subtle'),
+    series: [
+      getThemeCssVar('--theme-chart-1'),
+      getThemeCssVar('--theme-chart-2'),
+      getThemeCssVar('--theme-chart-3'),
+      getThemeCssVar('--theme-chart-4'),
+    ] as [string, string, string, string],
+    primary: getThemeCssVar('--theme-chart-1'),
+    secondary: getThemeCssVar('--theme-chart-2'),
+    accent: getThemeCssVar('--theme-chart-3'),
     tooltipStyle: {
       background: getThemeCssVar('--theme-chart-tooltip-bg'),
       border: `1px solid ${getThemeCssVar('--theme-chart-tooltip-border')}`,
-      borderRadius: '8px',
+      borderRadius: '12px',
       color: getThemeCssVar('--theme-fg'),
+      fontFamily: 'inherit',
     },
   };
 }

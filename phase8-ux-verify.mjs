@@ -42,9 +42,9 @@ check(
 );
 
 check(
-  'BUG-7: Hero background marked decorative',
-  home.includes('hero-bg.jpg') && home.includes('aria-hidden="true"'),
-  'Decorative hero image hidden from assistive tech'
+  'BUG-7: Hero image has descriptive alt text',
+  home.includes('IMAGES.hero') && home.includes('alt={t(IMAGES.hero.alt)}'),
+  'Hero uses curated imagery with localized alt text'
 );
 
 check(
@@ -72,9 +72,9 @@ check(
 );
 
 check(
-  'UI-1: Orange/gray palette documented as canonical',
-  indexCss.includes('UI-1') && indexCss.includes('--color-brand'),
-  'index.css records brand token decision'
+  'UI-1: Iranian palette documented as canonical',
+  indexCss.includes('UI-12') && indexCss.includes('--theme-primary'),
+  'index.css records saffron/firuze brand tokens'
 );
 
 check(

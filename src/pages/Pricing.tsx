@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Check, Crown, Zap, Star, Loader2 } from 'lucide-react';
+import { Check, Crown, Zap, Star, Loader2, type LucideIcon } from 'lucide-react';
 import { PLANS, getState, subscribe } from '@/lib/store';
 import type { SubscriptionTier } from '@/lib/types';
 import { useI18n, faDict } from '@/lib/i18n';
 import { useEntitlements } from '@/lib/entitlements';
 import { fetchPaymentsEnabled, startCheckout, PaymentsNotConfiguredError } from '@/lib/payments';
 import PaymentsNotice from '@/components/PaymentsNotice';
+import { IconBadge } from '@/components/ui/IconBadge';
+import { PersianPattern } from '@/components/ui/PersianPattern';
 
 export default function Pricing() {
   const { t } = useI18n();
@@ -71,18 +73,25 @@ export default function Pricing() {
     }
   };
 
-  const tierIcons: Record<string, React.ReactNode> = {
-    FREE: <Zap className="w-6 h-6" />,
-    ECONOMY: <Star className="w-6 h-6" />,
-    VIP: <Crown className="w-6 h-6" />,
-    ELITE: <Crown className="w-6 h-6" />,
+  const tierIconComponents: Record<string, LucideIcon> = {
+    FREE: Zap,
+    ECONOMY: Star,
+    VIP: Crown,
+    ELITE: Crown,
   };
 
   const tierColors: Record<string, string> = {
     FREE: 'border-strong',
-    ECONOMY: 'border-blue-500/30',
-    VIP: 'border-orange-500/50 ring-2 ring-orange-500/20',
-    ELITE: 'border-purple-500/30',
+    ECONOMY: 'border-accent/30',
+    VIP: 'border-brand/50 ring-2 ring-brand/20',
+    ELITE: 'border-terracotta/40',
+  };
+
+  const tierVariants: Record<string, 'neutral' | 'firuze' | 'saffron' | 'terracotta'> = {
+    FREE: 'neutral',
+    ECONOMY: 'firuze',
+    VIP: 'saffron',
+    ELITE: 'terracotta',
   };
 
   const paidButtonLabel = (plan: typeof PLANS[number], isCurrent: boolean) => {
@@ -104,7 +113,7 @@ export default function Pricing() {
       {paymentsEnabled === false && <PaymentsNotice />}
 
       {notice && (
-        <div role="status" aria-live="polite" className="mb-8 rounded-xl border border-orange-500/30 bg-orange-500/10 px-4 py-3 text-sm text-orange-200 text-center">
+        <div role="status" aria-live="polite" className="mb-8 rounded-xl border border-brand/30 bg-brand-muted px-4 py-3 text-sm text-fg text-center">
           {notice}
         </div>
       )}
@@ -119,25 +128,22 @@ export default function Pricing() {
           return (
             <div
               key={plan.id}
-              className={`relative bg-surface border rounded-2xl p-6 flex flex-col ${tierColors[plan.tier]} ${
+              className={`relative card-iranian p-6 flex flex-col overflow-hidden ${tierColors[plan.tier]} ${
                 isPopular ? 'lg:-mt-4 lg:mb-4' : ''
               }`}
             >
+              <PersianPattern opacity={isPopular ? 0.35 : 0.2} />
+              <div className="relative z-10 flex flex-col flex-1">
               {isPopular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-orange-500 text-white text-xs font-bold rounded-full whitespace-nowrap">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 gradient-brand text-[#1a1410] text-xs font-bold rounded-full whitespace-nowrap">
                   {t({ en: 'MOST POPULAR', fa: 'پرطرفدارترین' })}
                 </div>
               )}
-              <div className="text-center mb-6">
-                <div className={`w-12 h-12 mx-auto rounded-xl flex items-center justify-center mb-3 ${
-                  plan.tier === 'VIP' ? 'bg-orange-500/20 text-orange-400' :
-                  plan.tier === 'ELITE' ? 'bg-purple-500/20 text-purple-400' :
-                  plan.tier === 'ECONOMY' ? 'bg-blue-500/20 text-blue-400' :
-                  'bg-elevated-hover text-fg-muted'
-                }`}>
-                  {tierIcons[plan.tier]}
+              <div className="text-center mb-6 mt-2">
+                <div className="mb-3 flex justify-center">
+                  <IconBadge icon={tierIconComponents[plan.tier]} variant={tierVariants[plan.tier]} />
                 </div>
-                <h3 className="text-xl font-bold mb-1">{plan.name}</h3>
+                <h3 className="text-xl font-bold mb-1 font-display">{plan.name}</h3>
                 <div className="flex items-baseline justify-center gap-1 flex-row-reverse">
                   <span className="text-4xl font-black text-fg">
                     ${(plan.priceMonthly / 100).toFixed(plan.priceMonthly === 0 ? 0 : 2)}
@@ -149,7 +155,7 @@ export default function Pricing() {
               <ul className="space-y-3 mb-8 flex-1">
                 {plan.features.map(f => (
                   <li key={f} className="flex items-start gap-2 text-sm">
-                    <Check className="w-4 h-4 text-green-400 mt-0.5 shrink-0" />
+                    <Check className="w-4 h-4 text-success mt-0.5 shrink-0" />
                     <span className="text-fg-muted">
                       {t({
                         en: f,
@@ -169,13 +175,14 @@ export default function Pricing() {
                     : checkoutDisabled
                     ? 'bg-elevated text-fg-faint cursor-not-allowed border border-strong'
                     : isPopular
-                    ? 'bg-orange-500 text-white hover:bg-orange-600'
+                    ? 'gradient-brand text-[#1a1410] hover:brightness-110'
                     : 'bg-elevated text-fg hover:bg-elevated-hover border border-strong'
                 }`}
               >
                 {loadingTier === plan.tier && <Loader2 className="w-4 h-4 animate-spin" />}
                 {paidButtonLabel(plan, isCurrent)}
               </button>
+              </div>
             </div>
           );
         })}
@@ -193,8 +200,8 @@ export default function Pricing() {
                 <th className="text-left rtl:text-right p-4 font-medium text-fg-subtle">{t({ en: 'Feature', fa: 'ویژگی' })}</th>
                 <th className="p-4 text-center font-medium text-fg-subtle">{t({ en: 'Free', fa: 'رایگان' })}</th>
                 <th className="p-4 text-center font-medium text-fg-subtle">{t({ en: 'Economy', fa: 'اقتصادی' })}</th>
-                <th className="p-4 text-center font-medium text-orange-400">VIP</th>
-                <th className="p-4 text-center font-medium text-purple-400">Elite</th>
+                <th className="p-4 text-center font-medium text-brand">VIP</th>
+                <th className="p-4 text-center font-medium text-terracotta">Elite</th>
               </tr>
             </thead>
             <tbody>
@@ -214,7 +221,7 @@ export default function Pricing() {
                   <td className="p-4 font-medium">{row.feature}</td>
                   {[row.free, row.economy, row.vip, row.elite].map((val, i) => (
                     <td key={i} className="p-4 text-center">
-                      {val === true ? <Check className="w-5 h-5 text-green-400 mx-auto" /> :
+                      {val === true ? <Check className="w-5 h-5 text-success mx-auto" /> :
                        val === false ? <span className="text-fg-faint">—</span> :
                        <span className="text-fg-muted">{val}</span>}
                     </td>

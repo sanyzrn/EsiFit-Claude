@@ -108,6 +108,7 @@ Status legend: `open` · `fixed` · `deferred` · `investigated-not-reproducible
 | CONTENT-4 | Low | 9 | intentional-demo | Coach chat auto-reply via `setTimeout` (demo) |
 | UI-1 | — | 8 | fixed | Design token decision: orange/gray vs pine/bone/ember/brass |
 | UI-11 | — | 11 | fixed | Modernize & Iranize UI: Persian teal accent, layout split, mobile bottom nav |
+| UI-12 | — | 12 | fixed | Iranian visual identity: saffron/firuze palette, patterns, charts, photography |
 | PERF-1 | Low | 10 | verified-alt | Lighthouse CLI unavailable; build metrics + a11y static checks used |
 
 ---

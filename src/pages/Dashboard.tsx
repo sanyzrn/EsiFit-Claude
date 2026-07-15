@@ -4,14 +4,13 @@ import {
   LayoutDashboard, User, Target, BarChart3, MessageSquare, CreditCard,
   Flame, TrendingUp, Dumbbell, Plus, Calendar, Save, Crown
 } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import {
   getState, subscribe, updateProfile, addBodyLog, addExerciseLog,
   addTicket, addMessageToTicket, getStreak, PLANS, EXERCISES
 } from '@/lib/store';
 import type { Goal, ActivityLevel } from '@/lib/types';
 import { useI18n, faDict } from '@/lib/i18n';
-import { useChartTheme } from '@/lib/theme';
+import { ProgressCharts } from '@/components/charts/IranianCharts';
 import { useEntitlements } from '@/lib/entitlements';
 import { fetchPaymentsEnabled } from '@/lib/payments';
 import PaymentsNotice from '@/components/PaymentsNotice';
@@ -274,13 +273,14 @@ export function DashboardPrograms() {
     <DashboardLayout>
       <div className="animate-fade-in">
         <h1 className="text-2xl font-black mb-6">{t({ en: 'My Programs', fa: 'برنامه‌های من' })}</h1>
-        <div className="bg-surface border border-border rounded-2xl p-8 text-center">
-          <Target className="w-12 h-12 text-fg-faint mx-auto mb-4" />
-          <h3 className="font-bold text-lg mb-2">{t({ en: 'No active programs yet', fa: 'هنوز برنامه فعالی ندارید' })}</h3>
-          <p className="text-fg-subtle text-sm mb-4">{t({ en: 'Browse our programs and start training!', fa: 'برنامه‌ها را مرور کنید و تمرین را شروع کنید!' })}</p>
-          <Link to="/programs" className="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600 transition-colors">
-            <Target className="w-4 h-4" /> {t({ en: 'Browse Programs', fa: 'مرور برنامه‌ها' })}
-          </Link>
+        <div className="bg-surface border border-border rounded-2xl p-8">
+          <EmptyState
+            icon={Target}
+            variant="firuze"
+            title={t({ en: 'No active programs yet', fa: 'هنوز برنامه فعالی ندارید' })}
+            description={t({ en: 'Browse our programs and start training!', fa: 'برنامه‌ها را مرور کنید و تمرین را شروع کنید!' })}
+            action={{ label: t({ en: 'Browse Programs', fa: 'مرور برنامه‌ها' }), href: '/programs' }}
+          />
         </div>
       </div>
     </DashboardLayout>
@@ -288,30 +288,9 @@ export function DashboardPrograms() {
 }
 
 export function DashboardProgress() {
-  const { t, lang } = useI18n();
-  const chartTheme = useChartTheme();
+  const { t } = useI18n();
   const [state, setState] = useState(getState());
   useEffect(() => { const u = subscribe(() => setState(getState())); return () => { u(); }; }, []);
-
-  const formatNumber = (num: number) => {
-    if (lang === 'fa') {
-      return new Intl.NumberFormat('fa-IR-u-nu-arabext').format(num);
-    }
-    return num.toString();
-  };
-
-  const formatDate = (dateStr: string) => {
-    if (!dateStr) return '';
-    try {
-      const date = new Date(dateStr);
-      if (lang === 'fa') {
-        return new Intl.DateTimeFormat('fa-IR', { month: 'short', day: 'numeric' }).format(date);
-      }
-      return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(date);
-    } catch {
-      return dateStr;
-    }
-  };
 
   const [showForm, setShowForm] = useState(false);
   const [logForm, setLogForm] = useState({
@@ -360,8 +339,22 @@ export function DashboardProgress() {
     .map(l => ({
       date: new Date(l.date).toLocaleDateString(),
       estimated1RM: Math.round(l.weightKg * (1 + l.reps / 30)),
-      exercise: l.exerciseName,
     }));
+
+  const measurementData = state.bodyLogs.map(l => ({
+    date: new Date(l.date).toLocaleDateString(),
+    waist: l.waistCm,
+    chest: l.chestCm,
+    arm: l.armCm,
+  }));
+
+  const volumeByDate = new Map<string, number>();
+  state.exerciseLogs.forEach((l) => {
+    const key = new Date(l.date).toLocaleDateString();
+    const vol = l.sets * l.reps * l.weightKg;
+    volumeByDate.set(key, (volumeByDate.get(key) ?? 0) + vol);
+  });
+  const volumeData = [...volumeByDate.entries()].map(([date, volume]) => ({ date, volume }));
 
   return (
     <DashboardLayout>
@@ -436,37 +429,12 @@ export function DashboardProgress() {
           </form>
         )}
 
-        {/* Weight Chart */}
-        {weightData.length > 0 && (
-          <div className="bg-surface border border-border rounded-xl p-5" dir="ltr">
-            <h3 className="font-bold mb-4 ml-8">{t({ en: 'Weight Over Time', fa: 'وزن در طول زمان' })}</h3>
-            <ResponsiveContainer width="100%" height={250}>
-              <LineChart data={weightData}>
-                <CartesianGrid strokeDasharray="3 3" stroke={chartTheme.grid} />
-                <XAxis dataKey="date" stroke={chartTheme.axis} fontSize={12} tickFormatter={formatDate} />
-                <YAxis stroke={chartTheme.axis} fontSize={12} tickFormatter={formatNumber} />
-                <Tooltip contentStyle={chartTheme.tooltipStyle} />
-                <Line type="monotone" dataKey="weight" stroke="#f97316" strokeWidth={2} dot={{ fill: '#f97316' }} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        )}
-
-        {/* Strength Chart */}
-        {strengthData.length > 0 && (
-          <div className="bg-surface border border-border rounded-xl p-5" dir="ltr">
-            <h3 className="font-bold mb-4 ml-8">{t({ en: 'Estimated 1RM Over Time', fa: 'تخمین 1RM در طول زمان' })}</h3>
-            <ResponsiveContainer width="100%" height={250}>
-              <LineChart data={strengthData}>
-                <CartesianGrid strokeDasharray="3 3" stroke={chartTheme.grid} />
-                <XAxis dataKey="date" stroke={chartTheme.axis} fontSize={12} tickFormatter={formatDate} />
-                <YAxis stroke={chartTheme.axis} fontSize={12} tickFormatter={formatNumber} />
-                <Tooltip contentStyle={chartTheme.tooltipStyle} />
-                <Line type="monotone" dataKey="estimated1RM" stroke="#3b82f6" strokeWidth={2} dot={{ fill: '#3b82f6' }} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        )}
+        <ProgressCharts
+          weightData={weightData as { date: string; weight: number }[]}
+          strengthData={strengthData}
+          measurementData={measurementData}
+          volumeData={volumeData}
+        />
 
         {/* Body Logs Table */}
         <div className="bg-surface border border-border rounded-xl overflow-hidden">

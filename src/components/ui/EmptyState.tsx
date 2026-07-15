@@ -1,6 +1,8 @@
 import { type LucideIcon } from 'lucide-react';
 import { type ReactNode } from 'react';
 import { Button } from './Button';
+import { IconBadge } from './IconBadge';
+import { PersianPattern } from './PersianPattern';
 
 type EmptyStateProps = {
   icon?: LucideIcon;
@@ -8,28 +10,41 @@ type EmptyStateProps = {
   description?: string;
   action?: { label: string; onClick?: () => void; href?: string };
   children?: ReactNode;
+  variant?: 'saffron' | 'firuze' | 'terracotta';
 };
 
-export function EmptyState({ icon: Icon, title, description, action, children }: EmptyStateProps) {
+export function EmptyState({
+  icon: Icon,
+  title,
+  description,
+  action,
+  children,
+  variant = 'firuze',
+}: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center text-center py-12 px-4">
+    <div className="relative flex flex-col items-center justify-center text-center py-12 px-4 overflow-hidden rounded-2xl border border-border bg-surface">
+      <PersianPattern opacity={0.35} />
       {Icon && (
-        <div className="w-14 h-14 rounded-2xl bg-accent/10 border border-accent/20 flex items-center justify-center mb-4">
-          <Icon className="w-7 h-7 text-accent" aria-hidden />
+        <div className="relative z-10 mb-4">
+          <IconBadge icon={Icon} variant={variant} size="lg" />
         </div>
       )}
-      <h3 className="text-lg font-bold text-fg mb-1">{title}</h3>
-      {description && <p className="text-sm text-fg-subtle max-w-sm mb-4">{description}</p>}
-      {action && (
-        action.href ? (
-          <a href={action.href}>
-            <Button variant="accent">{action.label}</Button>
-          </a>
-        ) : (
-          <Button variant="accent" onClick={action.onClick}>{action.label}</Button>
-        )
+      <h3 className="relative z-10 text-lg font-bold text-fg mb-1 font-display">{title}</h3>
+      {description && (
+        <p className="relative z-10 text-sm text-fg-subtle max-w-sm mb-4">{description}</p>
       )}
-      {children}
+      {action && (
+        <div className="relative z-10">
+          {action.href ? (
+            <a href={action.href}>
+              <Button variant="accent">{action.label}</Button>
+            </a>
+          ) : (
+            <Button variant="accent" onClick={action.onClick}>{action.label}</Button>
+          )}
+        </div>
+      )}
+      {children && <div className="relative z-10">{children}</div>}
     </div>
   );
 }
