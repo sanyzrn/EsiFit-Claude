@@ -109,6 +109,8 @@ Status legend: `open` · `fixed` · `deferred` · `investigated-not-reproducible
 | UI-1 | — | 8 | fixed | Design token decision: orange/gray vs pine/bone/ember/brass |
 | UI-11 | — | 11 | fixed | Modernize & Iranize UI: Persian teal accent, layout split, mobile bottom nav |
 | UI-12 | — | 12 | fixed | Iranian visual identity: saffron/firuze palette, patterns, charts, photography |
+| LOCALE-1 | — | 13 | fixed | Self-host Vazirmatn; Jalali calendar; Persian digits; Toman prices |
+| PAY-IR | — | 13 | fixed | Zarinpal primary + IDPay fallback; Stripe optional; Kavenegar SMS |
 | PERF-1 | Low | 10 | verified-alt | Lighthouse CLI unavailable; build metrics + a11y static checks used |
 
 ---
@@ -481,6 +483,31 @@ Status legend: `open` · `fixed` · `deferred` · `investigated-not-reproducible
 - **Decision:** Persian teal (`#0d9488`) as secondary accent; orange remains primary. Desktop primary nav: Calculators, Programs, Diet, Exercises; secondary: Blog, Pricing. Mobile bottom nav: Home, Tools, Programs, Dashboard, More sheet.
 - **After:** Layout split into `AppShell`, `TopNav`, `MobileBottomNav`, `MobileMoreSheet`, `Footer`, `UserMenu`. Shared UI primitives (`Button`, `Card`, `InputField`, `Skeleton`, `EmptyState`). Auth forms migrated to RTL-safe `InputField`.
 - **Verification:** `phase11-ui-verify.mjs` static checks; `phase8-ux-verify.mjs` updated for new layout paths.
+
+### UI-12 — Iranian visual identity overhaul
+- **Severity:** N/A (enhancement)
+- **Phase:** 12
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/index.css`, `src/lib/design-tokens.ts`, `src/lib/media.ts`, `src/components/ui/PersianPattern.tsx`, `src/components/ui/IconBadge.tsx`, `src/components/charts/IranianCharts.tsx`, `src/pages/Home.tsx`, `src/pages/Programs.tsx`, `src/pages/Diet.tsx`, `src/pages/Admin.tsx`, `src/pages/Dashboard.tsx`, `src/pages/Pricing.tsx`, `src/components/TierGate.tsx`, `src/components/calculators/SharedCalculatorUI.tsx`
+- **Decision:** Replace generic orange/gray SaaS look with Iranian palette — saffron (primary), firuze (secondary), terracotta (accent), pomegranate (error). Warm parchment/dark surfaces for light/dark themes.
+- **After:** Girih-inspired `PersianPattern` overlays; `IconBadge` icon treatment; curated Unsplash/Pexels imagery on hero, programs, diet; Recharts on admin (revenue bar, user growth area) and dashboard (weight, measurements, 1RM, volume); calculator gauges use semantic theme colors; tier/pricing cards restyled.
+- **Verification:** `phase12-visual-verify.mjs` (14/14 checks).
+
+### LOCALE-1 — Iran locale (fonts, Jalali, digits, Tomans)
+- **Severity:** N/A (enhancement)
+- **Phase:** 13
+- **Status:** fixed (2026-07-15)
+- **Files:** `public/fonts/Vazirmatn-Variable.woff2`, `src/index.css`, `src/lib/locale-format.ts`, `src/lib/locale-format-context.tsx`, `src/lib/store.ts` (PLANS), Pricing/Home/Admin/Dashboard/Blog
+- **Decision:** Self-host Vazirmatn; Jalali default for FA with Gregorian profile toggle; all prices in Tomans (رایگان / ۵۹۹٬۰۰۰ / ۹۹۹٬۰۰۰ / ۱٬۹۹۹٬۰۰۰).
+- **Verification:** `phase13-iran-verify.mjs`
+
+### PAY-IR — Iranian payments + SMS
+- **Severity:** N/A (enhancement)
+- **Phase:** 13
+- **Status:** fixed (2026-07-15)
+- **Files:** `backend/src/config.ts`, `backend/src/routes/payments.ts`, `backend/src/utils/crypto.ts`, `backend/.env.example`
+- **Decision:** Zarinpal primary → IDPay fallback → Stripe optional. Kavenegar for OTP (`SMS_PROVIDER=kavenegar`).
+- **Verification:** `phase13-iran-verify.mjs`
 
 ### PERF-1 — Lighthouse not completed
 - **Severity:** Low

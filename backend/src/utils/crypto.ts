@@ -23,6 +23,15 @@ export function generateOtpCode(): string {
   return String(Math.floor(100000 + Math.random() * 900000));
 }
 
+/** Normalize Iranian phone to 989xxxxxxxxx for Kavenegar. */
+export function normalizeIranPhone(phone: string): string {
+  const digits = phone.replace(/\D/g, '');
+  if (digits.startsWith('98') && digits.length >= 12) return digits;
+  if (digits.startsWith('0') && digits.length === 11) return `98${digits.slice(1)}`;
+  if (digits.length === 10 && digits.startsWith('9')) return `98${digits}`;
+  return digits;
+}
+
 export async function sendPasswordResetEmail(email: string, token: string): Promise<void> {
   const resetUrl = `${config.appUrl}/reset-password?token=${token}`;
 
@@ -46,11 +55,46 @@ export async function sendPasswordResetEmail(email: string, token: string): Prom
   });
 }
 
+/**
+ * Send OTP via Kavenegar (or console in development).
+ * https://kavenegar.com/rest.html#sms-send
+ */
 export async function sendOtpSms(phone: string, code: string): Promise<void> {
+  const normalized = normalizeIranPhone(phone);
+
   if (config.sms.provider === 'console' || !config.sms.apiKey) {
-    console.info(`[dev] OTP for ${phone}: ${code}`);
+    console.info(`[dev] OTP for ${normalized}: ${code}`);
     return;
   }
-  // Hook for Kavenegar, Ghasedak, etc. — set SMS_PROVIDER + SMS_API_KEY in production.
-  console.info(`[sms:${config.sms.provider}] OTP sent to ${phone}`);
+
+  if (config.sms.provider === 'kavenegar') {
+    const apiKey = config.sms.apiKey;
+    // Prefer verify/lookup template when configured; otherwise plain send
+    if (config.sms.template) {
+      const url = new URL(`https://api.kavenegar.com/v1/${apiKey}/verify/lookup.json`);
+      url.searchParams.set('receptor', normalized);
+      url.searchParams.set('token', code);
+      url.searchParams.set('template', config.sms.template);
+      const res = await fetch(url);
+      if (!res.ok) {
+        const body = await res.text();
+        console.error('Kavenegar verify error:', res.status, body);
+        throw new Error('SMS_SEND_FAILED');
+      }
+      return;
+    }
+
+    const url = new URL(`https://api.kavenegar.com/v1/${apiKey}/sms/send.json`);
+    url.searchParams.set('receptor', normalized);
+    url.searchParams.set('message', `کد تأیید اسی‌فیت: ${code}`);
+    const res = await fetch(url);
+    if (!res.ok) {
+      const body = await res.text();
+      console.error('Kavenegar send error:', res.status, body);
+      throw new Error('SMS_SEND_FAILED');
+    }
+    return;
+  }
+
+  console.info(`[sms:${config.sms.provider}] OTP for ${normalized}: ${code}`);
 }

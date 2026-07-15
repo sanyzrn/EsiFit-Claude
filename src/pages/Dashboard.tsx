@@ -11,6 +11,8 @@ import {
 import type { Goal, ActivityLevel } from '@/lib/types';
 import { useI18n, faDict } from '@/lib/i18n';
 import { ProgressCharts } from '@/components/charts/IranianCharts';
+import { useLocaleFormat } from '@/lib/locale-format-context';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { useEntitlements } from '@/lib/entitlements';
 import { fetchPaymentsEnabled } from '@/lib/payments';
 import PaymentsNotice from '@/components/PaymentsNotice';
@@ -77,6 +79,7 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
 
 export function DashboardOverview() {
   const { t } = useI18n();
+  const { formatDate, formatNumber } = useLocaleFormat();
   const [state, setState] = useState(getState());
   const { subscriptionTier } = useEntitlements();
   useEffect(() => { const u = subscribe(() => setState(getState())); return () => { u(); }; }, []);
@@ -99,7 +102,7 @@ export function DashboardOverview() {
               <Flame className="w-5 h-5 text-orange-400" />
               <span className="text-sm text-fg-subtle">{t({ en: 'Streak', fa: 'روزهای متوالی' })}</span>
             </div>
-            <div className="text-3xl font-black">{streak}</div>
+            <div className="text-3xl font-black">{formatNumber(streak)}</div>
             <div className="text-xs text-fg-faint">{t({ en: 'days', fa: 'روز' })}</div>
           </div>
           <div className="bg-surface border border-border rounded-xl p-5">
@@ -158,7 +161,7 @@ export function DashboardOverview() {
                     <span className="font-medium">{log.exerciseName}</span>
                     <span className="text-fg-subtle ml-2 rtl:ml-0 rtl:mr-2">{log.sets}×{log.reps} @ {log.weightKg}kg</span>
                   </div>
-                  <span className="text-xs text-fg-faint">{new Date(log.date).toLocaleDateString()}</span>
+                  <span className="text-xs text-fg-faint">{formatDate(log.date)}</span>
                 </div>
               ))}
             </div>
@@ -171,6 +174,7 @@ export function DashboardOverview() {
 
 export function DashboardProfile() {
   const { t } = useI18n();
+  const { calendar, setCalendar } = useLocaleFormat();
   const [state, setState] = useState(getState());
   useEffect(() => { const u = subscribe(() => setState(getState())); return () => { u(); }; }, []);
   const user = state.currentUser;
@@ -258,7 +262,36 @@ export function DashboardProfile() {
             <label className="block text-sm font-medium text-fg-muted mb-1">{t({ en: 'Injuries / Notes', fa: 'آسیب‌دیدگی‌ها / یادداشت‌ها' })}</label>
             <textarea value={form.injuries} onChange={e => setForm({...form, injuries: e.target.value})} rows={3} className="w-full px-3 py-2.5 bg-elevated border border-strong rounded-lg text-fg focus:border-orange-500 outline-none resize-none" placeholder={t({ en: 'Any injuries or conditions to note...', fa: 'هرگونه آسیب‌دیدگی یا شرایط پزشکی...' })} />
           </div>
-          <button type="submit" disabled={saving} className="flex items-center gap-2 px-6 py-3 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50">
+          <div className="border-t border-border pt-5">
+            <label className="block text-sm font-medium text-fg-muted mb-2">{t({ en: 'Calendar', fa: 'تقویم' })}</label>
+            <p className="text-xs text-fg-subtle mb-3">
+              {t({
+                en: 'Persian (Jalali) is the default for Farsi. Switch to Gregorian if you prefer.',
+                fa: 'تقویم شمسی پیش‌فرض برای فارسی است. در صورت تمایل می‌توانید میلادی را انتخاب کنید.',
+              })}
+            </p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setCalendar('jalali')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  calendar === 'jalali' ? 'bg-brand text-[#1a1410]' : 'bg-elevated text-fg-muted hover:bg-elevated-hover'
+                }`}
+              >
+                {t({ en: 'Jalali (Shamsi)', fa: 'شمسی' })}
+              </button>
+              <button
+                type="button"
+                onClick={() => setCalendar('gregorian')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  calendar === 'gregorian' ? 'bg-brand text-[#1a1410]' : 'bg-elevated text-fg-muted hover:bg-elevated-hover'
+                }`}
+              >
+                {t({ en: 'Gregorian', fa: 'میلادی' })}
+              </button>
+            </div>
+          </div>
+          <button type="submit" disabled={saving} className="flex items-center gap-2 px-6 py-3 bg-brand text-[#1a1410] font-bold rounded-lg hover:brightness-110 transition-colors disabled:opacity-50">
             <Save className="w-4 h-4" /> {saving ? t({ en: 'Saving...', fa: 'در حال ذخیره...' }) : saved ? t({ en: 'Saved!', fa: 'ذخیره شد!' }) : t({ en: 'Save Profile', fa: 'ذخیره نمایه' })}
           </button>
         </form>
@@ -289,6 +322,7 @@ export function DashboardPrograms() {
 
 export function DashboardProgress() {
   const { t } = useI18n();
+  const { formatDate, formatNumber } = useLocaleFormat();
   const [state, setState] = useState(getState());
   useEffect(() => { const u = subscribe(() => setState(getState())); return () => { u(); }; }, []);
 
@@ -332,17 +366,17 @@ export function DashboardProgress() {
 
   const weightData = state.bodyLogs
     .filter(l => l.weightKg)
-    .map(l => ({ date: new Date(l.date).toLocaleDateString(), weight: l.weightKg }));
+    .map(l => ({ date: formatDate(l.date, { month: 'short', day: 'numeric' }), weight: l.weightKg! }));
 
   const strengthData = state.exerciseLogs
     .slice(-20)
     .map(l => ({
-      date: new Date(l.date).toLocaleDateString(),
+      date: formatDate(l.date, { month: 'short', day: 'numeric' }),
       estimated1RM: Math.round(l.weightKg * (1 + l.reps / 30)),
     }));
 
   const measurementData = state.bodyLogs.map(l => ({
-    date: new Date(l.date).toLocaleDateString(),
+    date: formatDate(l.date, { month: 'short', day: 'numeric' }),
     waist: l.waistCm,
     chest: l.chestCm,
     arm: l.armCm,
@@ -350,7 +384,7 @@ export function DashboardProgress() {
 
   const volumeByDate = new Map<string, number>();
   state.exerciseLogs.forEach((l) => {
-    const key = new Date(l.date).toLocaleDateString();
+    const key = formatDate(l.date, { month: 'short', day: 'numeric' });
     const vol = l.sets * l.reps * l.weightKg;
     volumeByDate.set(key, (volumeByDate.get(key) ?? 0) + vol);
   });
@@ -374,7 +408,7 @@ export function DashboardProgress() {
         {/* Body Log Form */}
         {showForm && (
           <form onSubmit={handleLogBody} className="bg-surface border border-border rounded-xl p-5 space-y-4 animate-fade-in">
-            <h3 className="font-bold">{t({ en: 'New Body Log', fa: 'ثبت وضعیت جدید بدن' })} — {new Date().toLocaleDateString(t({ en: 'en-US', fa: 'fa-IR' }))}</h3>
+            <h3 className="font-bold">{t({ en: 'New Body Log', fa: 'ثبت وضعیت جدید بدن' })} — {formatDate(new Date())}</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {[
                 { key: 'weightKg', label: t({ en: 'Weight (kg)', fa: 'وزن (کیلوگرم)' }) },
@@ -462,12 +496,12 @@ export function DashboardProgress() {
                 <tbody>
                   {state.bodyLogs.slice().reverse().map(log => (
                     <tr key={log.id} className="border-b border-border last:border-0">
-                      <td className="p-3">{new Date(log.date).toLocaleDateString(t({ en: 'en-US', fa: 'fa-IR' }))}</td>
-                      <td className="p-3 text-center">{log.weightKg ? `${log.weightKg} kg` : '—'}</td>
-                      <td className="p-3 text-center">{log.waistCm ? `${log.waistCm} cm` : '—'}</td>
-                      <td className="p-3 text-center">{log.bodyFatPct ? `${log.bodyFatPct}%` : '—'}</td>
-                      <td className="p-3 text-center">{log.chestCm ? `${log.chestCm} cm` : '—'}</td>
-                      <td className="p-3 text-center">{log.armCm ? `${log.armCm} cm` : '—'}</td>
+                      <td className="p-3">{formatDate(log.date)}</td>
+                      <td className="p-3 text-center">{log.weightKg ? `${formatNumber(log.weightKg)} kg` : '—'}</td>
+                      <td className="p-3 text-center">{log.waistCm ? `${formatNumber(log.waistCm)} cm` : '—'}</td>
+                      <td className="p-3 text-center">{log.bodyFatPct ? `${formatNumber(log.bodyFatPct)}%` : '—'}</td>
+                      <td className="p-3 text-center">{log.chestCm ? `${formatNumber(log.chestCm)} cm` : '—'}</td>
+                      <td className="p-3 text-center">{log.armCm ? `${formatNumber(log.armCm)} cm` : '—'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -482,6 +516,7 @@ export function DashboardProgress() {
 
 export function DashboardChat() {
   const { t } = useI18n();
+  const { formatTime } = useLocaleFormat();
   const [state, setState] = useState(getState());
   const { subscriptionTier } = useEntitlements();
   const isCoachChat = subscriptionTier === 'VIP' || subscriptionTier === 'ELITE';
@@ -581,7 +616,7 @@ export function DashboardChat() {
                       }`}>
                         <div className="text-xs opacity-75 mb-1">{msg.senderId === state.currentUser?.id ? t({ en: 'You', fa: 'شما' }) : msg.senderName}</div>
                         <p className="text-sm">{msg.content}</p>
-                        <div className="text-[10px] opacity-50 mt-1">{new Date(msg.createdAt).toLocaleTimeString(t({ en: 'en-US', fa: 'fa-IR' }), { hour: '2-digit', minute: '2-digit' })}</div>
+                        <div className="text-[10px] opacity-50 mt-1">{formatTime(msg.createdAt)}</div>
                       </div>
                     </div>
                   ))}
@@ -606,6 +641,7 @@ export function DashboardChat() {
 
 export function DashboardBilling() {
   const { t } = useI18n();
+  const { formatToman } = useLocaleFormat();
   const { subscriptionTier, refresh } = useEntitlements();
   const [searchParams, setSearchParams] = useSearchParams();
   const [paymentsEnabled, setPaymentsEnabled] = useState<boolean | null>(null);
@@ -645,7 +681,7 @@ export function DashboardBilling() {
               <div className="text-2xl font-black">{currentPlan?.name || t({ en: 'Free', fa: 'رایگان' })}</div>
               <div className="text-fg-subtle text-sm mt-1">
                 {currentPlan && currentPlan.priceMonthly > 0
-                  ? `$${(currentPlan.priceMonthly / 100).toFixed(2)}/${t({ en: 'month', fa: 'ماه' })}`
+                  ? `${formatToman(currentPlan.priceMonthly)}/${t({ en: 'month', fa: 'ماه' })}`
                   : t({ en: 'No active subscription', fa: 'بدون اشتراک فعال' })
                 }
               </div>

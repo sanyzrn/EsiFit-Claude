@@ -327,9 +327,9 @@ export { EXERCISES, PROGRAMS, DIET_PLANS, ARTICLES };
 
 export const PLANS: Plan[] = [
   { id: 'plan_free', tier: 'FREE', name: 'Free', priceMonthly: 0, features: ['All calculators', 'Exercise library', '1 generic program', 'Community access'] },
-  { id: 'plan_eco', tier: 'ECONOMY', name: 'Economy', priceMonthly: 999, features: ['Everything in Free', 'Goal-matched programs', 'Sample diet plans', 'Ticket support', 'Progress tracking'] },
-  { id: 'plan_vip', tier: 'VIP', name: 'VIP', priceMonthly: 2999, features: ['Everything in Economy', 'Coach-reviewed programs', 'Custom diet plans', 'Direct coach chat', 'Full progress analytics'] },
-  { id: 'plan_elite', tier: 'ELITE', name: 'Elite', priceMonthly: 7999, features: ['Everything in VIP', 'Dedicated 1-on-1 coach', 'Weekly program adjustments', 'Priority support', 'Exclusive content'] },
+  { id: 'plan_eco', tier: 'ECONOMY', name: 'Economy', priceMonthly: 599_000, features: ['Everything in Free', 'Goal-matched programs', 'Sample diet plans', 'Ticket support', 'Progress tracking'] },
+  { id: 'plan_vip', tier: 'VIP', name: 'VIP', priceMonthly: 999_000, features: ['Everything in Economy', 'Coach-reviewed programs', 'Custom diet plans', 'Direct coach chat', 'Full progress analytics'] },
+  { id: 'plan_elite', tier: 'ELITE', name: 'Elite', priceMonthly: 1_999_000, features: ['Everything in VIP', 'Dedicated 1-on-1 coach', 'Weekly program adjustments', 'Priority support', 'Exclusive content'] },
 ];
 
 export const ALL_MUSCLE_GROUPS = [...new Set(EXERCISES.flatMap(e => e.muscleGroups))].sort();

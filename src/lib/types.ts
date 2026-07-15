@@ -167,6 +167,7 @@ export interface Plan {
   id: string;
   tier: SubscriptionTier;
   name: string;
+  /** Monthly price in Tomans (integer). 0 = free. */
   priceMonthly: number;
   features: string[];
 }

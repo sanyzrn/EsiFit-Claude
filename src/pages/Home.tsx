@@ -5,9 +5,12 @@ import HomeSmartTools from '@/components/calculators/HomeSmartTools';
 import { PersianPattern } from '@/components/ui/PersianPattern';
 import { IconBadge } from '@/components/ui/IconBadge';
 import { IMAGES } from '@/lib/media';
+import { useLocaleFormat } from '@/lib/locale-format-context';
+import { PLANS } from '@/lib/store';
 
 export default function Home() {
   const { t } = useI18n();
+  const { formatTomanCompact } = useLocaleFormat();
 
   const features = [
     { icon: Dumbbell, title: t({ en: 'Exercise Library', fa: 'کتابخانه حرکات' }), desc: t({ en: 'Comprehensive database with video guides, muscle targeting, and difficulty levels.', fa: 'راهنمای جامع حرکات همراه با ویدیو، عضلات هدف، و سطوح دشواری.' }), link: '/exercises' },
@@ -129,28 +132,26 @@ export default function Home() {
           <p className="text-fg-subtle text-lg">{t({ en: 'Start free, upgrade as you grow. No commitment required.', fa: 'رایگان شروع کنید، با پیشرفت خود ارتقا دهید. بدون هیچ تعهدی.' })}</p>
         </div>
         <div className="grid md:grid-cols-4 gap-4">
-          {[
-            { tier: t({ en: 'Free', fa: 'رایگان' }), price: t({ en: '$0', fa: '۰ تومان' }), highlight: false },
-            { tier: t({ en: 'Economy', fa: 'اقتصادی' }), price: t({ en: '$9.99', fa: '۹۹.۰۰۰ تومان' }), highlight: false },
-            { tier: t({ en: 'VIP', fa: 'ویژه' }), price: t({ en: '$29.99', fa: '۲۹۹.۰۰۰ تومان' }), highlight: true },
-            { tier: t({ en: 'Elite', fa: 'نخبگان' }), price: t({ en: '$79.99', fa: '۷۹۹.۰۰۰ تومان' }), highlight: false },
-          ].map(p => (
+          {PLANS.map((plan) => {
+            const highlight = plan.tier === 'VIP';
+            return (
             <div
-              key={p.tier}
+              key={plan.tier}
               className={`rounded-2xl p-6 border text-center ${
-                p.highlight
+                highlight
                   ? 'bg-gradient-to-b from-brand-muted to-accent-muted border-brand/40'
                   : 'bg-surface border-border'
               }`}
             >
-              {p.highlight && (
+              {highlight && (
                 <div className="text-xs font-bold text-brand mb-2 uppercase tracking-wider">{t({ en: 'Most Popular', fa: 'محبوب‌ترین' })}</div>
               )}
-              <div className="text-lg font-bold mb-1 font-display">{p.tier}</div>
-              <div className="text-2xl font-black text-brand font-display">{p.price}</div>
+              <div className="text-lg font-bold mb-1 font-display">{plan.name}</div>
+              <div className="text-xl font-black text-brand font-display">{formatTomanCompact(plan.priceMonthly)}</div>
               <div className="text-xs text-fg-subtle">{t({ en: '/month', fa: '/ماهیانه' })}</div>
             </div>
-          ))}
+            );
+          })}
         </div>
         <div className="text-center mt-8">
           <Link to="/pricing" className="inline-flex items-center gap-2 text-brand font-medium hover:text-accent transition-colors">

@@ -8,6 +8,7 @@ import {
   sendOtpSms,
   sendPasswordResetEmail,
   verifyPassword,
+  normalizeIranPhone,
 } from '../utils/crypto.js';
 import {
   clearAuthCookie,
@@ -235,12 +236,16 @@ authRouter.post('/reset-password', async (req, res) => {
 authRouter.post('/phone/request-otp', async (req, res) => {
   try {
     const { phone } = req.body ?? {};
-    if (!phone || typeof phone !== 'string' || phone.replace(/\D/g, '').length < 10) {
+    if (!phone || typeof phone !== 'string') {
       res.status(400).json({ error: 'INVALID_PHONE' });
       return;
     }
 
-    const normalized = phone.replace(/\D/g, '');
+    const normalized = normalizeIranPhone(phone);
+    if (normalized.length < 12) {
+      res.status(400).json({ error: 'INVALID_PHONE' });
+      return;
+    }
     const code = generateOtpCode();
     const id = generateId('otp');
     const expires = new Date(Date.now() + 5 * 60 * 1000);
@@ -266,7 +271,7 @@ authRouter.post('/phone/verify-otp', async (req, res) => {
       return;
     }
 
-    const normalized = String(phone).replace(/\D/g, '');
+    const normalized = normalizeIranPhone(String(phone));
     const codeHash = hashToken(String(code));
 
     const { rows } = await query<{
