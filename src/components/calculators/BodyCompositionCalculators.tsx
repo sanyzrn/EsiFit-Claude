@@ -1,8 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useI18n } from '@/lib/i18n';
 import { calcBMI, calcBodyFat, calcFFMI, calcWHR, calcBodyType, BODY_TYPE_QUESTIONS } from '@/lib/calculators';
 import { SliderInput, SegmentedToggle, CircularGauge, CalculatorLayout, PersianNumber } from './SharedCalculatorUI';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 
 export function BmiCalculator() {
   const { t } = useI18n();

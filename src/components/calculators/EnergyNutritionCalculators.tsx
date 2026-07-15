@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useI18n } from '@/lib/i18n';
 import { calcBMR, calcTDEE, calcMacros, calcWaterIntake, ACTIVITY_FACTORS } from '@/lib/calculators';
 import { SliderInput, SegmentedToggle, CircularGauge, BarChart, CalculatorLayout, PersianNumber } from './SharedCalculatorUI';
@@ -57,7 +57,7 @@ export function TdeeCalculator() {
           <SliderInput label={t({ en: 'Age', fa: 'سن' })} value={age} min={15} max={80} step={1} onChange={setAge} unit="years" />
           <div className="mt-4">
             <label className="block text-sm font-medium text-gray-300 mb-2">{t({ en: 'Activity Level', fa: 'سطح فعالیت' })}</label>
-            <select value={activity} onChange={(e) => setActivity(e.target.value as any)} className="w-full bg-gray-700 border-none rounded-lg p-3 text-white">
+            <select value={activity} onChange={(e) => setActivity(e.target.value as keyof typeof ACTIVITY_FACTORS)} className="w-full bg-gray-700 border-none rounded-lg p-3 text-white">
               <option value="sedentary">{t({ en: 'Sedentary (office job)', fa: 'بدون فعالیت (کار اداری)' })}</option>
               <option value="light">{t({ en: 'Light (exercise 1-2 days/wk)', fa: 'سبک (تمرین ۱-۲ روز در هفته)' })}</option>
               <option value="moderate">{t({ en: 'Moderate (exercise 3-5 days/wk)', fa: 'متوسط (تمرین ۳-۵ روز در هفته)' })}</option>

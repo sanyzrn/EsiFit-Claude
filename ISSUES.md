@@ -95,13 +95,13 @@ Status legend: `open` · `fixed` · `deferred` · `investigated-not-reproducible
 | BUG-10 | Low | 8 | open | Register: no password show/hide or strength indicator |
 | BUG-11 | Low | 8 | open | Firebase raw `err.message` shown in Auth (not localized) |
 | BUG-12 | Low | 2 | open | `main.tsx` unconditional `testConnection()` boot probe |
-| TOOL-1 | Medium | 6 | open | `npm run lint` fails — ESLint not installed |
-| TOOL-2 | Low | 6 | open | `tsc --noEmit` — 6 TS6133 unused-import errors |
-| TOOL-3 | Medium | 6 | open | Static+dynamic import duplication defeats code-splitting |
-| TOOL-4 | Low | 6 | open | Dead deps: `@base-ui/react`, `@date-fns/tz`, `vite-plugin-singlefile` |
-| TOOL-5 | Medium | 6 | open | Main JS bundle 1,597 KB (495 KB gzip), single chunk |
-| TOOL-6 | Low | 6 | open | Debug scripts `check.mjs` / `check.cjs` at repo root |
-| TOOL-7 | Low | 6 | open | `Math.random()` in `generateId` UUID fallback (`store.ts:91`) |
+| TOOL-1 | Medium | 6 | fixed | `npm run lint` fails — ESLint not installed |
+| TOOL-2 | Low | 6 | fixed | `tsc --noEmit` — 6 TS6133 unused-import errors |
+| TOOL-3 | Medium | 6 | fixed | Static+dynamic import duplication defeats code-splitting |
+| TOOL-4 | Low | 6 | fixed | Dead deps: `@base-ui/react`, `@date-fns/tz`, `vite-plugin-singlefile` |
+| TOOL-5 | Medium | 6 | fixed | Main JS bundle 1,597 KB (495 KB gzip), single chunk |
+| TOOL-6 | Low | 6 | fixed | Debug scripts `check.mjs` / `check.cjs` at repo root |
+| TOOL-7 | Low | 6 | fixed | `Math.random()` in `generateId` UUID fallback (`store.ts:91`) |
 | CONTENT-1 | Medium | 9 | open | Seed content (exercises/programs/diet/articles) not translated to Farsi |
 | CONTENT-2 | Medium | 9 | open | Thin catalog: 10 exercises, 3 programs, 2 diets, 3 articles |
 | CONTENT-3 | Low | 9 | intentional-demo | Admin/Coach dashboards use hardcoded demo data |
@@ -312,52 +312,72 @@ Status legend: `open` · `fixed` · `deferred` · `investigated-not-reproducible
 ### TOOL-1 — ESLint not installed
 - **Severity:** Medium
 - **Phase:** 6
-- **Status:** open
-- **Files:** `package.json:9`
+- **Status:** fixed (2026-07-15)
+- **Files:** `package.json`, `eslint.config.js`
 - **Reports:** A (`EsiFit_Full_Audit_2026-07-15.md:33,102-105`) · B (`(1).md:70-75,281-285`)
+- **Before:** `npm run lint` failed because ESLint was not installed.
+- **After:** Added ESLint 10 + `typescript-eslint`, `eslint-plugin-react-hooks`, `eslint-plugin-react-refresh`, and flat config `eslint.config.js`. `npm run lint` passes with `--max-warnings 0`.
+- **Verification:** `phase6-tooling-verify.mjs` runs `npm run lint`.
 
 ### TOOL-2 — TypeScript unused imports (6 errors)
 - **Severity:** Low
 - **Phase:** 6
-- **Status:** open
-- **Files:** `BodyCompositionCalculators.tsx:1,5`, `EnergyNutritionCalculators.tsx:1`, `HealthLifestyleCalculators.tsx:1`, `StrengthTrainingCalculators.tsx:1`, `Calculators.tsx:4`
+- **Status:** fixed (2026-07-15)
+- **Files:** `BodyCompositionCalculators.tsx`, `EnergyNutritionCalculators.tsx`, `HealthLifestyleCalculators.tsx`, `StrengthTrainingCalculators.tsx`, `Calculators.tsx`, `package.json`
 - **Reports:** A (`EsiFit_Full_Audit_2026-07-15.md:34`) · B (`(1).md:77-85,290-294`)
+- **Before:** `tsc --noEmit` reported 6 TS6133 unused-import errors (unused `React`, `AnimatePresence`, `getState`).
+- **After:** Removed unused imports; added `npm run typecheck` script.
+- **Verification:** `phase6-tooling-verify.mjs` runs `npm run typecheck`.
 
 ### TOOL-3 — Static+dynamic import duplication
 - **Severity:** Medium
 - **Phase:** 6
-- **Status:** open
-- **Files:** `HomeSmartTools.tsx:5-44`, `Calculators.tsx:6-9`
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/components/calculators/lazy.tsx`, `HomeSmartTools.tsx`, `Calculators.tsx`
 - **Reports:** A (`EsiFit_Full_Audit_2026-07-15.md:32,97-100`) · B (`(1).md:57-64`)
+- **Before:** `HomeSmartTools` lazy-loaded calculator modules while `Calculators.tsx` statically imported the same modules, defeating code-splitting.
+- **After:** Centralized lazy loaders in `lazy.tsx`; both Home tabs and `/calculators/:slug` routes use shared dynamic imports with `Suspense`.
+- **Verification:** `phase6-tooling-verify.mjs` static checks; build emits separate calculator chunks.
 
 ### TOOL-4 — Dead dependencies
 - **Severity:** Low
 - **Phase:** 6
-- **Status:** open
-- **Files:** `package.json` (`@base-ui/react`, `@date-fns/tz`, `vite-plugin-singlefile`)
+- **Status:** fixed (2026-07-15)
+- **Files:** `package.json`, `package-lock.json`
 - **Reports:** A (`EsiFit_Full_Audit_2026-07-15.md:155-156`) · B (`(1).md:66,518-519`)
+- **Before:** `@base-ui/react`, `@date-fns/tz`, and `vite-plugin-singlefile` were listed but never used.
+- **After:** Removed all three from dependencies/devDependencies.
+- **Verification:** `phase6-tooling-verify.mjs` checks `package.json`.
 
 ### TOOL-5 — Oversized single JS chunk
 - **Severity:** Medium
 - **Phase:** 6
-- **Status:** open
-- **Files:** `vite.config.ts`, build output
+- **Status:** fixed (2026-07-15)
+- **Files:** `vite.config.ts`, `src/App.tsx`, `lazy.tsx`
 - **Reports:** A (`EsiFit_Full_Audit_2026-07-15.md:154-156`) · B (`(1).md:48-54,457-470`)
-- **Evidence:** `index-*.js` 1,597.15 kB / 494.84 kB gzip (build 2026-07-15).
+- **Before:** Single `index-*.js` chunk ~1,597 KB (495 KB gzip).
+- **After:** Route-level `React.lazy` for all pages; `manualChunks` splits firebase, recharts, react, router, and motion. Build emits 37 JS chunks; largest chunk ~552 KB (firebase).
+- **Verification:** `phase6-tooling-verify.mjs` build metrics check.
 
 ### TOOL-6 — Debug scripts at repo root
 - **Severity:** Low
 - **Phase:** 6
-- **Status:** open
-- **Files:** `check.mjs`, `check.cjs`
+- **Status:** fixed (2026-07-15)
+- **Files:** `check.mjs`, `check.cjs` (deleted)
 - **Reports:** A (`EsiFit_Full_Audit_2026-07-15.md:112-114`)
+- **Before:** Scratch `check.mjs` / `check.cjs` debug scripts committed at repo root.
+- **After:** Both files removed.
+- **Verification:** `phase6-tooling-verify.mjs` confirms files absent.
 
 ### TOOL-7 — `Math.random()` in ID fallback
 - **Severity:** Low
 - **Phase:** 6
-- **Status:** open
-- **Files:** `src/lib/store.ts:87-94`
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/lib/store.ts`
 - **Reports:** B (`(1).md:297-301`) · A ruled low risk (`EsiFit_Full_Audit_2026-07-15.md:118`)
+- **Before:** `generateId` fell back to `Math.random()` UUID generation when `crypto.randomUUID` unavailable.
+- **After:** Uses `crypto.randomUUID()`, then `crypto.getRandomValues()`, then timestamp-based suffix — no `Math.random()`.
+- **Verification:** `phase6-tooling-verify.mjs` static check.
 
 ### CONTENT-1 — Seed content not in Farsi
 - **Severity:** Medium

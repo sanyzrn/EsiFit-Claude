@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useI18n } from '@/lib/i18n';
 import { calcOneRepMax, getRepMaxTable, calcVolumeLoad } from '@/lib/calculators';
 import { SliderInput, SegmentedToggle, CalculatorLayout, PersianNumber } from './SharedCalculatorUI';

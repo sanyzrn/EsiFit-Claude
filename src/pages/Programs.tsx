@@ -92,6 +92,7 @@ export function ProgramDetail() {
   const [state, setState] = useState(getState());
   const [completedExercises, setCompleted] = useState<Set<string>>(new Set());
   const [activeDay, setActiveDay] = useState(0);
+  const { subscriptionTier } = useEntitlements();
   useEffect(() => { const u = subscribe(() => setState(getState())); return () => { u(); }; }, []);
 
   const goalLabels: Record<string, string> = { 
@@ -111,7 +112,6 @@ export function ProgramDetail() {
     );
   }
 
-  const { subscriptionTier } = useEntitlements();
   const userTier = subscriptionTier;
   const hasAccess = hasTierAccess(userTier, program.requiredTier);
 
