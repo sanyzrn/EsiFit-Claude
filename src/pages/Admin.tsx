@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Shield, Users, DollarSign, TrendingUp, BarChart3, FileText, Dumbbell, Apple } from 'lucide-react';
 import { getState, subscribe, PLANS, EXERCISES, PROGRAMS, DIET_PLANS, ARTICLES } from '@/lib/store';
+import { useI18n } from '@/lib/i18n';
 
 export default function Admin() {
   const [state, setState] = useState(getState());
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
+  const { t } = useI18n();
   useEffect(() => { const u = subscribe(() => setState(getState())); return () => { u(); }; }, []);
   useEffect(() => {
     if (!state.currentUser || state.currentUser.role !== 'ADMIN') navigate('/');
@@ -15,12 +17,12 @@ export default function Admin() {
   if (!state.currentUser || state.currentUser.role !== 'ADMIN') return null;
 
   const tabs = [
-    { id: 'overview', icon: BarChart3, label: 'Overview' },
-    { id: 'users', icon: Users, label: 'Users' },
-    { id: 'exercises', icon: Dumbbell, label: 'Exercises' },
-    { id: 'programs', icon: FileText, label: 'Programs' },
-    { id: 'diet', icon: Apple, label: 'Diet Plans' },
-    { id: 'articles', icon: FileText, label: 'Articles' },
+    { id: 'overview', icon: BarChart3, label: t({ en: 'Overview', fa: 'نمای کلی' }) },
+    { id: 'users', icon: Users, label: t({ en: 'Users', fa: 'کاربران' }) },
+    { id: 'exercises', icon: Dumbbell, label: t({ en: 'Exercises', fa: 'تمرین‌ها' }) },
+    { id: 'programs', icon: FileText, label: t({ en: 'Programs', fa: 'برنامه‌ها' }) },
+    { id: 'diet', icon: Apple, label: t({ en: 'Diet Plans', fa: 'برنامه‌های غذایی' }) },
+    { id: 'articles', icon: FileText, label: t({ en: 'Articles', fa: 'مقاله‌ها' }) },
   ];
 
   // Simulated users
@@ -28,8 +30,8 @@ export default function Admin() {
     { id: '1', name: 'John Smith', email: 'john@example.com', role: 'USER', tier: 'VIP', created: '2024-10-15' },
     { id: '2', name: 'Sarah Connor', email: 'sarah@example.com', role: 'USER', tier: 'ECONOMY', created: '2024-11-01' },
     { id: '3', name: 'Mike Johnson', email: 'mike@example.com', role: 'USER', tier: 'FREE', created: '2024-11-20' },
-    { id: '4', name: 'Coach Smith', email: 'coach@fitpro.com', role: 'COACH', tier: 'ELITE', created: '2024-09-01' },
-    { id: '5', name: 'Admin User', email: 'admin@fitpro.com', role: 'ADMIN', tier: 'ELITE', created: '2024-08-01' },
+    { id: '4', name: 'Coach Smith', email: 'coach@esifit.com', role: 'COACH', tier: 'ELITE', created: '2024-09-01' },
+    { id: '5', name: 'Admin User', email: 'admin@esifit.com', role: 'ADMIN', tier: 'ELITE', created: '2024-08-01' },
     { id: '6', name: 'Lisa Davis', email: 'lisa@example.com', role: 'USER', tier: 'ELITE', created: '2024-12-01' },
   ];
 
@@ -45,8 +47,8 @@ export default function Admin() {
           <Shield className="w-5 h-5 text-red-400" />
         </div>
         <div>
-          <h1 className="text-2xl font-black">Admin Dashboard</h1>
-          <p className="text-sm text-gray-400">Manage users, content, and revenue</p>
+          <h1 className="text-2xl font-black">{t({ en: 'Admin Dashboard', fa: 'داشبورد مدیریت' })}</h1>
+          <p className="text-sm text-gray-400">{t({ en: 'Manage users, content, and revenue', fa: 'مدیریت کاربران، محتوا و درآمد' })}</p>
         </div>
       </div>
 
@@ -68,53 +70,53 @@ export default function Admin() {
         <div className="space-y-6 animate-fade-in">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-              <div className="flex items-center gap-2 mb-2"><DollarSign className="w-5 h-5 text-green-400" /><span className="text-sm text-gray-400">MRR</span></div>
+              <div className="flex items-center gap-2 mb-2"><DollarSign className="w-5 h-5 text-green-400" /><span className="text-sm text-gray-400">{t({ en: 'MRR', fa: 'درآمد ماهانه' })}</span></div>
               <div className="text-3xl font-black text-green-400">${(mrr / 100).toFixed(0)}</div>
             </div>
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-              <div className="flex items-center gap-2 mb-2"><Users className="w-5 h-5 text-blue-400" /><span className="text-sm text-gray-400">Total Users</span></div>
+              <div className="flex items-center gap-2 mb-2"><Users className="w-5 h-5 text-blue-400" /><span className="text-sm text-gray-400">{t({ en: 'Total Users', fa: 'کل کاربران' })}</span></div>
               <div className="text-3xl font-black">{demoUsers.length}</div>
             </div>
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-              <div className="flex items-center gap-2 mb-2"><TrendingUp className="w-5 h-5 text-orange-400" /><span className="text-sm text-gray-400">New This Week</span></div>
+              <div className="flex items-center gap-2 mb-2"><TrendingUp className="w-5 h-5 text-orange-400" /><span className="text-sm text-gray-400">{t({ en: 'New This Week', fa: 'جدید در این هفته' })}</span></div>
               <div className="text-3xl font-black">3</div>
             </div>
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-              <div className="flex items-center gap-2 mb-2"><Users className="w-5 h-5 text-purple-400" /><span className="text-sm text-gray-400">Paid Subscribers</span></div>
+              <div className="flex items-center gap-2 mb-2"><Users className="w-5 h-5 text-purple-400" /><span className="text-sm text-gray-400">{t({ en: 'Paid Subscribers', fa: 'مشترکین پولی' })}</span></div>
               <div className="text-3xl font-black">{vipCount + economyCount + eliteCount}</div>
             </div>
           </div>
 
           <div className="grid md:grid-cols-2 gap-4">
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-              <h3 className="font-bold mb-4">Revenue by Plan</h3>
+              <h3 className="font-bold mb-4">{t({ en: 'Revenue by Plan', fa: 'درآمد بر اساس طرح' })}</h3>
               {PLANS.filter(p => p.priceMonthly > 0).map(plan => {
                 const count = demoUsers.filter(u => u.tier === plan.tier && u.role === 'USER').length;
                 return (
                   <div key={plan.id} className="flex justify-between items-center py-2 border-b border-gray-800 last:border-0">
-                    <span className="text-sm">{plan.name} ({count} users)</span>
+                    <span className="text-sm">{plan.name} ({count} {t({ en: 'users', fa: 'کاربران' })})</span>
                     <span className="text-sm font-bold text-green-400">${((plan.priceMonthly * count) / 100).toFixed(2)}/mo</span>
                   </div>
                 );
               })}
             </div>
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-              <h3 className="font-bold mb-4">Content Overview</h3>
+              <h3 className="font-bold mb-4">{t({ en: 'Content Overview', fa: 'نمای کلی محتوا' })}</h3>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-400">Exercises</span>
+                  <span className="text-sm text-gray-400">{t({ en: 'Exercises', fa: 'تمرین‌ها' })}</span>
                   <span className="font-bold">{EXERCISES.length}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-400">Programs</span>
+                  <span className="text-sm text-gray-400">{t({ en: 'Programs', fa: 'برنامه‌ها' })}</span>
                   <span className="font-bold">{PROGRAMS.length}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-400">Diet Plans</span>
+                  <span className="text-sm text-gray-400">{t({ en: 'Diet Plans', fa: 'برنامه‌های غذایی' })}</span>
                   <span className="font-bold">{DIET_PLANS.length}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-400">Articles</span>
+                  <span className="text-sm text-gray-400">{t({ en: 'Articles', fa: 'مقاله‌ها' })}</span>
                   <span className="font-bold">{ARTICLES.length}</span>
                 </div>
               </div>
@@ -129,11 +131,11 @@ export default function Admin() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-800 bg-gray-800/50">
-                  <th className="text-left p-4 font-medium text-gray-400">Name</th>
-                  <th className="text-left p-4 font-medium text-gray-400">Email</th>
-                  <th className="p-4 text-center font-medium text-gray-400">Role</th>
-                  <th className="p-4 text-center font-medium text-gray-400">Tier</th>
-                  <th className="p-4 text-center font-medium text-gray-400">Joined</th>
+                  <th className="text-left rtl:text-right p-4 font-medium text-gray-400">{t({ en: 'Name', fa: 'نام' })}</th>
+                  <th className="text-left rtl:text-right p-4 font-medium text-gray-400">{t({ en: 'Email', fa: 'ایمیل' })}</th>
+                  <th className="p-4 text-center font-medium text-gray-400">{t({ en: 'Role', fa: 'نقش' })}</th>
+                  <th className="p-4 text-center font-medium text-gray-400">{t({ en: 'Tier', fa: 'طرح' })}</th>
+                  <th className="p-4 text-center font-medium text-gray-400">{t({ en: 'Joined', fa: 'تاریخ عضویت' })}</th>
                 </tr>
               </thead>
               <tbody>
@@ -172,8 +174,8 @@ export default function Admin() {
       {activeTab === 'exercises' && (
         <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden animate-fade-in">
           <div className="p-4 border-b border-gray-800 flex justify-between items-center">
-            <h3 className="font-bold">Exercise Library ({EXERCISES.length} exercises)</h3>
-            <button className="px-3 py-1.5 bg-orange-500 text-white text-sm font-bold rounded-lg">+ Add Exercise</button>
+            <h3 className="font-bold">{t({ en: 'Exercise Library', fa: 'کتابخانه تمرین‌ها' })} ({EXERCISES.length} {t({ en: 'exercises', fa: 'تمرین' })})</h3>
+            <button className="px-3 py-1.5 bg-orange-500 text-white text-sm font-bold rounded-lg">+ {t({ en: 'Add Exercise', fa: 'افزودن تمرین' })}</button>
           </div>
           <div className="divide-y divide-gray-800">
             {EXERCISES.map(ex => (
@@ -192,17 +194,17 @@ export default function Admin() {
       {activeTab === 'programs' && (
         <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden animate-fade-in">
           <div className="p-4 border-b border-gray-800 flex justify-between items-center">
-            <h3 className="font-bold">Training Programs ({PROGRAMS.length})</h3>
-            <button className="px-3 py-1.5 bg-orange-500 text-white text-sm font-bold rounded-lg">+ Add Program</button>
+            <h3 className="font-bold">{t({ en: 'Training Programs', fa: 'برنامه‌های آموزشی' })} ({PROGRAMS.length})</h3>
+            <button className="px-3 py-1.5 bg-orange-500 text-white text-sm font-bold rounded-lg">+ {t({ en: 'Add Program', fa: 'افزودن برنامه' })}</button>
           </div>
           <div className="divide-y divide-gray-800">
             {PROGRAMS.map(p => (
               <div key={p.id} className="px-4 py-3 flex items-center justify-between hover:bg-gray-800/50">
                 <div>
                   <div className="font-medium text-sm">{p.title}</div>
-                  <div className="text-xs text-gray-400">{p.level} · {p.daysPerWeek} days/week · {p.requiredTier}</div>
+                  <div className="text-xs text-gray-400">{p.level} · {p.daysPerWeek} {t({ en: 'days/week', fa: 'روز/هفته' })} · {p.requiredTier}</div>
                 </div>
-                <button className="text-xs text-gray-400 hover:text-white">Edit</button>
+                <button className="text-xs text-gray-400 hover:text-white">{t({ en: 'Edit', fa: 'ویرایش' })}</button>
               </div>
             ))}
           </div>
@@ -212,17 +214,17 @@ export default function Admin() {
       {activeTab === 'diet' && (
         <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden animate-fade-in">
           <div className="p-4 border-b border-gray-800 flex justify-between items-center">
-            <h3 className="font-bold">Diet Plans ({DIET_PLANS.length})</h3>
-            <button className="px-3 py-1.5 bg-orange-500 text-white text-sm font-bold rounded-lg">+ Add Diet Plan</button>
+            <h3 className="font-bold">{t({ en: 'Diet Plans', fa: 'برنامه‌های غذایی' })} ({DIET_PLANS.length})</h3>
+            <button className="px-3 py-1.5 bg-orange-500 text-white text-sm font-bold rounded-lg">+ {t({ en: 'Add Diet Plan', fa: 'افزودن برنامه غذایی' })}</button>
           </div>
           <div className="divide-y divide-gray-800">
             {DIET_PLANS.map(d => (
               <div key={d.id} className="px-4 py-3 flex items-center justify-between hover:bg-gray-800/50">
                 <div>
                   <div className="font-medium text-sm">{d.title}</div>
-                  <div className="text-xs text-gray-400">{d.totalCalories} kcal · {d.meals.length} meals · {d.requiredTier}</div>
+                  <div className="text-xs text-gray-400">{d.totalCalories} {t({ en: 'kcal', fa: 'کالری' })} · {d.meals.length} {t({ en: 'meals', fa: 'وعده' })} · {d.requiredTier}</div>
                 </div>
-                <button className="text-xs text-gray-400 hover:text-white">Edit</button>
+                <button className="text-xs text-gray-400 hover:text-white">{t({ en: 'Edit', fa: 'ویرایش' })}</button>
               </div>
             ))}
           </div>
@@ -232,8 +234,8 @@ export default function Admin() {
       {activeTab === 'articles' && (
         <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden animate-fade-in">
           <div className="p-4 border-b border-gray-800 flex justify-between items-center">
-            <h3 className="font-bold">Blog Articles ({ARTICLES.length})</h3>
-            <button className="px-3 py-1.5 bg-orange-500 text-white text-sm font-bold rounded-lg">+ Add Article</button>
+            <h3 className="font-bold">{t({ en: 'Blog Articles', fa: 'مقاله‌های وبلاگ' })} ({ARTICLES.length})</h3>
+            <button className="px-3 py-1.5 bg-orange-500 text-white text-sm font-bold rounded-lg">+ {t({ en: 'Add Article', fa: 'افزودن مقاله' })}</button>
           </div>
           <div className="divide-y divide-gray-800">
             {ARTICLES.map(a => (
@@ -242,7 +244,7 @@ export default function Admin() {
                   <div className="font-medium text-sm">{a.title}</div>
                   <div className="text-xs text-gray-400">{a.category} · {a.publishedAt}</div>
                 </div>
-                <button className="text-xs text-gray-400 hover:text-white">Edit</button>
+                <button className="text-xs text-gray-400 hover:text-white">{t({ en: 'Edit', fa: 'ویرایش' })}</button>
               </div>
             ))}
           </div>

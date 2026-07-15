@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Dumbbell, Calculator, TrendingUp, Users, ChevronRight, Star, Zap, Target, BarChart3, Apple, MessageSquare } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
+import HomeSmartTools from '@/components/calculators/HomeSmartTools';
 
 export default function Home() {
   const { t } = useI18n();
@@ -22,7 +23,7 @@ export default function Home() {
   ];
 
   const testimonials = [
-    { name: t({ en: 'Alex M.', fa: 'الکس م.' }), role: t({ en: 'Gym Enthusiast', fa: 'بدنساز' }), text: t({ en: 'FitPro\'s calculators and programs helped me lose 15 lbs in 3 months. The progress tracking keeps me accountable.', fa: 'برنامه‌ها و ماشین‌حساب‌های فیت‌پرو به من کمک کرد در ۳ ماه ۷ کیلو وزن کم کنم.' }), rating: 5 },
+    { name: t({ en: 'Alex M.', fa: 'الکس م.' }), role: t({ en: 'Gym Enthusiast', fa: 'بدنساز' }), text: t({ en: 'EsiFit\'s calculators and programs helped me lose 15 lbs in 3 months. The progress tracking keeps me accountable.', fa: 'برنامه‌ها و ماشین‌حساب‌های اسی‌فیت به من کمک کرد در ۳ ماه ۷ کیلو وزن کم کنم.' }), rating: 5 },
     { name: t({ en: 'Sarah K.', fa: 'سارا ک.' }), role: t({ en: 'Fitness Competitor', fa: 'ورزشکار مسابقه‌ای' }), text: t({ en: 'The VIP coaching feature is a game-changer. My coach reviews my program weekly and adjusts based on my progress.', fa: 'مربی VIP یک تغییر بزرگ بود. مربی من هر هفته برنامه مرا بر اساس پیشرفتم تنظیم می‌کند.' }), rating: 5 },
     { name: t({ en: 'James R.', fa: 'جیمز ر.' }), role: t({ en: 'Beginner', fa: 'مبتدی' }), text: t({ en: 'As someone new to the gym, the exercise library with detailed instructions gave me the confidence to start training.', fa: 'به عنوان فردی مبتدی، کتابخانه حرکات با توضیحات دقیق به من اعتماد به نفس شروع داد.' }), rating: 5 },
   ];
@@ -110,61 +111,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Calculator Teaser */}
-      <section className="bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-black mb-4">{t({ en: '14 Free Fitness Calculators', fa: '۱۴ ماشین حساب رایگان تناسب اندام' })}</h2>
-              <p className="text-gray-400 text-lg mb-6">
-                {t({ en: 'From BMI and body fat to TDEE and one-rep max — get instant, science-based estimates to guide your training.', fa: 'از شاخص توده بدنی تا چربی بدن و TDEE و رکورد - برآوردهای علمی برای هدایت تمرینات خود دریافت کنید.' })}
-              </p>
-              <div className="grid grid-cols-2 gap-3 mb-8">
-                {[
-                  t({ en: 'BMI', fa: 'شاخص توده بدنی' }),
-                  t({ en: 'Body Fat %', fa: 'درصد چربی بدن' }),
-                  t({ en: 'TDEE', fa: 'تخمین کالری (TDEE)' }),
-                  t({ en: 'Macros', fa: 'درشت مغذی‌ها' }),
-                  t({ en: 'One-Rep Max', fa: 'رکورد (یک تکرار)' }),
-                  t({ en: 'FFMI', fa: 'شاخص FFMI' }),
-                  t({ en: 'WHR', fa: 'نسبت دور کمر به باسن' }),
-                  t({ en: 'Calories Burned', fa: 'کالری سوزانده شده' })
-                ].map(calc => (
-                  <div key={calc} className="flex items-center gap-2 text-sm text-gray-300">
-                    <div className="w-1.5 h-1.5 rounded-full bg-orange-500" />
-                    {calc}
-                  </div>
-                ))}
-              </div>
-              <Link
-                to="/calculators"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600 transition-colors"
-              >
-                {t({ en: 'Try Calculators Free', fa: 'امتحان رایگان ماشین‌حساب‌ها' })} <ChevronRight className="w-4 h-4 rtl:!rotate-180" />
-              </Link>
-            </div>
-            <div className="bg-gray-800 rounded-2xl p-8 border border-gray-700">
-              <div className="text-sm text-gray-400 mb-4 font-medium">{t({ en: 'Quick BMI Calculator', fa: 'محاسبه‌گر سریع شاخص توده بدنی' })}</div>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm text-gray-400 mb-1">{t({ en: 'Weight (kg)', fa: 'وزن (کیلوگرم)' })}</label>
-                  <div className="h-10 bg-gray-700 rounded-lg flex items-center px-3 text-gray-300">{t({ en: '80', fa: '۸۰' })}</div>
-                </div>
-                <div>
-                  <label className="block text-sm text-gray-400 mb-1">{t({ en: 'Height (cm)', fa: 'قد (سانتی‌متر)' })}</label>
-                  <div className="h-10 bg-gray-700 rounded-lg flex items-center px-3 text-gray-300">{t({ en: '178', fa: '۱۷۸' })}</div>
-                </div>
-                <div className="pt-4 border-t border-gray-700">
-                  <div className="text-center">
-                    <div className="text-4xl font-black text-orange-400">{t({ en: '25.2', fa: '۲۵.۲' })}</div>
-                    <div className="text-sm text-gray-400 mt-1">{t({ en: 'Normal weight', fa: 'وزن نرمال' })}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Smart Tools */}
+      <HomeSmartTools />
 
       {/* Pricing Teaser */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
@@ -237,7 +185,7 @@ export default function Home() {
           </div>
           <h2 className="text-3xl md:text-4xl font-black mb-4">{t({ en: 'Ready to Transform?', fa: 'آماده برای تغییر هستید؟' })}</h2>
           <p className="text-gray-400 text-lg max-w-xl mx-auto mb-8">
-            {t({ en: 'Join FitPro today and get access to programs, calculators, and coaching tools — all for free to start.', fa: 'همین امروز به فیت‌پرو بپیوندید و به برنامه‌ها، ماشین‌حساب‌ها و ابزارهای مربی‌گری دسترسی پیدا کنید - شروع کاملا رایگان است.' })}
+            {t({ en: 'Join EsiFit today and get access to programs, calculators, and coaching tools — all for free to start.', fa: 'همین امروز به اسی‌فیت بپیوندید و به برنامه‌ها، ماشین‌حساب‌ها و ابزارهای مربی‌گری دسترسی پیدا کنید - شروع کاملا رایگان است.' })}
           </p>
           <Link
             to="/register"

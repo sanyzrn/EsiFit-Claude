@@ -3,10 +3,10 @@ import type { User, Exercise, Program, DietPlan, Article, BodyLog, ExerciseLog, 
 // Simple reactive store with localStorage persistence
 type Listener = () => void;
 const listeners: Set<Listener> = new Set();
-export function subscribe(fn: Listener) { listeners.add(fn); return () => listeners.delete(fn); }
+export function subscribe(fn: Listener): () => void { listeners.add(fn); return () => { listeners.delete(fn); }; }
 function notify() { listeners.forEach(fn => fn()); }
 
-const STORAGE_KEY = 'fitpro_store';
+const STORAGE_KEY = 'esifit_store';
 
 interface StoreState {
   currentUser: User | null;
@@ -32,51 +32,40 @@ function saveState() {
   notify();
 }
 
+import { doc, getDoc } from 'firebase/firestore';
+import { signOut } from 'firebase/auth';
+import { auth, db } from './firebase';
+
+export async function syncUserFromFirebase(uid: string) {
+  try {
+    const userDoc = await getDoc(doc(db, 'users', uid));
+    if (userDoc.exists()) {
+      const data = userDoc.data();
+      state.currentUser = {
+        id: uid,
+        email: data.email,
+        name: data.name,
+        role: data.role as 'ADMIN' | 'COACH' | 'USER',
+        subscriptionTier: data.subscriptionTier as 'FREE' | 'ECONOMY' | 'VIP' | 'ELITE',
+        createdAt: data.createdAt,
+        age: 28,
+        gender: 'male',
+        heightCm: 178,
+        weightKg: 80,
+        goal: 'MUSCLE_GAIN',
+        activityLevel: 'MODERATE'
+      };
+      saveState();
+    }
+  } catch (error) {
+    console.error("Error syncing user:", error);
+  }
+}
+
 export function getState() { return state; }
 
-export function login(email: string, _password: string): User | null {
-  // Demo: accept any credentials, create user on the fly
-  const demoUsers: Record<string, Partial<User>> = {
-    'admin@fitpro.com': { role: 'ADMIN', subscriptionTier: 'ELITE', name: 'Admin User' },
-    'coach@fitpro.com': { role: 'COACH', subscriptionTier: 'ELITE', name: 'Coach Smith' },
-    'vip@fitpro.com': { role: 'USER', subscriptionTier: 'VIP', name: 'VIP Member' },
-    'elite@fitpro.com': { role: 'USER', subscriptionTier: 'ELITE', name: 'Elite Member' },
-  };
-  const demo = demoUsers[email];
-  const user: User = {
-    id: 'user_' + Math.random().toString(36).slice(2, 10),
-    email,
-    name: demo?.name || email.split('@')[0],
-    role: demo?.role || 'USER',
-    subscriptionTier: demo?.subscriptionTier || 'FREE',
-    createdAt: new Date().toISOString(),
-    age: 28,
-    gender: 'male',
-    heightCm: 178,
-    weightKg: 80,
-    goal: 'MUSCLE_GAIN',
-    activityLevel: 'MODERATE',
-  };
-  state.currentUser = user;
-  saveState();
-  return user;
-}
-
-export function register(email: string, name: string, _password: string): User {
-  const user: User = {
-    id: 'user_' + Math.random().toString(36).slice(2, 10),
-    email,
-    name,
-    role: 'USER',
-    subscriptionTier: 'FREE',
-    createdAt: new Date().toISOString(),
-  };
-  state.currentUser = user;
-  saveState();
-  return user;
-}
-
-export function logout() {
+export async function logout() {
+  await signOut(auth);
   state.currentUser = null;
   saveState();
 }
@@ -95,10 +84,20 @@ export function upgradeTier(tier: SubscriptionTier) {
   }
 }
 
+function generateId(prefix: string) {
+  const uuid = typeof crypto !== 'undefined' && crypto.randomUUID
+    ? crypto.randomUUID()
+    : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+  return prefix + '_' + uuid.split('-')[0];
+}
+
 export function addBodyLog(log: Omit<BodyLog, 'id' | 'userId'>) {
   const entry: BodyLog = {
     ...log,
-    id: 'bl_' + Math.random().toString(36).slice(2, 10),
+    id: generateId('bl'),
     userId: state.currentUser?.id || '',
   };
   state.bodyLogs.push(entry);
@@ -108,7 +107,7 @@ export function addBodyLog(log: Omit<BodyLog, 'id' | 'userId'>) {
 export function addExerciseLog(log: Omit<ExerciseLog, 'id' | 'userId'>) {
   const entry: ExerciseLog = {
     ...log,
-    id: 'el_' + Math.random().toString(36).slice(2, 10),
+    id: generateId('el'),
     userId: state.currentUser?.id || '',
   };
   state.exerciseLogs.push(entry);
@@ -118,7 +117,7 @@ export function addExerciseLog(log: Omit<ExerciseLog, 'id' | 'userId'>) {
 export function addCalculatorResult(result: Omit<CalculatorResult, 'id' | 'createdAt'>) {
   const entry: CalculatorResult = {
     ...result,
-    id: 'cr_' + Math.random().toString(36).slice(2, 10),
+    id: generateId('cr'),
     createdAt: new Date().toISOString(),
   };
   state.calculatorResults.push(entry);
@@ -126,21 +125,21 @@ export function addCalculatorResult(result: Omit<CalculatorResult, 'id' | 'creat
 }
 
 export function addTicket(subject: string, message: string) {
+  const id = generateId('tk');
   const ticket: Ticket = {
-    id: 'tk_' + Math.random().toString(36).slice(2, 10),
+    id,
     userId: state.currentUser?.id || '',
     subject,
     status: 'open',
     messages: [{
-      id: 'msg_' + Math.random().toString(36).slice(2, 10),
-      ticketId: '',
+      id: generateId('msg'),
+      ticketId: id,
       senderId: state.currentUser?.id || '',
       senderName: state.currentUser?.name || 'User',
       content: message,
       createdAt: new Date().toISOString(),
     }],
   };
-  ticket.messages[0].ticketId = ticket.id;
   state.tickets.push(ticket);
   saveState();
 }
@@ -148,11 +147,15 @@ export function addTicket(subject: string, message: string) {
 export function addMessageToTicket(ticketId: string, content: string, asSender?: string) {
   const ticket = state.tickets.find(t => t.id === ticketId);
   if (ticket) {
+    let senderName = state.currentUser?.name || 'User';
+    if (asSender === 'coach') senderName = 'Coach Smith';
+    else if (asSender === 'support') senderName = 'EsiFit Support';
+    
     ticket.messages.push({
-      id: 'msg_' + Math.random().toString(36).slice(2, 10),
+      id: generateId('msg'),
       ticketId,
       senderId: asSender || state.currentUser?.id || '',
-      senderName: asSender === 'coach' ? 'Coach Smith' : state.currentUser?.name || 'User',
+      senderName,
       content,
       createdAt: new Date().toISOString(),
     });
@@ -169,15 +172,48 @@ export function toggleSavedExercise(exerciseId: string) {
 
 export function getStreak(): number {
   if (!state.currentUser) return 0;
+  
+  // Create a Set of date strings in 'YYYY-MM-DD' format using local time to match today's date
+  const loggedDates = new Set(
+    state.exerciseLogs.map(l => {
+      const d = new Date(l.date);
+      // Adjust for local timezone offset to get the correct YYYY-MM-DD string
+      const localDate = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+      return localDate.toISOString().split('T')[0];
+    })
+  );
+  
   const today = new Date();
+  const todayLocal = new Date(today.getTime() - today.getTimezoneOffset() * 60000);
+  const todayStr = todayLocal.toISOString().split('T')[0];
+  
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayLocal = new Date(yesterday.getTime() - yesterday.getTimezoneOffset() * 60000);
+  const yesterdayStr = yesterdayLocal.toISOString().split('T')[0];
+
   let streak = 0;
-  for (let i = 0; i < 365; i++) {
-    const d = new Date(today);
-    d.setDate(d.getDate() - i);
-    const ds = d.toISOString().slice(0, 10);
-    const hasLog = state.exerciseLogs.some(l => l.date.slice(0, 10) === ds);
-    if (hasLog) streak++;
-    else if (i > 0) break;
+  let currentDate = new Date(today);
+  
+  if (!loggedDates.has(todayStr) && !loggedDates.has(yesterdayStr)) {
+    return 0; // No streak active
+  }
+
+  // If today is not logged, start checking from yesterday
+  if (!loggedDates.has(todayStr)) {
+    currentDate.setDate(currentDate.getDate() - 1);
+  }
+
+  // Loop backwards day by day to count the streak
+  while (true) {
+    const dLocal = new Date(currentDate.getTime() - currentDate.getTimezoneOffset() * 60000);
+    const ds = dLocal.toISOString().split('T')[0];
+    if (loggedDates.has(ds)) {
+      streak++;
+      currentDate.setDate(currentDate.getDate() - 1);
+    } else {
+      break;
+    }
   }
   return streak;
 }

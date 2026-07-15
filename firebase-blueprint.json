@@ -1,0 +1,39 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "A user of the application",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "name": { "type": "string" },
+        "role": { "type": "string", "enum": ["USER", "COACH", "ADMIN"] },
+        "subscriptionTier": { "type": "string", "enum": ["FREE", "ECONOMY", "VIP", "ELITE"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["email", "name", "role", "subscriptionTier", "createdAt"]
+    },
+    "BodyLog": {
+      "title": "BodyLog",
+      "description": "User's body weight and fat log",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "date": { "type": "string" },
+        "weightKg": { "type": "number" },
+        "bodyFatPercent": { "type": "number" }
+      },
+      "required": ["userId", "date", "weightKg"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Store user profiles"
+    },
+    "bodyLogs/{logId}": {
+      "schema": { "$ref": "#/entities/BodyLog" },
+      "description": "Store body tracking logs"
+    }
+  }
+}

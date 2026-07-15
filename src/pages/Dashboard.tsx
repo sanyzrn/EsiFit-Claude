@@ -10,7 +10,7 @@ import {
   addTicket, addMessageToTicket, getStreak, upgradeTier, PLANS, EXERCISES
 } from '@/lib/store';
 import type { Goal, ActivityLevel } from '@/lib/types';
-import { useI18n } from '@/lib/i18n';
+import { useI18n, faDict } from '@/lib/i18n';
 
 function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState(getState());
@@ -279,9 +279,29 @@ export function DashboardPrograms() {
 }
 
 export function DashboardProgress() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [state, setState] = useState(getState());
   useEffect(() => { const u = subscribe(() => setState(getState())); return () => { u(); }; }, []);
+
+  const formatNumber = (num: number) => {
+    if (lang === 'fa') {
+      return new Intl.NumberFormat('fa-IR-u-nu-arabext').format(num);
+    }
+    return num.toString();
+  };
+
+  const formatDate = (dateStr: string) => {
+    if (!dateStr) return '';
+    try {
+      const date = new Date(dateStr);
+      if (lang === 'fa') {
+        return new Intl.DateTimeFormat('fa-IR', { month: 'short', day: 'numeric' }).format(date);
+      }
+      return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(date);
+    } catch (e) {
+      return dateStr;
+    }
+  };
 
   const [showForm, setShowForm] = useState(false);
   const [logForm, setLogForm] = useState({
@@ -413,8 +433,8 @@ export function DashboardProgress() {
             <ResponsiveContainer width="100%" height={250}>
               <LineChart data={weightData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                <XAxis dataKey="date" stroke="#9ca3af" fontSize={12} />
-                <YAxis stroke="#9ca3af" fontSize={12} />
+                <XAxis dataKey="date" stroke="#9ca3af" fontSize={12} tickFormatter={formatDate} />
+                <YAxis stroke="#9ca3af" fontSize={12} tickFormatter={formatNumber} />
                 <Tooltip contentStyle={{ background: '#1f2937', border: '1px solid #374151', borderRadius: '8px' }} />
                 <Line type="monotone" dataKey="weight" stroke="#f97316" strokeWidth={2} dot={{ fill: '#f97316' }} />
               </LineChart>
@@ -429,8 +449,8 @@ export function DashboardProgress() {
             <ResponsiveContainer width="100%" height={250}>
               <LineChart data={strengthData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                <XAxis dataKey="date" stroke="#9ca3af" fontSize={12} />
-                <YAxis stroke="#9ca3af" fontSize={12} />
+                <XAxis dataKey="date" stroke="#9ca3af" fontSize={12} tickFormatter={formatDate} />
+                <YAxis stroke="#9ca3af" fontSize={12} tickFormatter={formatNumber} />
                 <Tooltip contentStyle={{ background: '#1f2937', border: '1px solid #374151', borderRadius: '8px' }} />
                 <Line type="monotone" dataKey="estimated1RM" stroke="#3b82f6" strokeWidth={2} dot={{ fill: '#3b82f6' }} />
               </LineChart>
@@ -506,9 +526,16 @@ export function DashboardChat() {
     if (!reply || !selectedTicket) return;
     addMessageToTicket(selectedTicket, reply);
     setReply('');
-    // Simulate coach reply after 1s
     setTimeout(() => {
-      addMessageToTicket(selectedTicket, t({ en: "Thank you for your message! I'll review this and get back to you shortly. Keep up the great work with your training! 💪", fa: "از پیام شما متشکرم! این را بررسی خواهم کرد و به زودی به شما پاسخ خواهم داد. به کار عالی خود در تمرین ادامه دهید! 💪" }), 'coach');
+      const isCoachChat = state.currentUser?.subscriptionTier === 'VIP' || state.currentUser?.subscriptionTier === 'ELITE';
+      const replyTextEn = isCoachChat 
+        ? "Thank you for your message! I'll review this and get back to you shortly. Keep up the great work with your training! 💪"
+        : "Thank you for reaching out to EsiFit Support. A representative will review your ticket within 24-48 hours.";
+      const replyTextFa = isCoachChat
+        ? "از پیام شما متشکرم! این را بررسی خواهم کرد و به زودی به شما پاسخ خواهم داد. به کار عالی خود در تمرین ادامه دهید! 💪"
+        : "از تماس شما با پشتیبانی اسی‌فیت متشکریم. یک نماینده ظرف ۲۴ تا ۴۸ ساعت تیکت شما را بررسی خواهد کرد.";
+        
+      addMessageToTicket(selectedTicket, t({ en: replyTextEn, fa: replyTextFa }), isCoachChat ? 'coach' : 'support');
     }, 1500);
   };
 
@@ -641,17 +668,7 @@ export function DashboardBilling() {
                   <span>
                     {t({
                       en: f,
-                      fa: f === 'Basic macro tracking' ? 'ردیابی پایه درشت‌مغذی‌ها' :
-                          f === '3 sample workout routines' ? '۳ برنامه تمرینی نمونه' :
-                          f === 'Body weight metrics' ? 'شاخص‌های وزن بدن' :
-                          f === 'Personalized macro targets' ? 'اهداف سفارشی درشت‌مغذی‌ها' :
-                          f === 'Full access to all programs' ? 'دسترسی کامل به تمامی برنامه‌ها' :
-                          f === 'Progress photo gallery' ? 'گالری عکس‌های پیشرفت' :
-                          f === 'Priority email support' ? 'پشتیبانی ایمیل با اولویت' :
-                          f === '1-on-1 coach messaging' ? 'ارسال پیام ۱ به ۱ با مربی' :
-                          f === 'Custom weekly program adjustments' ? 'تغییرات کلیدی سفارشی برنامه در هفته' :
-                          f === 'Video form reviews' ? 'بررسی فرم حرکات با ویدیو' :
-                          f === '24/7 dedicated coach' ? 'تخصیص مربی اختصاصی ۲۴/۷' : f
+                      fa: faDict[f] || f
                     })}
                   </span>
                 </li>

@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GraduationCap, Users, MessageSquare, BarChart3, User, Target } from 'lucide-react';
 import { getState, subscribe } from '@/lib/store';
+import { useI18n } from '@/lib/i18n';
 
 export default function Coach() {
   const [state, setState] = useState(getState());
   const navigate = useNavigate();
+  const { t } = useI18n();
   const [activeTab, setActiveTab] = useState('clients');
   const [selectedClient, setSelectedClient] = useState<string | null>(null);
   useEffect(() => { const u = subscribe(() => setState(getState())); return () => { u(); }; }, []);
@@ -22,9 +24,9 @@ export default function Coach() {
   ];
 
   const tabs = [
-    { id: 'clients', icon: Users, label: 'My Clients' },
-    { id: 'messages', icon: MessageSquare, label: 'Messages' },
-    { id: 'programs', icon: Target, label: 'Program Builder' },
+    { id: 'clients', icon: Users, label: t({ en: 'My Clients', fa: 'مشتریان من' }) },
+    { id: 'messages', icon: MessageSquare, label: t({ en: 'Messages', fa: 'پیام‌ها' }) },
+    { id: 'programs', icon: Target, label: t({ en: 'Program Builder', fa: 'سازنده برنامه' }) },
   ];
 
   const client = clients.find(c => c.id === selectedClient);
@@ -36,8 +38,8 @@ export default function Coach() {
           <GraduationCap className="w-5 h-5 text-purple-400" />
         </div>
         <div>
-          <h1 className="text-2xl font-black">Coach Dashboard</h1>
-          <p className="text-sm text-gray-400">Manage your clients and programs</p>
+          <h1 className="text-2xl font-black">{t({ en: 'Coach Dashboard', fa: 'داشبورد مربی' })}</h1>
+          <p className="text-sm text-gray-400">{t({ en: 'Manage your clients and programs', fa: 'مدیریت مشتریان و برنامه‌های خود' })}</p>
         </div>
       </div>
 
@@ -59,7 +61,7 @@ export default function Coach() {
         <div className="grid md:grid-cols-3 gap-6 animate-fade-in">
           {/* Client List */}
           <div className="space-y-3">
-            <h3 className="font-bold text-sm text-gray-400 uppercase tracking-wider">Active Clients ({clients.length})</h3>
+            <h3 className="font-bold text-sm text-gray-400 uppercase tracking-wider">{t({ en: 'Active Clients', fa: 'مشتریان فعال' })} ({clients.length})</h3>
             {clients.map(c => (
               <button
                 key={c.id}
@@ -77,7 +79,7 @@ export default function Coach() {
                     <div className="text-xs text-gray-400">{c.goal} · {c.tier}</div>
                   </div>
                 </div>
-                <div className="text-xs text-gray-500 mt-2">Last active: {c.lastActive}</div>
+                <div className="text-xs text-gray-500 mt-2">{t({ en: 'Last active:', fa: 'آخرین فعالیت:' })} {c.lastActive}</div>
               </button>
             ))}
           </div>
@@ -98,22 +100,22 @@ export default function Coach() {
                   </div>
                   <div className="grid grid-cols-3 gap-4 mt-4">
                     <div className="bg-gray-800 rounded-lg p-3 text-center">
-                      <div className="text-sm text-gray-400">Weight</div>
+                      <div className="text-sm text-gray-400">{t({ en: 'Weight', fa: 'وزن' })}</div>
                       <div className="font-bold">{client.weight}</div>
                     </div>
                     <div className="bg-gray-800 rounded-lg p-3 text-center">
-                      <div className="text-sm text-gray-400">Progress</div>
+                      <div className="text-sm text-gray-400">{t({ en: 'Progress', fa: 'پیشرفت' })}</div>
                       <div className="font-bold text-green-400">{client.progress}</div>
                     </div>
                     <div className="bg-gray-800 rounded-lg p-3 text-center">
-                      <div className="text-sm text-gray-400">Last Active</div>
+                      <div className="text-sm text-gray-400">{t({ en: 'Last Active', fa: 'آخرین فعالیت' })}</div>
                       <div className="font-bold text-sm">{client.lastActive}</div>
                     </div>
                   </div>
                 </div>
 
                 <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
-                  <h3 className="font-bold mb-4">Body Log History</h3>
+                  <h3 className="font-bold mb-4">{t({ en: 'Body Log History', fa: 'تاریخچه لاگ بدن' })}</h3>
                   <div className="space-y-2">
                     {[
                       { date: 'Dec 15', weight: '82 kg', bf: '16%' },
@@ -132,17 +134,17 @@ export default function Coach() {
 
                 <div className="flex gap-3">
                   <button className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600 transition-colors">
-                    <Target className="w-4 h-4" /> Assign Program
+                    <Target className="w-4 h-4" /> {t({ en: 'Assign Program', fa: 'تخصیص برنامه' })}
                   </button>
                   <button className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gray-700 text-white font-bold rounded-lg hover:bg-gray-600 transition-colors">
-                    <MessageSquare className="w-4 h-4" /> Send Message
+                    <MessageSquare className="w-4 h-4" /> {t({ en: 'Send Message', fa: 'ارسال پیام' })}
                   </button>
                 </div>
               </div>
             ) : (
               <div className="bg-gray-900 border border-gray-800 rounded-xl p-12 text-center">
                 <User className="w-12 h-12 mx-auto mb-3 text-gray-600" />
-                <p className="text-gray-400">Select a client to view their details</p>
+                <p className="text-gray-400">{t({ en: 'Select a client to view their details', fa: 'برای مشاهده جزئیات، یک مشتری انتخاب کنید' })}</p>
               </div>
             )}
           </div>

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Check, Crown, Zap, Star } from 'lucide-react';
 import { PLANS, getState, upgradeTier, subscribe } from '@/lib/store';
 import type { SubscriptionTier } from '@/lib/types';
-import { useI18n } from '@/lib/i18n';
+import { useI18n, faDict } from '@/lib/i18n';
 
 export default function Pricing() {
   const { t } = useI18n();
@@ -88,17 +88,7 @@ export default function Pricing() {
                     <span className="text-gray-300">
                       {t({
                         en: f,
-                        fa: f === 'Basic macro tracking' ? 'ردیابی پایه درشت‌مغذی‌ها' :
-                            f === '3 sample workout routines' ? '۳ برنامه تمرینی نمونه' :
-                            f === 'Body weight metrics' ? 'شاخص‌های وزن بدن' :
-                            f === 'Personalized macro targets' ? 'اهداف سفارشی درشت‌مغذی‌ها' :
-                            f === 'Full access to all programs' ? 'دسترسی کامل به تمامی برنامه‌ها' :
-                            f === 'Progress photo gallery' ? 'گالری عکس‌های پیشرفت' :
-                            f === 'Priority email support' ? 'پشتیبانی ایمیل با اولویت' :
-                            f === '1-on-1 coach messaging' ? 'ارسال پیام ۱ به ۱ با مربی' :
-                            f === 'Custom weekly program adjustments' ? 'تغییرات کلیدی سفارشی برنامه در هفته' :
-                            f === 'Video form reviews' ? 'بررسی فرم حرکات با ویدیو' :
-                            f === '24/7 dedicated coach' ? 'تخصیص مربی اختصاصی ۲۴/۷' : f
+                        fa: faDict[f] || f
                       })}
                     </span>
                   </li>

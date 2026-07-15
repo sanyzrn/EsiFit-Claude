@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Apple, Lock, UtensilsCrossed } from 'lucide-react';
 import { DIET_PLANS, getState, subscribe } from '@/lib/store';
-import TierGate from '@/components/TierGate';
 import { hasTierAccess } from '@/lib/types';
+import TierGate from '@/components/TierGate';
+import { useI18n } from '@/lib/i18n';
 
 export function DietList() {
+  const { t } = useI18n();
   const [state, setState] = useState(getState());
   useEffect(() => { const u = subscribe(() => setState(getState())); return () => { u(); }; }, []);
   const userTier = state.currentUser?.subscriptionTier || 'FREE';
@@ -13,8 +15,8 @@ export function DietList() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-8">
-        <h1 className="text-4xl font-black mb-4">Diet Plans</h1>
-        <p className="text-gray-400 text-lg">Calorie-calculated meal plans with macros broken down per meal.</p>
+        <h1 className="text-4xl font-black mb-4">{t({ en: 'Diet Plans', fa: 'برنامه‌های غذایی' })}</h1>
+        <p className="text-gray-400 text-lg">{t({ en: 'Calorie-calculated meal plans with macros broken down per meal.', fa: 'برنامه‌های غذایی با کالری محاسبه‌شده و درشت‌مغذی‌ها برای هر وعده.' })}</p>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -32,7 +34,7 @@ export function DietList() {
                   <div className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm flex items-center justify-center">
                     <div className="text-center">
                       <Lock className="w-8 h-8 text-orange-400 mx-auto mb-2" />
-                      <span className="text-xs font-bold text-orange-400 bg-orange-500/10 px-3 py-1 rounded-full">{plan.requiredTier} Required</span>
+                      <span className="text-xs font-bold text-orange-400 bg-orange-500/10 px-3 py-1 rounded-full">{plan.requiredTier} {t({ en: 'Required', fa: 'مورد نیاز' })}</span>
                     </div>
                   </div>
                 )}
@@ -41,8 +43,8 @@ export function DietList() {
                 <h3 className="text-lg font-bold mb-2 group-hover:text-orange-400 transition-colors">{plan.title}</h3>
                 <p className="text-gray-400 text-sm mb-4 line-clamp-2">{plan.description}</p>
                 <div className="flex items-center gap-4 text-sm text-gray-400">
-                  <span className="text-orange-400 font-bold">{plan.totalCalories} kcal</span>
-                  <span>{plan.meals.length} meals</span>
+                  <span className="text-orange-400 font-bold">{plan.totalCalories} {t({ en: 'kcal', fa: 'کالری' })}</span>
+                  <span>{plan.meals.length} {t({ en: 'meals', fa: 'وعده' })}</span>
                 </div>
               </div>
             </Link>
@@ -54,6 +56,7 @@ export function DietList() {
 }
 
 export function DietDetail() {
+  const { t } = useI18n();
   const { slug } = useParams();
   const navigate = useNavigate();
   const [state, setState] = useState(getState());
@@ -63,8 +66,8 @@ export function DietDetail() {
   if (!plan) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-12 text-center">
-        <h1 className="text-2xl font-bold mb-4">Diet plan not found</h1>
-        <button onClick={() => navigate('/diet')} className="text-orange-400">← Back to diet plans</button>
+        <h1 className="text-2xl font-bold mb-4">{t({ en: 'Diet plan not found', fa: 'برنامه غذایی یافت نشد' })}</h1>
+        <button onClick={() => navigate('/diet')} className="text-orange-400">← {t({ en: 'Back to diet plans', fa: 'بازگشت به برنامه‌های غذایی' })}</button>
       </div>
     );
   }

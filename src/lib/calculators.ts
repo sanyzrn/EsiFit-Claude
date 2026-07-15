@@ -1,5 +1,7 @@
 // All calculator pure functions
 
+export type Result<T, E = string> = { ok: true; value: T } | { ok: false; error: E };
+
 export function calcBMI(weightKg: number, heightCm: number): { bmi: number; category: string } {
   const heightM = heightCm / 100;
   const bmi = weightKg / (heightM * heightM);
@@ -17,12 +19,22 @@ export function calcBodyFat(
   neckCm: number,
   heightCm: number,
   hipCm?: number
-): { bodyFatPct: number; category: string } {
+): Result<{ bodyFatPct: number; category: string }> {
+  if (gender === 'male' && waistCm <= neckCm) {
+    return { ok: false, error: 'Waist must be greater than neck circumference' };
+  }
+  
   let bf: number;
   if (gender === 'male') {
     bf = 495 / (1.0324 - 0.19077 * Math.log10(waistCm - neckCm) + 0.15456 * Math.log10(heightCm)) - 450;
   } else {
     const hip = hipCm || 0;
+    if (waistCm + hip <= neckCm) {
+      return { ok: false, error: 'Waist + Hip must be greater than neck circumference' };
+    }
+    if (waistCm <= neckCm) {
+       return { ok: false, error: 'Waist must be greater than neck circumference' };
+    }
     bf = 495 / (1.29579 - 0.35004 * Math.log10(waistCm + hip - neckCm) + 0.22100 * Math.log10(heightCm)) - 450;
   }
   bf = Math.round(bf * 10) / 10;
@@ -40,7 +52,7 @@ export function calcBodyFat(
     else if (bf < 32) category = 'Average';
     else category = 'Obese';
   }
-  return { bodyFatPct: bf, category };
+  return { ok: true, value: { bodyFatPct: bf, category } };
 }
 
 export function calcBMR(
@@ -71,14 +83,19 @@ export function calcMacros(
   weightKg: number,
   tdee: number,
   goal: 'muscle_gain' | 'fat_loss' | 'maintenance'
-): { protein: number; fat: number; carbs: number; calories: number } {
+): Result<{ protein: number; fat: number; carbs: number; calories: number }> {
   const proteinMultiplier = goal === 'muscle_gain' ? 2.0 : goal === 'fat_loss' ? 2.2 : 1.8;
   const protein = Math.round(weightKg * proteinMultiplier);
   const fat = Math.round(weightKg * 0.9);
   const remainingKcal = tdee - (protein * 4 + fat * 9);
   const carbs = Math.max(0, Math.round(remainingKcal / 4));
   const calories = protein * 4 + fat * 9 + carbs * 4;
-  return { protein, fat, carbs, calories };
+  
+  if (remainingKcal < 0) {
+    return { ok: false, error: 'TDEE is too low to support these minimum macro targets based on your weight. The calories do not reconcile.' };
+  }
+    
+  return { ok: true, value: { protein, fat, carbs, calories } };
 }
 
 export function calcOneRepMax(
@@ -143,14 +160,26 @@ export function calcGoalDate(
   currentWeight: number,
   goalWeight: number,
   weeklyCalorieDelta: number
-): { weeks: number; estimatedDate: string } {
+): Result<{ weeks: number; estimatedDate: string; message?: string }> {
+  if (currentWeight === goalWeight) {
+    return { ok: true, value: { weeks: 0, estimatedDate: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }), message: 'You have already reached your goal.' } };
+  }
+  if (weeklyCalorieDelta === 0) {
+    return { ok: false, error: 'You must have a calorie deficit/surplus to change weight.' };
+  }
+  
   const kgDiff = Math.abs(currentWeight - goalWeight);
+  // Note: 7700 kcal per kg of fat is an estimation.
   const weeks = Math.ceil((kgDiff * 7700) / Math.abs(weeklyCalorieDelta));
   const date = new Date();
   date.setDate(date.getDate() + weeks * 7);
   return {
-    weeks,
-    estimatedDate: date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+    ok: true,
+    value: {
+      weeks,
+      estimatedDate: date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+      message: 'Note: 7700 kcal per kg of fat is a simplified estimate.',
+    }
   };
 }
 

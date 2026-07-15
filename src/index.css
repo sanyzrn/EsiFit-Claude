@@ -21,7 +21,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-.farsi-font {
+html.farsi-font, html.farsi-font body {
   font-family: var(--font-fa);
 }
 

@@ -1,12 +1,124 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 
 export type Language = 'en' | 'fa';
 export type Translatable = string | { en: string; fa: string };
 
+export const faDict: Record<string, string> = {
+  // Features
+  'Basic macro tracking': 'ردیابی پایه درشت‌مغذی‌ها',
+  '3 sample workout routines': '۳ برنامه تمرینی نمونه',
+  'Body weight metrics': 'شاخص‌های وزن بدن',
+  'Personalized macro targets': 'اهداف سفارشی درشت‌مغذی‌ها',
+  'Full access to all programs': 'دسترسی کامل به تمامی برنامه‌ها',
+  'Progress photo gallery': 'گالری عکس‌های پیشرفت',
+  'Priority email support': 'پشتیبانی ایمیل با اولویت',
+  '1-on-1 coach messaging': 'ارسال پیام ۱ به ۱ با مربی',
+  'Custom weekly program adjustments': 'تغییرات کلیدی سفارشی برنامه در هفته',
+  'Video form reviews': 'بررسی فرم حرکات با ویدیو',
+  '24/7 dedicated coach': 'تخصیص مربی اختصاصی ۲۴/۷',
+  
+  // Body type quiz
+  'Thin, narrow shoulders and hips': 'لاغر، شانه‌ها و باسن باریک',
+  'Medium build, broad shoulders': 'هیکل متوسط، شانه‌های پهن',
+  'Wider build, stores fat easily': 'هیکل پهن، به راحتی چربی ذخیره می‌کند',
+  'Very hard to gain weight': 'افزایش وزن بسیار سخت است',
+  'Can gain/lose relatively easily': 'نسبتاً راحت وزن کم یا زیاد می‌کند',
+  'Gain weight easily, hard to lose': 'به راحتی وزن می‌گیرد، کاهش وزن سخت است',
+  'Small (under 16 cm / 6.3")': 'کوچک (کمتر از ۱۶ سانتی‌متر)',
+  'Medium (16-18 cm / 6.3-7")': 'متوسط (۱۶ تا ۱۸ سانتی‌متر)',
+  'Large (over 18 cm / 7"+)': 'بزرگ (بیش از ۱۸ سانتی‌متر)',
+  'Narrower than my hips': 'باریک‌تر از باسن من',
+  'Same width or wider than hips': 'هم‌عرض یا پهن‌تر از باسن',
+  'Wide but rounded': 'پهن اما گرد',
+  'I lose muscle and weight quickly': 'به سرعت عضله و وزن کم می‌کنم',
+  'Not much changes': 'تغییر زیادی نمی‌کند',
+  'I tend to gain fat': 'تمایل به افزایش چربی دارم',
+  'Very fast — I can eat a lot without gaining': 'بسیار سریع — می‌توانم زیاد بخورم بدون افزایش وزن',
+  'Moderate — predictable': 'متوسط — قابل پیش‌بینی',
+  'Slow — everything seems to stick': 'کند — همه چیز به سرعت جذب می‌شود',
+
+  // Admin & Coach & Diet & Exercise etc
+  'Admin Dashboard': 'داشبورد مدیریت',
+  'Manage users, content, and revenue': 'مدیریت کاربران، محتوا و درآمد',
+  'Overview': 'نمای کلی',
+  'Users': 'کاربران',
+  'Exercises': 'تمرین‌ها',
+  'Programs': 'برنامه‌ها',
+  'Diet Plans': 'برنامه‌های غذایی',
+  'Articles': 'مقاله‌ها',
+  'MRR': 'درآمد ماهانه',
+  'Total Users': 'کل کاربران',
+  'New This Week': 'جدید در این هفته',
+  'Paid Subscribers': 'مشترکین پولی',
+  'Revenue by Plan': 'درآمد بر اساس طرح',
+  'users': 'کاربران',
+  'Recent Support Tickets': 'تیکت‌های پشتیبانی اخیر',
+  'open': 'باز',
+  'closed': 'بسته',
+  'No recent tickets': 'تیکت اخیری وجود ندارد',
+  'Search users...': 'جستجوی کاربران...',
+  'Name / Email': 'نام / ایمیل',
+  'Role': 'نقش',
+  'Tier': 'طرح',
+  'Joined': 'تاریخ عضویت',
+  'Coach Dashboard': 'داشبورد مربی',
+  'Manage clients, programs, and messages': 'مدیریت مشتریان، برنامه‌ها و پیام‌ها',
+  'My Clients': 'مشتریان من',
+  'Messages': 'پیام‌ها',
+  'Search clients...': 'جستجوی مشتریان...',
+  'Active Plan': 'طرح فعال',
+  'Last Check-in': 'آخرین بررسی',
+  'View Details': 'مشاهده جزئیات',
+  'Select a client to view messages': 'برای مشاهده پیام‌ها یک مشتری انتخاب کنید',
+  'Send': 'ارسال',
+  'Diet Plans & Nutrition': 'برنامه‌های غذایی و تغذیه',
+  'Professional nutrition plans tailored to your goals.': 'برنامه‌های تغذیه حرفه‌ای متناسب با اهداف شما.',
+  'Search plans...': 'جستجوی برنامه‌ها...',
+  'calories': 'کالری',
+  'protein': 'پروتئین',
+  'carbs': 'کربوهیدرات',
+  'fat': 'چربی',
+  'Nutrition Guide': 'راهنمای تغذیه',
+  'Fitness & Nutrition Articles': 'مقاله‌های تناسب اندام و تغذیه',
+  'Expert advice, workout tips, and nutritional guides.': 'توصیه‌های تخصصی، نکات تمرینی و راهنماهای تغذیه.',
+  'Read More': 'بیشتر بخوانید',
+  'Exercise Library': 'کتابخانه تمرین‌ها',
+  'Search exercises...': 'جستجوی تمرین‌ها...',
+  'Search by name or muscle...': 'جستجو بر اساس نام یا عضله...',
+  'All Types': 'همه انواع',
+  'All Difficulties': 'همه سطوح دشواری',
+  'No exercises found': 'هیچ تمرینی یافت نشد',
+  'Strength': 'قدرتی',
+  'Cardio': 'هوازی',
+  'Mobility': 'تحرک',
+  'Beginner': 'مبتدی',
+  'Intermediate': 'متوسط',
+  'Advanced': 'پیشرفته',
+  'Instructions': 'دستورالعمل‌ها',
+  'Common Mistakes': 'اشتباهات رایج',
+
+  // Programs
+  'Full Body Foundation': 'برنامه پایه تمام بدن',
+  'Upper/Lower Split': 'تقسیم‌بندی بالاتنه/پایین‌تنه',
+  'Push Pull Legs': 'برنامه کششی، پرسی و پا',
+  'Perfect for beginners. Focuses on compound movements to build a solid base of strength.': 'برای مبتدیان عالی است. تمرکز بر حرکات ترکیبی برای ایجاد یک پایه قدرتی قوی و محکم.',
+  'A balanced 4-day routine targeting hypertrophy and strength development.': 'یک برنامه متعادل ۴ روزه با هدف هیپرتروفی و افزایش قدرت عضلانی.',
+  'Advanced 6-day split for maximizing muscle growth and recovery.': 'یک تقسیم پیشرفته ۶ روزه برای به حداکثر رساندن رشد عضلانی.',
+  'Full Body A': 'تمام بدن A',
+  'Full Body B': 'تمام بدن B',
+  'Upper Body Focus': 'تمرکز بالاتنه',
+  'Lower Body Focus': 'تمرکز پایین‌تنه',
+  'Upper Body Hypertrophy': 'هیپرتروفی بالاتنه',
+  'Lower Body Hypertrophy': 'هیپرتروفی پایین‌تنه',
+  'Push (Chest/Shoulders/Triceps)': 'کشش (سینه/شانه‌ها/پشت بازو)',
+  'Pull (Back/Biceps)': 'کشش (پشت/جلو بازو)',
+  'Legs Focus': 'تمرکز روی پاها',
+};
+
 interface I18nContextType {
   lang: Language;
   setLang: (lang: Language) => void;
-  t: (str: Translatable, ...args: (string | number)[]) => string;
+  t: (str: Translatable | null | undefined, ...args: (string | number)[]) => string;
   isRtl: boolean;
 }
 
@@ -15,7 +127,7 @@ const I18nContext = createContext<I18nContextType | null>(null);
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Language>(() => {
     try {
-      return (localStorage.getItem('fitpro_lang') as Language) || 'en';
+      return (localStorage.getItem('esifit_lang') as Language) || 'en';
     } catch {
       return 'en';
     }
@@ -24,7 +136,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const setLang = (newLang: Language) => {
     setLangState(newLang);
     try {
-      localStorage.setItem('fitpro_lang', newLang);
+      localStorage.setItem('esifit_lang', newLang);
     } catch {}
   };
 
@@ -40,7 +152,8 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     }
   }, [lang, isRtl]);
 
-  const t = (str: Translatable, ...args: (string | number)[]) => {
+  const t = (str: Translatable | null | undefined, ...args: (string | number)[]) => {
+    if (!str) return '';
     let result = typeof str === 'string' ? str : (str[lang] || str.en || '');
     args.forEach((arg, i) => {
       result = result.replace(new RegExp(`\\{${i}\\}`, 'g'), String(arg));

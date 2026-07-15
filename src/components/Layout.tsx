@@ -44,7 +44,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                 <Dumbbell className="w-5 h-5 text-white" />
               </div>
               <span className="text-xl font-extrabold tracking-tight">
-                Fit<span className="text-orange-500">Pro</span>
+                Esi<span className="text-orange-500">Fit</span>
               </span>
             </Link>
 
@@ -200,7 +200,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center">
                   <Dumbbell className="w-4 h-4 text-white" />
                 </div>
-                <span className="text-lg font-extrabold">Fit<span className="text-orange-500">Pro</span></span>
+                <span className="text-lg font-extrabold">Esi<span className="text-orange-500">Fit</span></span>
               </div>
               <p className="text-sm text-gray-400">{t({ en: 'Your complete fitness platform for training, nutrition, and coaching.', fa: 'پلتفرم جامع تناسب اندام شما برای تمرین، تغذیه و مربیگری.' })}</p>
             </div>
@@ -230,7 +230,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-gray-800 text-center text-sm text-gray-500">
-            {t({ en: `© ${new Date().getFullYear()} FitPro. All rights reserved. This is a demo platform for educational purposes.`, fa: `© ${new Date().getFullYear()} فیت‌پرو. تمامی حقوق محفوظ است. این یک پلتفرم آزمایشی جهت مقاصد آموزشی است.` })}
+            {t({ en: `© ${new Date().getFullYear()} EsiFit. All rights reserved. This is a demo platform for educational purposes.`, fa: `© ${new Date().getFullYear()} اسی‌فیت. تمامی حقوق محفوظ است. این یک پلتفرم آزمایشی جهت مقاصد آموزشی است.` })}
           </div>
         </div>
       </footer>

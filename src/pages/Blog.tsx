@@ -1,13 +1,15 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Calendar, Tag } from 'lucide-react';
 import { ARTICLES } from '@/lib/store';
+import { useI18n } from '@/lib/i18n';
 
 export function BlogList() {
+  const { t, lang } = useI18n();
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-8">
         <h1 className="text-4xl font-black mb-4">Blog</h1>
-        <p className="text-gray-400 text-lg">Evidence-based articles on training, nutrition, and recovery.</p>
+        <p className="text-gray-400 text-lg">{t({ en: 'Evidence-based articles on training, nutrition, and recovery.', fa: 'مقاله‌های مبتنی بر شواهد در زمینه تمرین، تغذیه و بازیابی.' })}</p>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -26,7 +28,7 @@ export function BlogList() {
             </div>
             <div className="p-5">
               <div className="flex items-center gap-3 mb-3 text-xs text-gray-400">
-                <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{new Date(article.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{new Date(article.publishedAt).toLocaleDateString(lang === 'fa' ? 'fa-IR' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                 <span className="flex items-center gap-1"><Tag className="w-3 h-3" />{article.category}</span>
               </div>
               <h3 className="text-lg font-bold mb-2 group-hover:text-orange-400 transition-colors">{article.title}</h3>
@@ -40,6 +42,7 @@ export function BlogList() {
 }
 
 export function BlogDetail() {
+  const { t, lang } = useI18n();
   const { slug } = useParams();
   const navigate = useNavigate();
   const article = ARTICLES.find(a => a.slug === slug);
@@ -47,8 +50,8 @@ export function BlogDetail() {
   if (!article) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-12 text-center">
-        <h1 className="text-2xl font-bold mb-4">Article not found</h1>
-        <button onClick={() => navigate('/blog')} className="text-orange-400">← Back to blog</button>
+        <h1 className="text-2xl font-bold mb-4">{t({ en: 'Article not found', fa: 'مقاله یافت نشد' })}</h1>
+        <button onClick={() => navigate('/blog')} className="text-orange-400">← {t({ en: 'Back to blog', fa: 'بازگشت به وبلاگ' })}</button>
       </div>
     );
   }
@@ -80,12 +83,12 @@ export function BlogDetail() {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <button onClick={() => navigate('/blog')} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-6">
-        <ArrowLeft className="w-4 h-4" /> Back to Blog
+        <ArrowLeft className="w-4 h-4 rtl:rotate-180" /> {t({ en: 'Back to Blog', fa: 'بازگشت به وبلاگ' })}
       </button>
 
       <article className="bg-gray-900 border border-gray-800 rounded-2xl p-6 md:p-10">
         <div className="flex items-center gap-3 mb-4 text-sm text-gray-400">
-          <span className="flex items-center gap-1"><Calendar className="w-4 h-4" />{new Date(article.publishedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+          <span className="flex items-center gap-1"><Calendar className="w-4 h-4" />{new Date(article.publishedAt).toLocaleDateString(lang === 'fa' ? 'fa-IR' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
           <span className="px-2 py-0.5 rounded-full bg-orange-500/10 text-orange-400 text-xs font-medium">{article.category}</span>
         </div>
         <h1 className="text-3xl md:text-4xl font-black mb-6">{article.title}</h1>
