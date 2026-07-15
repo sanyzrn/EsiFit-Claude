@@ -29,7 +29,7 @@ export function TopNav({ user }: TopNavProps) {
   const navLinkClass = (href: string, secondary = false) => {
     const active = isNavActive(location.pathname, href);
     if (active) {
-      return 'text-orange-400 bg-orange-500/10';
+      return 'text-brand bg-brand-muted';
     }
     return secondary
       ? 'text-fg-subtle hover:text-fg-muted hover:bg-elevated'
@@ -41,11 +41,11 @@ export function TopNav({ user }: TopNavProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-orange-500 to-teal-600 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg gradient-brand flex items-center justify-center shadow-md shadow-brand/20">
               <Dumbbell className="w-5 h-5 text-white" />
             </div>
             <span className="text-xl font-extrabold tracking-tight">
-              Esi<span className="text-orange-500">Fit</span>
+              Esi<span className="text-brand">Fit</span>
             </span>
           </Link>
 
@@ -114,14 +114,14 @@ export function TopNav({ user }: TopNavProps) {
                   <button
                     type="button"
                     onClick={() => { setLang('en'); setLangMenuOpen(false); }}
-                    className={`w-full text-start px-4 py-2 text-sm transition-colors ${lang === 'en' ? 'text-orange-400 bg-elevated' : 'hover:bg-elevated'}`}
+                    className={`w-full text-start px-4 py-2 text-sm transition-colors ${lang === 'en' ? 'text-brand bg-elevated' : 'hover:bg-elevated'}`}
                   >
                     English
                   </button>
                   <button
                     type="button"
                     onClick={() => { setLang('fa'); setLangMenuOpen(false); }}
-                    className={`w-full text-start px-4 py-2 text-sm transition-colors ${lang === 'fa' ? 'text-orange-400 bg-elevated' : 'hover:bg-elevated'}`}
+                    className={`w-full text-start px-4 py-2 text-sm transition-colors ${lang === 'fa' ? 'text-brand bg-elevated' : 'hover:bg-elevated'}`}
                   >
                     فارسی
                   </button>
@@ -143,7 +143,7 @@ export function TopNav({ user }: TopNavProps) {
                 <Link to="/login" className="px-4 py-2 text-sm font-medium text-fg-muted hover:text-fg transition-colors">
                   {t({ en: 'Sign In', fa: 'ورود' })}
                 </Link>
-                <Link to="/register" className="px-4 py-2 text-sm font-bold rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors">
+                <Link to="/register" className="px-4 py-2 text-sm font-bold rounded-lg gradient-brand text-[#1a1410] hover:brightness-110 transition-all">
                   {t({ en: 'Get Started', fa: 'شروع کنید' })}
                 </Link>
               </div>
@@ -168,7 +168,7 @@ export function TopNav({ user }: TopNavProps) {
                 className="p-2 rounded-lg hover:bg-elevated"
                 aria-label={t({ en: 'Dashboard', fa: 'داشبورد' })}
               >
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-teal-600 flex items-center justify-center text-xs font-bold text-white">
+                <div className="w-8 h-8 rounded-full gradient-brand flex items-center justify-center text-xs font-bold text-[#1a1410]">
                   {user.name?.[0]?.toUpperCase() || 'U'}
                 </div>
               </Link>

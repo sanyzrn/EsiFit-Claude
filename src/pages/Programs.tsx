@@ -7,6 +7,7 @@ import { hasTierAccess } from '@/lib/types';
 import { useI18n } from '@/lib/i18n';
 import { localizedProgram } from '@/lib/content-i18n';
 import { useEntitlements } from '@/lib/entitlements';
+import { programImage } from '@/lib/media';
 
 const goalColors: Record<string, string> = { MUSCLE_GAIN: 'bg-blue-500/20 text-blue-400', FAT_LOSS: 'bg-red-500/20 text-red-400', GENERAL_FITNESS: 'bg-green-500/20 text-green-400', STRENGTH: 'bg-purple-500/20 text-purple-400' };
 
@@ -33,19 +34,32 @@ export function ProgramList() {
         {PROGRAMS.map(prog => {
           const locked = !hasTierAccess(userTier, prog.requiredTier);
           const copy = localizedProgram(prog, lang);
+          const img = programImage(prog.slug);
           return (
             <Link
               key={prog.id}
               to={`/programs/${prog.slug}`}
-              className="group bg-surface border border-border rounded-2xl overflow-hidden hover:border-strong transition-all relative"
+              className="group card-iranian overflow-hidden hover:border-brand/40 transition-all relative p-0"
             >
-              <div className="h-48 bg-gradient-to-br from-orange-500/10 to-orange-600/5 flex items-center justify-center relative">
-                <Target className="w-16 h-16 text-orange-500/30" />
+              <div className="h-48 relative overflow-hidden">
+                {img ? (
+                  <img
+                    src={img.src}
+                    alt={t(img.alt)}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="h-full gradient-hero flex items-center justify-center">
+                    <Target className="w-16 h-16 text-brand/30" />
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent" />
                 {locked && (
                   <div className="absolute inset-0 bg-surface/60 backdrop-blur-sm flex items-center justify-center">
                     <div className="text-center">
-                      <Lock className="w-8 h-8 text-orange-400 mx-auto mb-2" />
-                      <span className="text-xs font-bold text-orange-400 bg-orange-500/10 px-3 py-1 rounded-full">{prog.requiredTier} {t({ en: 'Required', fa: 'نیاز است' })}</span>
+                      <Lock className="w-8 h-8 text-brand mx-auto mb-2" />
+                      <span className="text-xs font-bold text-brand bg-brand-muted px-3 py-1 rounded-full">{prog.requiredTier} {t({ en: 'Required', fa: 'نیاز است' })}</span>
                     </div>
                   </div>
                 )}
@@ -59,7 +73,7 @@ export function ProgramList() {
                     {copy.level}
                   </span>
                 </div>
-                <h3 className="text-lg font-bold mb-2 group-hover:text-orange-400 transition-colors">
+                <h3 className="text-lg font-bold mb-2 group-hover:text-brand transition-colors font-display">
                   {copy.title}
                 </h3>
                 <p className="text-fg-subtle text-sm mb-4 line-clamp-2">

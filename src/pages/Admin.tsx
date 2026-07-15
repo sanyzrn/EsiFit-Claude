@@ -4,6 +4,8 @@ import { Shield, Users, DollarSign, TrendingUp, BarChart3, FileText, Dumbbell, A
 import { getState, subscribe, PLANS, EXERCISES, PROGRAMS, DIET_PLANS, ARTICLES } from '@/lib/store';
 import { useI18n } from '@/lib/i18n';
 import { useEntitlements } from '@/lib/entitlements';
+import { AdminCharts } from '@/components/charts/IranianCharts';
+import { IconBadge } from '@/components/ui/IconBadge';
 
 export default function Admin() {
   const [state, setState] = useState(getState());
@@ -42,12 +44,27 @@ export default function Admin() {
   const eliteCount = demoUsers.filter(u => u.tier === 'ELITE' && u.role === 'USER').length;
   const mrr = vipCount * 2999 + economyCount * 999 + eliteCount * 7999;
 
+  const revenueByPlan = PLANS.filter(p => p.priceMonthly > 0).map((plan) => {
+    const count = demoUsers.filter(u => u.tier === plan.tier && u.role === 'USER').length;
+    return {
+      name: plan.name,
+      revenue: (plan.priceMonthly * count) / 100,
+      users: count,
+    };
+  });
+
+  const userGrowth = [
+    { month: 'Sep', users: 2, paid: 1 },
+    { month: 'Oct', users: 3, paid: 2 },
+    { month: 'Nov', users: 4, paid: 3 },
+    { month: 'Dec', users: 5, paid: 4 },
+    { month: 'Jan', users: 6, paid: 4 },
+  ];
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex items-center gap-3 mb-8">
-        <div className="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center">
-          <Shield className="w-5 h-5 text-red-400" />
-        </div>
+        <IconBadge icon={Shield} variant="terracotta" size="md" />
         <div>
           <h1 className="text-2xl font-black">{t({ en: 'Admin Dashboard', fa: 'داشبورد مدیریت' })}</h1>
           <p className="text-sm text-fg-subtle">{t({ en: 'Manage users, content, and revenue', fa: 'مدیریت کاربران، محتوا و درآمد' })}</p>
@@ -60,7 +77,7 @@ export default function Admin() {
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-colors ${
-              activeTab === tab.id ? 'bg-orange-500 text-white' : 'bg-elevated text-fg-muted hover:bg-elevated-hover'
+              activeTab === tab.id ? 'bg-brand text-[#1a1410] font-bold' : 'bg-elevated text-fg-muted hover:bg-elevated-hover'
             }`}
           >
             <tab.icon className="w-4 h-4" /> {tab.label}
@@ -71,26 +88,28 @@ export default function Admin() {
       {activeTab === 'overview' && (
         <div className="space-y-6 animate-fade-in">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-surface border border-border rounded-xl p-5">
-              <div className="flex items-center gap-2 mb-2"><DollarSign className="w-5 h-5 text-green-400" /><span className="text-sm text-fg-subtle">{t({ en: 'MRR', fa: 'درآمد ماهانه' })}</span></div>
-              <div className="text-3xl font-black text-green-400">${(mrr / 100).toFixed(0)}</div>
+            <div className="card-iranian p-5">
+              <div className="flex items-center gap-2 mb-2"><DollarSign className="w-5 h-5 text-success" /><span className="text-sm text-fg-subtle">{t({ en: 'MRR', fa: 'درآمد ماهانه' })}</span></div>
+              <div className="text-3xl font-black text-success font-display">${(mrr / 100).toFixed(0)}</div>
             </div>
-            <div className="bg-surface border border-border rounded-xl p-5">
-              <div className="flex items-center gap-2 mb-2"><Users className="w-5 h-5 text-blue-400" /><span className="text-sm text-fg-subtle">{t({ en: 'Total Users', fa: 'کل کاربران' })}</span></div>
-              <div className="text-3xl font-black">{demoUsers.length}</div>
+            <div className="card-iranian p-5">
+              <div className="flex items-center gap-2 mb-2"><Users className="w-5 h-5 text-accent" /><span className="text-sm text-fg-subtle">{t({ en: 'Total Users', fa: 'کل کاربران' })}</span></div>
+              <div className="text-3xl font-black font-display">{demoUsers.length}</div>
             </div>
-            <div className="bg-surface border border-border rounded-xl p-5">
-              <div className="flex items-center gap-2 mb-2"><TrendingUp className="w-5 h-5 text-orange-400" /><span className="text-sm text-fg-subtle">{t({ en: 'New This Week', fa: 'جدید در این هفته' })}</span></div>
-              <div className="text-3xl font-black">3</div>
+            <div className="card-iranian p-5">
+              <div className="flex items-center gap-2 mb-2"><TrendingUp className="w-5 h-5 text-brand" /><span className="text-sm text-fg-subtle">{t({ en: 'New This Week', fa: 'جدید در این هفته' })}</span></div>
+              <div className="text-3xl font-black font-display">3</div>
             </div>
-            <div className="bg-surface border border-border rounded-xl p-5">
-              <div className="flex items-center gap-2 mb-2"><Users className="w-5 h-5 text-purple-400" /><span className="text-sm text-fg-subtle">{t({ en: 'Paid Subscribers', fa: 'مشترکین پولی' })}</span></div>
-              <div className="text-3xl font-black">{vipCount + economyCount + eliteCount}</div>
+            <div className="card-iranian p-5">
+              <div className="flex items-center gap-2 mb-2"><Users className="w-5 h-5 text-terracotta" /><span className="text-sm text-fg-subtle">{t({ en: 'Paid Subscribers', fa: 'مشترکین پولی' })}</span></div>
+              <div className="text-3xl font-black font-display">{vipCount + economyCount + eliteCount}</div>
             </div>
           </div>
 
+          <AdminCharts revenueByPlan={revenueByPlan} userGrowth={userGrowth} mrr={mrr} />
+
           <div className="grid md:grid-cols-2 gap-4">
-            <div className="bg-surface border border-border rounded-xl p-5">
+            <div className="card-iranian p-5">
               <h3 className="font-bold mb-4">{t({ en: 'Revenue by Plan', fa: 'درآمد بر اساس طرح' })}</h3>
               {PLANS.filter(p => p.priceMonthly > 0).map(plan => {
                 const count = demoUsers.filter(u => u.tier === plan.tier && u.role === 'USER').length;
@@ -102,7 +121,7 @@ export default function Admin() {
                 );
               })}
             </div>
-            <div className="bg-surface border border-border rounded-xl p-5">
+            <div className="card-iranian p-5">
               <h3 className="font-bold mb-4">{t({ en: 'Content Overview', fa: 'نمای کلی محتوا' })}</h3>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">

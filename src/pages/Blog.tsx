@@ -34,7 +34,7 @@ export function BlogList() {
                 <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{new Date(article.publishedAt).toLocaleDateString(lang === 'fa' ? 'fa-IR' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                 <span className="flex items-center gap-1"><Tag className="w-3 h-3" />{copy.category}</span>
               </div>
-              <h3 className="text-lg font-bold mb-2 group-hover:text-orange-400 transition-colors">{copy.title}</h3>
+              <h3 className="text-lg font-bold mb-2 group-hover:text-brand transition-colors font-display">{copy.title}</h3>
               <p className="text-fg-subtle text-sm line-clamp-3">{copy.excerpt}</p>
             </div>
           </Link>

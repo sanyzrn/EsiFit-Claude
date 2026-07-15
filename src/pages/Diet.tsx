@@ -6,6 +6,7 @@ import TierGate from '@/components/TierGate';
 import { useI18n } from '@/lib/i18n';
 import { localizedDietPlan } from '@/lib/content-i18n';
 import { useEntitlements } from '@/lib/entitlements';
+import { dietImage } from '@/lib/media';
 
 export function DietList() {
   const { t, lang } = useI18n();
@@ -23,28 +24,41 @@ export function DietList() {
         {DIET_PLANS.map(plan => {
           const locked = !hasTierAccess(userTier, plan.requiredTier);
           const copy = localizedDietPlan(plan, lang);
+          const img = dietImage(plan.slug);
           return (
             <Link
               key={plan.id}
               to={`/diet/${plan.slug}`}
-              className="group bg-surface border border-border rounded-2xl overflow-hidden hover:border-strong transition-all relative"
+              className="group card-iranian overflow-hidden hover:border-accent/40 transition-all relative p-0"
             >
-              <div className="h-48 bg-gradient-to-br from-green-500/10 to-green-600/5 flex items-center justify-center relative">
-                <Apple className="w-16 h-16 text-green-500/30" />
+              <div className="h-48 relative overflow-hidden">
+                {img ? (
+                  <img
+                    src={img.src}
+                    alt={t(img.alt)}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="h-full bg-accent-muted flex items-center justify-center">
+                    <Apple className="w-16 h-16 text-accent/30" />
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent" />
                 {locked && (
                   <div className="absolute inset-0 bg-surface/60 backdrop-blur-sm flex items-center justify-center">
                     <div className="text-center">
-                      <Lock className="w-8 h-8 text-orange-400 mx-auto mb-2" />
-                      <span className="text-xs font-bold text-orange-400 bg-orange-500/10 px-3 py-1 rounded-full">{plan.requiredTier} {t({ en: 'Required', fa: 'مورد نیاز' })}</span>
+                      <Lock className="w-8 h-8 text-brand mx-auto mb-2" />
+                      <span className="text-xs font-bold text-brand bg-brand-muted px-3 py-1 rounded-full">{plan.requiredTier} {t({ en: 'Required', fa: 'مورد نیاز' })}</span>
                     </div>
                   </div>
                 )}
               </div>
               <div className="p-5">
-                <h3 className="text-lg font-bold mb-2 group-hover:text-orange-400 transition-colors">{copy.title}</h3>
+                <h3 className="text-lg font-bold mb-2 group-hover:text-accent transition-colors font-display">{copy.title}</h3>
                 <p className="text-fg-subtle text-sm mb-4 line-clamp-2">{copy.description}</p>
                 <div className="flex items-center gap-4 text-sm text-fg-subtle">
-                  <span className="text-orange-400 font-bold">{plan.totalCalories} {t({ en: 'kcal', fa: 'کالری' })}</span>
+                  <span className="text-brand font-bold">{plan.totalCalories} {t({ en: 'kcal', fa: 'کالری' })}</span>
                   <span>{plan.meals.length} {t({ en: 'meals', fa: 'وعده' })}</span>
                 </div>
               </div>

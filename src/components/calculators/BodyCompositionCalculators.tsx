@@ -25,7 +25,13 @@ export function BmiCalculator() {
         <div className="flex flex-col items-center">
           {result.ok ? (
             <>
-              <CircularGauge value={result.value.bmi} min={10} max={40} label={t({ en: 'BMI', fa: 'شاخص BMI' })} color={result.value.bmi > 25 ? '#ef4444' : result.value.bmi < 18.5 ? '#eab308' : '#22c55e'} />
+              <CircularGauge
+                value={result.value.bmi}
+                min={10}
+                max={40}
+                label={t({ en: 'BMI', fa: 'شاخص BMI' })}
+                status={result.value.bmi > 25 ? 'high' : result.value.bmi < 18.5 ? 'low' : 'ok'}
+              />
               <div className="mt-4 text-xl font-bold">{result.value.category}</div>
             </>
           ) : (
@@ -66,7 +72,7 @@ export function BodyFatCalculator() {
         <div className="flex flex-col items-center">
           {result.ok ? (
             <>
-              <CircularGauge value={result.value.bodyFatPct} min={0} max={40} label={t({ en: 'Body Fat %', fa: 'درصد چربی' })} color="#3b82f6" />
+              <CircularGauge value={result.value.bodyFatPct} min={0} max={40} label={t({ en: 'Body Fat %', fa: 'درصد چربی' })} status="neutral" />
               <div className="mt-4 text-xl font-bold">{result.value.category}</div>
             </>
           ) : (
