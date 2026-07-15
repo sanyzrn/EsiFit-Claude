@@ -1,7 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
-import { doc, getDocFromServer } from 'firebase/firestore';
-import { auth, db } from './firebase';
+import { fetchMe, getAuthToken, type ApiUser } from './api-client';
 import type { Role, SubscriptionTier } from './types';
 
 export interface Entitlements {
@@ -26,7 +24,7 @@ function notifyEntitlements() {
 
 export function subscribeEntitlements(fn: Listener): () => void {
   listeners.add(fn);
-  fn(cachedEntitlements);
+  queueMicrotask(() => fn(cachedEntitlements));
   return () => { listeners.delete(fn); };
 }
 
@@ -34,51 +32,29 @@ export function getCachedEntitlements(): Entitlements | null {
   return cachedEntitlements;
 }
 
-/** Read role/tier from custom claims, falling back to a live Firestore read. */
-export async function fetchEntitlements(
-  firebaseUser?: FirebaseUser | null,
-  forceRefresh = false
-): Promise<Entitlements | null> {
-  const user = firebaseUser ?? auth.currentUser;
-  if (!user) return null;
-
-  try {
-    const token = await user.getIdTokenResult(forceRefresh);
-    const role = token.claims.role;
-    const tier = token.claims.subscriptionTier;
-    if (
-      typeof role === 'string' && ['USER', 'COACH', 'ADMIN'].includes(role) &&
-      typeof tier === 'string' && ['FREE', 'ECONOMY', 'VIP', 'ELITE'].includes(tier)
-    ) {
-      return { role: role as Role, subscriptionTier: tier as SubscriptionTier };
-    }
-  } catch (error) {
-    console.error('Failed to read custom claims:', error);
-  }
-
-  try {
-    const snap = await getDocFromServer(doc(db, 'users', user.uid));
-    if (snap.exists()) {
-      const data = snap.data();
-      const role = data.role;
-      const tier = data.subscriptionTier;
-      return {
-        role: (typeof role === 'string' && ['USER', 'COACH', 'ADMIN'].includes(role)
-          ? role : 'USER') as Role,
-        subscriptionTier: (typeof tier === 'string' && ['FREE', 'ECONOMY', 'VIP', 'ELITE'].includes(tier)
-          ? tier : 'FREE') as SubscriptionTier,
-      };
-    }
-  } catch (error) {
-    console.error('Failed to read Firestore entitlements:', error);
-  }
-
-  return DEFAULT_ENTITLEMENTS;
+function entitlementsFromUser(user: ApiUser): Entitlements {
+  return {
+    role: user.role,
+    subscriptionTier: user.subscriptionTier,
+  };
 }
 
-export async function refreshEntitlements(forceRefresh = true): Promise<Entitlements | null> {
+/** Read role/tier from the API (server-trusted). */
+export async function fetchEntitlements(): Promise<Entitlements | null> {
+  if (!getAuthToken()) return null;
+
+  try {
+    const { entitlements } = await fetchMe();
+    return entitlements;
+  } catch (error) {
+    console.error('Failed to fetch entitlements:', error);
+    return DEFAULT_ENTITLEMENTS;
+  }
+}
+
+export async function refreshEntitlements(): Promise<Entitlements | null> {
   if (!fetchPromise) {
-    fetchPromise = fetchEntitlements(auth.currentUser, forceRefresh).finally(() => {
+    fetchPromise = fetchEntitlements().finally(() => {
       fetchPromise = null;
     });
   }
@@ -88,6 +64,11 @@ export async function refreshEntitlements(forceRefresh = true): Promise<Entitlem
   return result;
 }
 
+export function setEntitlementsFromUser(user: ApiUser): void {
+  cachedEntitlements = entitlementsFromUser(user);
+  notifyEntitlements();
+}
+
 export function clearEntitlements() {
   cachedEntitlements = null;
   notifyEntitlements();
@@ -95,39 +76,34 @@ export function clearEntitlements() {
 
 export function useEntitlements() {
   const [entitlements, setEntitlements] = useState<Entitlements | null>(getCachedEntitlements());
-  const [loading, setLoading] = useState(auth.currentUser != null && entitlements == null);
+  const [loading, setLoading] = useState(
+    () => getAuthToken() != null && getCachedEntitlements() == null
+  );
 
   const refresh = useCallback(async () => {
-    if (!auth.currentUser) {
-      setEntitlements(null);
-      setLoading(false);
+    if (!getAuthToken()) {
+      clearEntitlements();
       return;
     }
     setLoading(true);
-    const next = await refreshEntitlements(true);
-    setEntitlements(next);
+    await refreshEntitlements();
     setLoading(false);
   }, []);
 
   useEffect(() => {
-    const unsubEntitlements = subscribeEntitlements(setEntitlements);
-    const unsubAuth = onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        clearEntitlements();
-        setEntitlements(null);
-        setLoading(false);
-        return;
-      }
-      setLoading(true);
-      const next = await refreshEntitlements(true);
-      setEntitlements(next);
-      setLoading(false);
-    });
-    return () => {
-      unsubEntitlements();
-      unsubAuth();
-    };
-  }, []);
+    const unsub = subscribeEntitlements(setEntitlements);
+
+    if (!getAuthToken()) {
+      clearEntitlements();
+      return unsub;
+    }
+
+    if (getCachedEntitlements() == null) {
+      void refreshEntitlements().finally(() => setLoading(false));
+    }
+
+    return unsub;
+  }, [refresh]);
 
   return {
     entitlements,
