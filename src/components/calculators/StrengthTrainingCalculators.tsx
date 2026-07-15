@@ -31,7 +31,7 @@ export function OneRepMaxCalculator() {
           {oneRMResult.ok ? (
             <>
               <div className="text-sm text-fg-subtle mb-1">{t({ en: 'Estimated 1RM', fa: 'رکورد تخمینی' })}</div>
-              <div className="text-5xl font-black text-orange-400 mb-6"><PersianNumber value={oneRMResult.value} /> <span className="text-xl">kg</span></div>
+              <div className="text-5xl font-black text-brand mb-6"><PersianNumber value={oneRMResult.value} /> <span className="text-xl">kg</span></div>
 
               <div className="w-full bg-elevated rounded-xl overflow-hidden border border-strong">
                 <div className="grid grid-cols-3 bg-elevated-hover/50 p-2 text-xs font-bold text-fg-subtle">
@@ -42,7 +42,7 @@ export function OneRepMaxCalculator() {
                 <div className="divide-y divide-border max-h-48 overflow-y-auto custom-scrollbar">
                   {table.map((row) => (
                     <div key={row.percentage} className="grid grid-cols-3 p-2 text-sm">
-                      <div className="text-center font-medium text-orange-400"><PersianNumber value={row.percentage} />%</div>
+                      <div className="text-center font-medium text-brand"><PersianNumber value={row.percentage} />%</div>
                       <div className="text-center font-bold"><PersianNumber value={row.weight} /> kg</div>
                       <div className="text-center text-fg-subtle"><PersianNumber value={row.reps} /></div>
                     </div>
@@ -51,7 +51,7 @@ export function OneRepMaxCalculator() {
               </div>
             </>
           ) : (
-            <div className="text-red-400 font-medium p-4 bg-red-400/10 rounded-xl border border-red-400/20">{oneRMResult.error}</div>
+            <div className="text-danger font-medium p-4 bg-danger/10 rounded-xl border border-danger/20">{oneRMResult.error}</div>
           )}
         </div>
       }
@@ -80,7 +80,7 @@ export function VolumeLoadCalculator() {
       }
       results={
         <div className="flex flex-col items-center">
-          <div className="text-5xl font-black text-orange-400 mb-2"><PersianNumber value={result} /></div>
+          <div className="text-5xl font-black text-brand mb-2"><PersianNumber value={result} /></div>
           <div className="text-fg-subtle font-medium">{t({ en: 'kg Total Volume', fa: 'کیلوگرم حجم کل' })}</div>
         </div>
       }

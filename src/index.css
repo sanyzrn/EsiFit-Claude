@@ -292,7 +292,4 @@ html[data-theme="light"] .persian-pattern {
   animation: shimmer 1.4s ease-in-out infinite;
 }
 
-/* Kill legacy glow utility if referenced */
-.animate-pulse-glow {
-  animation: none;
-}
+/* Legacy glow utility neutralized — do not reintroduce */

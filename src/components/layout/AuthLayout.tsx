@@ -6,7 +6,7 @@ import { PAGE_CONTAINER_CLASS } from '@/components/ui/PageContainer';
 export function AuthLayout() {
   return (
     <div className="min-h-screen bg-app text-fg flex flex-col overflow-x-hidden">
-      <header className="border-b border-border bg-app/90 backdrop-blur-md">
+      <header className="border-b border-border bg-app">
         <div className={`${PAGE_CONTAINER_CLASS} h-14 flex items-center`}>
           <Link to="/" className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-[12px] bg-brand flex items-center justify-center">

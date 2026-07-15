@@ -113,7 +113,7 @@ export function MacrosCalculator() {
               ]} />
             </>
           ) : (
-            <div className="text-red-400 font-medium p-4 bg-red-400/10 rounded-xl border border-red-400/20">{result.error}</div>
+            <div className="text-danger font-medium p-4 bg-danger/10 rounded-xl border border-danger/20">{result.error}</div>
           )}
         </div>
       }

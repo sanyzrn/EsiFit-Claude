@@ -19,10 +19,11 @@ export function Card({
   children,
   padding = 'md',
   elevated = false,
-  pattern: _pattern = false,
+  pattern: _unusedPattern = false,
   className = '',
   ...props
 }: CardProps) {
+  void _unusedPattern;
   return (
     <div
       className={[

@@ -7,6 +7,7 @@ import {
   StrengthTrainingTab,
   HealthLifestyleTab,
 } from '@/components/calculators/lazy';
+import { PAGE_CONTAINER_CLASS } from '@/components/ui/PageContainer';
 
 export default function HomeSmartTools() {
   const { t } = useI18n();
@@ -20,13 +21,13 @@ export default function HomeSmartTools() {
   ] as const;
 
   return (
-    <section className="bg-gradient-to-b from-app via-surface to-app py-20" id="smart-tools">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-5xl font-black mb-4">
+    <section className="bg-surface border-y border-border py-20" id="smart-tools">
+      <div className={PAGE_CONTAINER_CLASS}>
+        <div className="text-center mb-14">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 font-display">
             {t({ en: '14 Free Fitness Calculators', fa: '۱۴ ماشین حساب رایگان تناسب اندام' })}
           </h2>
-          <p className="text-fg-subtle text-lg max-w-2xl mx-auto">
+          <p className="text-fg-subtle text-lg max-w-2xl mx-auto leading-relaxed">
             {t({
               en: 'Instant, science-based estimates to guide your training. Fully interactive, no reload required.',
               fa: 'برآوردهای علمی فوری برای هدایت تمرینات شما. کاملاً تعاملی و بدون نیاز به بارگذاری مجدد.'
@@ -35,39 +36,37 @@ export default function HomeSmartTools() {
         </div>
 
         <div className="flex flex-wrap justify-center gap-2 mb-12">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-6 py-3 rounded-xl font-bold transition-all relative ${
-                activeTab === tab.id ? 'text-fg' : 'text-fg-subtle hover:text-fg-muted bg-surface border border-border'
-              }`}
-            >
-              {activeTab === tab.id && (
-                <motion.div
-                  layoutId="activeTabBg"
-                  className="absolute inset-0 bg-orange-600 rounded-xl"
-                  initial={false}
-                  transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-                />
-              )}
-              <span className="relative z-10">{tab.label}</span>
-            </button>
-          ))}
+          {tabs.map((tab) => {
+            const active = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-5 py-3 rounded-[12px] text-sm font-semibold transition-colors duration-[180ms] border ${
+                  active
+                    ? 'bg-brand text-brand-fg border-brand'
+                    : 'text-fg-subtle hover:text-fg bg-app border-border hover:bg-elevated'
+                }`}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
         </div>
 
-        <div className="min-h-[600px]">
+        <div className="min-h-[560px]">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.18 }}
             >
               <Suspense fallback={
-                <div className="flex justify-center items-center h-64">
-                  <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+                <div className="flex justify-center items-center h-64" role="status">
+                  <div className="w-8 h-8 border-4 border-brand border-t-transparent rounded-full animate-spin" />
                 </div>
               }>
                 {activeTab === 'body' && <BodyCompositionTab />}

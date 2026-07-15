@@ -58,7 +58,7 @@ export function ProgramList() {
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent" />
                 {locked && (
-                  <div className="absolute inset-0 bg-surface/60 backdrop-blur-sm flex items-center justify-center">
+                  <div className="absolute inset-0 bg-surface/70 flex items-center justify-center">
                     <div className="text-center">
                       <Lock className="w-8 h-8 text-brand mx-auto mb-2" />
                       <span className="text-xs font-bold text-brand bg-brand-muted px-3 py-1 rounded-full">{prog.requiredTier} {t({ en: 'Required', fa: 'نیاز است' })}</span>

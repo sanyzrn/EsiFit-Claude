@@ -6,7 +6,6 @@ import { useEntitlements } from '@/lib/entitlements';
 import { fetchPaymentsEnabled, startCheckout, PaymentsNotConfiguredError } from '@/lib/payments';
 import PaymentsNotice from '@/components/PaymentsNotice';
 import { IconBadge } from '@/components/ui/IconBadge';
-import { PersianPattern } from '@/components/ui/PersianPattern';
 import { PageContainer } from '@/components/ui/PageContainer';
 import { useLocaleFormat } from '@/lib/locale-format-context';
 import { useState, useEffect } from 'react';
@@ -131,11 +130,10 @@ export default function Pricing() {
           return (
             <div
               key={plan.id}
-              className={`relative card-iranian p-6 flex flex-col overflow-hidden ${tierColors[plan.tier]} ${
-                isPopular ? 'lg:-mt-4 lg:mb-4' : ''
+              className={`relative card-premium p-7 flex flex-col ${tierColors[plan.tier]} ${
+                isPopular ? 'lg:-mt-4 lg:mb-4 border-brand/40' : ''
               }`}
             >
-              <PersianPattern opacity={isPopular ? 0.35 : 0.2} />
               <div className="relative z-10 flex flex-col flex-1">
               {isPopular && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-brand text-brand-fg text-xs font-semibold rounded-[12px] whitespace-nowrap">

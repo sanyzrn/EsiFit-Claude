@@ -4,10 +4,10 @@
  */
 export const IMAGES = {
   hero: {
-    src: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1920&q=80&auto=format&fit=crop',
+    src: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=1920&q=80&auto=format&fit=crop',
     alt: {
-      en: 'Athletes training with barbells in a modern gym',
-      fa: 'ورزشکاران در حال تمرین با هالتر در باشگاه',
+      en: 'People training together in a bright modern gym',
+      fa: 'افراد در حال تمرین گروهی در باشگاهی روشن',
     },
   },
   programs: {

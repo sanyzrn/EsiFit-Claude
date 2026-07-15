@@ -3,7 +3,6 @@ import { ResponsiveContainer, BarChart, Bar, LineChart, Line, XAxis, YAxis, Cart
 import { useChartTheme } from '@/lib/theme';
 import { useI18n } from '@/lib/i18n';
 import { useLocaleFormat } from '@/lib/locale-format-context';
-import { PersianPattern } from '@/components/ui/PersianPattern';
 
 type AdminChartsProps = {
   revenueByPlan: { name: string; revenue: number; users: number }[];
@@ -18,61 +17,57 @@ export function AdminCharts({ revenueByPlan, userGrowth, mrr }: AdminChartsProps
 
   return (
     <div className="grid lg:grid-cols-2 gap-6">
-      <div className="card-iranian p-5 relative overflow-hidden">
-        <PersianPattern opacity={0.3} />
-        <div className="relative z-10">
-          <h3 className="font-bold mb-1 font-display">{t({ en: 'Revenue by Plan', fa: 'درآمد بر اساس طرح' })}</h3>
-          <p className="text-xs text-fg-subtle mb-4">
-            {t({ en: 'Total MRR: ', fa: 'کل درآمد ماهانه: ' })}{formatToman(mrr)}
-          </p>
-          <div className="h-56 chart-surface overflow-hidden" style={{ direction: 'ltr' }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={revenueByPlan} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke={chart.grid} />
-                <XAxis dataKey="name" stroke={chart.axis} fontSize={11} />
-                <YAxis
-                  stroke={chart.axis}
-                  fontSize={11}
-                  width={72}
-                  tickFormatter={(v) => formatNumber(Number(v) / 1000) + 'k'}
-                />
-                <Tooltip
-                  contentStyle={chart.tooltipStyle}
-                  formatter={(value) => [formatToman(Number(value ?? 0)), t({ en: 'Revenue', fa: 'درآمد' })]}
-                />
-                <Bar dataKey="revenue" fill={chart.primary} radius={[6, 6, 0, 0]} name={t({ en: 'Revenue/mo', fa: 'درآمد/ماه' })} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+      <div className="card-premium p-7">
+        <h3 className="font-bold mb-1 font-display">{t({ en: 'Revenue by Plan', fa: 'درآمد بر اساس طرح' })}</h3>
+        <p className="text-xs text-fg-subtle mb-5">
+          {t({ en: 'Total MRR: ', fa: 'کل درآمد ماهانه: ' })}{formatToman(mrr)}
+        </p>
+        <div className="h-56 chart-surface overflow-hidden" style={{ direction: 'ltr' }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={revenueByPlan} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="2 4" stroke={chart.grid} vertical={false} />
+              <XAxis dataKey="name" stroke={chart.axis} fontSize={11} tickLine={false} axisLine={false} />
+              <YAxis
+                stroke={chart.axis}
+                fontSize={11}
+                width={72}
+                tickLine={false}
+                axisLine={false}
+                tickFormatter={(v) => formatNumber(Number(v) / 1000) + 'k'}
+              />
+              <Tooltip
+                contentStyle={chart.tooltipStyle}
+                formatter={(value) => [formatToman(Number(value ?? 0)), t({ en: 'Revenue', fa: 'درآمد' })]}
+              />
+              <Bar dataKey="revenue" fill={chart.primary} radius={[8, 8, 0, 0]} name={t({ en: 'Revenue/mo', fa: 'درآمد/ماه' })} />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </div>
 
-      <div className="card-iranian p-5 relative overflow-hidden">
-        <PersianPattern opacity={0.3} />
-        <div className="relative z-10">
-          <h3 className="font-bold mb-4 font-display">{t({ en: 'User Growth', fa: 'رشد کاربران' })}</h3>
-          <div className="h-56 chart-surface overflow-hidden" style={{ direction: 'ltr' }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={userGrowth} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="usersGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={chart.secondary} stopOpacity={0.35} />
-                    <stop offset="100%" stopColor={chart.secondary} stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke={chart.grid} />
-                <XAxis dataKey="month" stroke={chart.axis} fontSize={11} />
-                <YAxis stroke={chart.axis} fontSize={11} allowDecimals={false} tickFormatter={(v) => formatNumber(Number(v))} />
-                <Tooltip
-                  contentStyle={chart.tooltipStyle}
-                  formatter={(value) => [formatNumber(Number(value ?? 0)), '']}
-                />
-                <Legend />
-                <Area type="monotone" dataKey="users" stroke={chart.secondary} fill="url(#usersGrad)" name={t({ en: 'Total users', fa: 'کل کاربران' })} />
-                <Line type="monotone" dataKey="paid" stroke={chart.accent} strokeWidth={2} dot={{ fill: chart.accent }} name={t({ en: 'Paid', fa: 'پولی' })} />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
+      <div className="card-premium p-7">
+        <h3 className="font-bold mb-5 font-display">{t({ en: 'User Growth', fa: 'رشد کاربران' })}</h3>
+        <div className="h-56 chart-surface overflow-hidden" style={{ direction: 'ltr' }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={userGrowth} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+              <defs>
+                <linearGradient id="usersGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={chart.primary} stopOpacity={0.2} />
+                  <stop offset="100%" stopColor={chart.primary} stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="2 4" stroke={chart.grid} vertical={false} />
+              <XAxis dataKey="month" stroke={chart.axis} fontSize={11} tickLine={false} axisLine={false} />
+              <YAxis stroke={chart.axis} fontSize={11} allowDecimals={false} tickLine={false} axisLine={false} tickFormatter={(v) => formatNumber(Number(v))} />
+              <Tooltip
+                contentStyle={chart.tooltipStyle}
+                formatter={(value) => [formatNumber(Number(value ?? 0)), '']}
+              />
+              <Legend />
+              <Area type="monotone" dataKey="users" stroke={chart.primary} strokeWidth={1.75} fill="url(#usersGrad)" name={t({ en: 'Total users', fa: 'کل کاربران' })} />
+              <Line type="monotone" dataKey="paid" stroke={chart.secondary} strokeWidth={1.75} dot={false} name={t({ en: 'Paid', fa: 'پولی' })} />
+            </AreaChart>
+          </ResponsiveContainer>
         </div>
       </div>
     </div>
@@ -100,14 +95,14 @@ export function ProgressCharts({
       title: t({ en: 'Weight Trend', fa: 'روند وزن' }),
       node: (
         <LineChart data={weightData}>
-          <CartesianGrid strokeDasharray="3 3" stroke={chart.grid} />
-          <XAxis dataKey="date" stroke={chart.axis} fontSize={11} />
-          <YAxis stroke={chart.axis} fontSize={11} tickFormatter={(v) => formatNumber(Number(v))} />
+          <CartesianGrid strokeDasharray="2 4" stroke={chart.grid} vertical={false} />
+          <XAxis dataKey="date" stroke={chart.axis} fontSize={11} tickLine={false} axisLine={false} />
+          <YAxis stroke={chart.axis} fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => formatNumber(Number(v))} />
           <Tooltip
             contentStyle={chart.tooltipStyle}
             formatter={(value) => [formatNumber(Number(value ?? 0)), t({ en: 'kg', fa: 'کیلوگرم' })]}
           />
-          <Line type="monotone" dataKey="weight" stroke={chart.primary} strokeWidth={2.5} dot={{ fill: chart.primary, r: 4 }} name={t({ en: 'kg', fa: 'کیلوگرم' })} />
+          <Line type="monotone" dataKey="weight" stroke={chart.primary} strokeWidth={1.75} dot={{ fill: chart.primary, r: 3 }} name={t({ en: 'kg', fa: 'کیلوگرم' })} />
         </LineChart>
       ),
     },
@@ -116,17 +111,17 @@ export function ProgressCharts({
       title: t({ en: 'Body Measurements', fa: 'اندازه‌گیری‌های بدن' }),
       node: (
         <LineChart data={measurementData}>
-          <CartesianGrid strokeDasharray="3 3" stroke={chart.grid} />
-          <XAxis dataKey="date" stroke={chart.axis} fontSize={11} />
-          <YAxis stroke={chart.axis} fontSize={11} tickFormatter={(v) => formatNumber(Number(v))} />
+          <CartesianGrid strokeDasharray="2 4" stroke={chart.grid} vertical={false} />
+          <XAxis dataKey="date" stroke={chart.axis} fontSize={11} tickLine={false} axisLine={false} />
+          <YAxis stroke={chart.axis} fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => formatNumber(Number(v))} />
           <Tooltip
             contentStyle={chart.tooltipStyle}
             formatter={(value) => [formatNumber(Number(value ?? 0)), 'cm']}
           />
           <Legend />
-          <Line type="monotone" dataKey="waist" stroke={chart.accent} strokeWidth={2} dot={false} name={t({ en: 'Waist', fa: 'کمر' })} connectNulls />
-          <Line type="monotone" dataKey="chest" stroke={chart.secondary} strokeWidth={2} dot={false} name={t({ en: 'Chest', fa: 'سینه' })} connectNulls />
-          <Line type="monotone" dataKey="arm" stroke={chart.series[3]} strokeWidth={2} dot={false} name={t({ en: 'Arm', fa: 'بازو' })} connectNulls />
+          <Line type="monotone" dataKey="waist" stroke={chart.accent} strokeWidth={1.75} dot={false} name={t({ en: 'Waist', fa: 'کمر' })} connectNulls />
+          <Line type="monotone" dataKey="chest" stroke={chart.secondary} strokeWidth={1.75} dot={false} name={t({ en: 'Chest', fa: 'سینه' })} connectNulls />
+          <Line type="monotone" dataKey="arm" stroke={chart.series[3]} strokeWidth={1.75} dot={false} name={t({ en: 'Arm', fa: 'بازو' })} connectNulls />
         </LineChart>
       ),
     },
@@ -135,14 +130,14 @@ export function ProgressCharts({
       title: t({ en: 'Estimated 1RM', fa: 'تخمین 1RM' }),
       node: (
         <LineChart data={strengthData}>
-          <CartesianGrid strokeDasharray="3 3" stroke={chart.grid} />
-          <XAxis dataKey="date" stroke={chart.axis} fontSize={11} />
-          <YAxis stroke={chart.axis} fontSize={11} tickFormatter={(v) => formatNumber(Number(v))} />
+          <CartesianGrid strokeDasharray="2 4" stroke={chart.grid} vertical={false} />
+          <XAxis dataKey="date" stroke={chart.axis} fontSize={11} tickLine={false} axisLine={false} />
+          <YAxis stroke={chart.axis} fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => formatNumber(Number(v))} />
           <Tooltip
             contentStyle={chart.tooltipStyle}
             formatter={(value) => [formatNumber(Number(value ?? 0)), 'kg']}
           />
-          <Line type="monotone" dataKey="estimated1RM" stroke={chart.secondary} strokeWidth={2.5} dot={{ fill: chart.secondary, r: 4 }} />
+          <Line type="monotone" dataKey="estimated1RM" stroke={chart.secondary} strokeWidth={1.75} dot={{ fill: chart.secondary, r: 3 }} />
         </LineChart>
       ),
     },
@@ -151,14 +146,14 @@ export function ProgressCharts({
       title: t({ en: 'Workout Volume', fa: 'حجم تمرین' }),
       node: (
         <BarChart data={volumeData}>
-          <CartesianGrid strokeDasharray="3 3" stroke={chart.grid} />
-          <XAxis dataKey="date" stroke={chart.axis} fontSize={11} />
-          <YAxis stroke={chart.axis} fontSize={11} tickFormatter={(v) => formatNumber(Number(v))} />
+          <CartesianGrid strokeDasharray="2 4" stroke={chart.grid} vertical={false} />
+          <XAxis dataKey="date" stroke={chart.axis} fontSize={11} tickLine={false} axisLine={false} />
+          <YAxis stroke={chart.axis} fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => formatNumber(Number(v))} />
           <Tooltip
             contentStyle={chart.tooltipStyle}
             formatter={(value) => [formatNumber(Number(value ?? 0)), t({ en: 'kg×reps', fa: 'کیلو×تکرار' })]}
           />
-          <Bar dataKey="volume" fill={chart.accent} radius={[6, 6, 0, 0]} name={t({ en: 'kg×reps', fa: 'کیلو×تکرار' })} />
+          <Bar dataKey="volume" fill={chart.accent} radius={[8, 8, 0, 0]} name={t({ en: 'kg×reps', fa: 'کیلو×تکرار' })} />
         </BarChart>
       ),
     },
@@ -167,12 +162,11 @@ export function ProgressCharts({
   if (charts.length === 0) return null;
 
   return (
-    <div className="grid md:grid-cols-2 gap-4">
+    <div className="grid md:grid-cols-2 gap-6">
       {charts.map((c) => (
-        <div key={c.key} className="card-iranian p-5 relative overflow-hidden">
-          <PersianPattern opacity={0.25} />
-          <h3 className="relative z-10 font-bold mb-4 font-display">{c.title}</h3>
-          <div className="relative z-10 h-52 chart-surface overflow-hidden" style={{ direction: 'ltr' }}>
+        <div key={c.key} className="card-premium p-7">
+          <h3 className="font-bold mb-5 font-display">{c.title}</h3>
+          <div className="h-52 chart-surface overflow-hidden" style={{ direction: 'ltr' }}>
             <ResponsiveContainer width="100%" height="100%">{c.node}</ResponsiveContainer>
           </div>
         </div>

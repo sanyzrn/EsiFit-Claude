@@ -181,7 +181,7 @@ export function CalculatorLayout({
             <button
               type="button"
               onClick={onSave}
-              className="mt-8 px-6 py-3 bg-brand text-brand-fg text-sm font-semibold rounded-[12px] transition-[filter] duration-[180ms] hover:brightness-95 dark:hover:brightness-110"
+              className="mt-8 px-6 py-3 bg-brand text-brand-fg text-sm font-semibold rounded-[12px] transition-colors duration-[180ms] hover:bg-brand-dark"
             >
               {t({ en: 'Save Result', fa: 'ذخیره نتیجه' })}
             </button>

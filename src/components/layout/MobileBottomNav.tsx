@@ -16,7 +16,7 @@ export function MobileBottomNav({ onMoreOpen, moreOpen }: MobileBottomNavProps) 
 
   return (
     <nav
-      className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-surface/95 backdrop-blur-md border-t border-border pb-[env(safe-area-inset-bottom)]"
+      className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-surface border-t border-border pb-[env(safe-area-inset-bottom)]"
       aria-label={t({ en: 'Main navigation', fa: 'ناوبری اصلی' })}
     >
       <div className="flex items-stretch justify-around h-16 max-w-lg mx-auto">
