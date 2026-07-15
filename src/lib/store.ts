@@ -1,4 +1,4 @@
-import type { User, Exercise, Program, DietPlan, Article, BodyLog, ExerciseLog, CalculatorResult, Ticket, Plan } from './types';
+import type { User, Exercise, Program, DietPlan, Article, BodyLog, ExerciseLog, CalculatorResult, Ticket, Plan, Goal, ActivityLevel } from './types';
 import { fetchEntitlements } from './entitlements';
 
 // Simple reactive store with localStorage persistence
@@ -54,12 +54,49 @@ import { doc, getDoc } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
 import { auth, db } from './firebase';
 
+function readOptionalString(value: unknown): string | undefined {
+  return typeof value === 'string' ? value : undefined;
+}
+
+function readOptionalNumber(value: unknown): number | undefined {
+  return typeof value === 'number' && Number.isFinite(value) ? value : undefined;
+}
+
+function readOptionalGoal(value: unknown): Goal | undefined {
+  const goals: Goal[] = ['MUSCLE_GAIN', 'FAT_LOSS', 'GENERAL_FITNESS', 'STRENGTH'];
+  return typeof value === 'string' && goals.includes(value as Goal) ? (value as Goal) : undefined;
+}
+
+function readOptionalActivityLevel(value: unknown): ActivityLevel | undefined {
+  const levels: ActivityLevel[] = ['SEDENTARY', 'LIGHT', 'MODERATE', 'ACTIVE', 'VERY_ACTIVE'];
+  return typeof value === 'string' && levels.includes(value as ActivityLevel)
+    ? (value as ActivityLevel)
+    : undefined;
+}
+
+function mergeProfileFromFirestore(
+  data: Record<string, unknown>,
+  existing: User | null
+): Pick<User, 'age' | 'gender' | 'heightCm' | 'weightKg' | 'goal' | 'activityLevel' | 'injuries'> {
+  return {
+    age: readOptionalNumber(data.age) ?? existing?.age,
+    gender: readOptionalString(data.gender) ?? existing?.gender,
+    heightCm: readOptionalNumber(data.heightCm) ?? existing?.heightCm,
+    weightKg: readOptionalNumber(data.weightKg) ?? existing?.weightKg,
+    goal: readOptionalGoal(data.goal) ?? existing?.goal,
+    activityLevel: readOptionalActivityLevel(data.activityLevel) ?? existing?.activityLevel,
+    injuries: readOptionalString(data.injuries) ?? existing?.injuries,
+  };
+}
+
 export async function syncUserFromFirebase(uid: string) {
   try {
     const userDoc = await getDoc(doc(db, 'users', uid));
     if (userDoc.exists()) {
       const data = userDoc.data();
       const entitlements = await fetchEntitlements();
+      const existing = state.currentUser?.id === uid ? state.currentUser : null;
+      const profile = mergeProfileFromFirestore(data, existing);
       state.currentUser = {
         id: uid,
         email: data.email,
@@ -67,12 +104,7 @@ export async function syncUserFromFirebase(uid: string) {
         role: entitlements?.role ?? 'USER',
         subscriptionTier: entitlements?.subscriptionTier ?? 'FREE',
         createdAt: data.createdAt,
-        age: 28,
-        gender: 'male',
-        heightCm: 178,
-        weightKg: 80,
-        goal: 'MUSCLE_GAIN',
-        activityLevel: 'MODERATE'
+        ...profile,
       };
       saveState();
     }
