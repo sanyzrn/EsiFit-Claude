@@ -87,13 +87,13 @@ Status legend: `open` · `fixed` · `deferred` · `investigated-not-reproducible
 | BUG-2 | Low | 7 | fixed | Anatomy "Neck" maps to muscle group with zero exercises |
 | BUG-3 | Low | 7 | fixed | `TierGate` gate copy not i18n-wrapped |
 | BUG-4 | Medium | 7 | fixed | Auth pages (Login/Register/Forgot) have zero `t()` calls |
-| BUG-5 | Low | 8 | open | `TierGate` renders gated content in DOM behind blur |
-| BUG-6 | Medium | 8 | open | Tablet 768px horizontal overflow (scrollWidth 830px) |
-| BUG-7 | Low | 8 | open | Hero image `alt=""` empty |
-| BUG-8 | Medium | 8 | open | Calculator gauges lack `aria-live` / sliders lack `aria-valuenow` |
-| BUG-9 | Low | 8 | open | Silent upgrade with no toast/confirmation |
-| BUG-10 | Low | 8 | open | Register: no password show/hide or strength indicator |
-| BUG-11 | Low | 8 | open | Firebase raw `err.message` shown in Auth (not localized) |
+| BUG-5 | Low | 8 | fixed | `TierGate` renders gated content in DOM behind blur |
+| BUG-6 | Medium | 8 | fixed | Tablet 768px horizontal overflow (scrollWidth 830px) |
+| BUG-7 | Low | 8 | fixed | Hero image `alt=""` empty |
+| BUG-8 | Medium | 8 | fixed | Calculator gauges lack `aria-live` / sliders lack `aria-valuenow` |
+| BUG-9 | Low | 8 | fixed | Silent upgrade with no toast/confirmation |
+| BUG-10 | Low | 8 | fixed | Register: no password show/hide or strength indicator |
+| BUG-11 | Low | 8 | fixed | Firebase raw `err.message` shown in Auth (not localized) |
 | BUG-12 | Low | 2 | open | `main.tsx` unconditional `testConnection()` boot probe |
 | TOOL-1 | Medium | 6 | fixed | `npm run lint` fails — ESLint not installed |
 | TOOL-2 | Low | 6 | fixed | `tsc --noEmit` — 6 TS6133 unused-import errors |
@@ -106,7 +106,7 @@ Status legend: `open` · `fixed` · `deferred` · `investigated-not-reproducible
 | CONTENT-2 | Medium | 9 | open | Thin catalog: 10 exercises, 3 programs, 2 diets, 3 articles |
 | CONTENT-3 | Low | 9 | intentional-demo | Admin/Coach dashboards use hardcoded demo data |
 | CONTENT-4 | Low | 9 | intentional-demo | Coach chat auto-reply via `setTimeout` (demo) |
-| UI-1 | — | 8 | open | Design token decision: orange/gray vs pine/bone/ember/brass |
+| UI-1 | — | 8 | fixed | Design token decision: orange/gray vs pine/bone/ember/brass |
 | PERF-1 | Low | 6 | deferred | Lighthouse not run (tooling crashed in Report B sandbox) |
 
 ---
@@ -226,80 +226,112 @@ Status legend: `open` · `fixed` · `deferred` · `investigated-not-reproducible
 ### BUG-1 — Program exercise links 404 (wrong slug)
 - **Severity:** Medium
 - **Phase:** 7
-- **Status:** open
-- **Files:** `src/pages/Programs.tsx:202`
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/pages/Programs.tsx`, `src/lib/store.ts`
 - **Reports:** B (`(1).md:138,232-238`)
+- **Before:** Program detail linked to `/exercises/${exerciseName.slugified}` (e.g. `barbell-back-squat`) instead of canonical slugs (`barbell-squat`).
+- **After:** Added `getExerciseSlugById()`; links use `pe.exerciseId` to resolve the real exercise slug from `EXERCISES`.
+- **Verification:** `phase7-bugs-verify.mjs` static checks.
 
 ### BUG-2 — Anatomy "Neck" hotspot → empty exercise list
 - **Severity:** Low
 - **Phase:** 7
-- **Status:** open
-- **Files:** `src/pages/Exercises.tsx:17`, `src/lib/store.ts` (no Neck in muscleGroups)
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/pages/Exercises.tsx`
 - **Reports:** A (`EsiFit_Full_Audit_2026-07-15.md:107-110`) — B does not list
+- **Before:** Anatomy `neck` hotspot mapped to `Neck` muscle group; no exercises tagged `Neck` → zero results.
+- **After:** `neck` maps to `Back` (upper-back/trap exercises) until dedicated neck content exists.
+- **Verification:** `phase7-bugs-verify.mjs` static check.
 
 ### BUG-3 — TierGate English-only copy
 - **Severity:** Low
 - **Phase:** 7
-- **Status:** open
-- **Files:** `src/components/TierGate.tsx:36-40`
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/components/TierGate.tsx`
 - **Reports:** B (`(1).md:155,305-309`)
+- **Before:** Gate title, description, upgrade button, and loading text were hardcoded English.
+- **After:** All user-facing strings wrapped with `useI18n()` / `t()` including localized tier labels.
+- **Verification:** `phase7-bugs-verify.mjs` static check.
 
 ### BUG-4 — Auth pages not translated
 - **Severity:** Medium
 - **Phase:** 7
-- **Status:** open
-- **Files:** `src/pages/Auth.tsx` (no `t()` calls)
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/pages/Auth.tsx`
 - **Reports:** B (`(1).md:156-157`) · A (`EsiFit_Full_Audit_2026-07-15.md:137`)
+- **Before:** Login, Register, and Forgot Password had zero `t()` calls — English only.
+- **After:** All headings, labels, buttons, validation errors, and success messages use `t({ en, fa })`.
+- **Verification:** `phase7-bugs-verify.mjs` static check.
 
 ### BUG-5 — TierGate blur leaks gated content in DOM
 - **Severity:** Low
 - **Phase:** 8
-- **Status:** open
-- **Files:** `src/components/TierGate.tsx:26`, `src/index.css:44-48`
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/components/TierGate.tsx`
 - **Reports:** A (`EsiFit_Full_Audit_2026-07-15.md:138,175`)
+- **Before:** Locked tier content was still mounted in the DOM inside `.content-locked` blur — readable in DevTools and by screen readers.
+- **After:** When access is denied, gated `children` are not rendered; a dashed placeholder panel and upgrade card are shown instead (`role="region"`).
+- **Verification:** `phase8-ux-verify.mjs` static check.
 
 ### BUG-6 — Tablet 768px horizontal overflow
 - **Severity:** Medium
 - **Phase:** 8
-- **Status:** open
-- **Files:** Layout-wide (hero, pricing table, anatomy model suspected)
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/components/Layout.tsx`, `src/pages/Pricing.tsx`, `src/pages/Exercises.tsx`
 - **Reports:** B (`(1).md:271-277`) — A says no overflow at 375px only (`EsiFit_Full_Audit_2026-07-15.md:122`)
-- **Re-verified 2026-07-15:** `/`, `/pricing`, `/exercises` at 768×1024 → `scrollWidth: 830`, `clientWidth: 768`, `overflow: true`.
+- **Before:** At 768×1024, `scrollWidth` 830px vs `clientWidth` 768px on `/`, `/pricing`, `/exercises` — desktop nav activated too early.
+- **After:** Root layout uses `overflow-x-hidden`; desktop nav deferred to `lg:` breakpoint; pricing table and anatomy model wrappers use `max-w-full min-w-0 overflow-hidden`.
+- **Verification:** `phase8-ux-verify.mjs` static checks.
 
 ### BUG-7 — Hero image missing alt text
 - **Severity:** Low
 - **Phase:** 8
-- **Status:** open
-- **Files:** `src/pages/Home.tsx:36`
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/pages/Home.tsx`
 - **Reports:** B (`(1).md:355`)
+- **Before:** Hero background `<img alt="">` with no decorative marking.
+- **After:** Decorative hero image has `alt=""` and `aria-hidden="true"` so assistive tech skips the 20% opacity background.
+- **Verification:** `phase8-ux-verify.mjs` static check.
 
 ### BUG-8 — Calculator results not accessible to screen readers
 - **Severity:** Medium
 - **Phase:** 8
-- **Status:** open
-- **Files:** `src/components/calculators/SharedCalculatorUI.tsx` (`CircularGauge`, `SliderInput`)
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/components/calculators/SharedCalculatorUI.tsx`
 - **Reports:** B UX audit (no `aria-live` in `src/`)
+- **Before:** `SliderInput` lacked `aria-valuenow` / label association; `CircularGauge` value changes were visual-only.
+- **After:** Sliders use `htmlFor`/`id` and `aria-valuenow`/`aria-valuemin`/`aria-valuemax`/`aria-valuetext`; gauges use `aria-live="polite"` sr-only announcements; results panel has `aria-live`.
+- **Verification:** `phase8-ux-verify.mjs` static check.
 
 ### BUG-9 — Silent upgrade (no toast/confirmation)
 - **Severity:** Low
 - **Phase:** 8
-- **Status:** open
-- **Files:** `src/pages/Pricing.tsx:22-23`
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/pages/Pricing.tsx`
 - **Reports:** B UX section
+- **Before:** FREE plan and Stripe checkout navigated/redirected with no user feedback.
+- **After:** `handleSubscribe` sets localized notices before navigation/checkout; notice banner uses `role="status"` + `aria-live="polite"`.
+- **Verification:** `phase8-ux-verify.mjs` static check.
 
 ### BUG-10 — Register lacks password show/hide and strength indicator
 - **Severity:** Low
 - **Phase:** 8
-- **Status:** open
-- **Files:** `src/pages/Auth.tsx:199-205`
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/pages/Auth.tsx`
 - **Reports:** B UX audit (implied in phase instructions)
+- **Before:** Register password field was always `type="password"` with validation only on submit.
+- **After:** Show/hide toggle with `aria-label`; live strength hint (too short / fair / strong) as user types.
+- **Verification:** `phase8-ux-verify.mjs` static check.
 
 ### BUG-11 — Firebase raw errors in Auth UI
 - **Severity:** Low
 - **Phase:** 8
-- **Status:** open
-- **Files:** `src/pages/Auth.tsx:32,159`
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/lib/auth.ts`, `src/pages/Auth.tsx`
 - **Reports:** A (`EsiFit_Full_Audit_2026-07-15.md:137`)
+- **Before:** Catch blocks displayed raw `err.message` (e.g. `Firebase: Error (auth/invalid-credential).`).
+- **After:** `getAuthErrorCode()` + `mapAuthError()` return localized user-facing messages for common Firebase auth codes.
+- **Verification:** `phase8-ux-verify.mjs` static check.
 
 ### BUG-12 — `main.tsx` boot probe (downgraded)
 - **Severity:** Low (was High in Report B)
@@ -410,9 +442,12 @@ Status legend: `open` · `fixed` · `deferred` · `investigated-not-reproducible
 ### UI-1 — Design token / brand palette decision
 - **Severity:** N/A (decision)
 - **Phase:** 8
-- **Status:** open
+- **Status:** fixed (2026-07-15)
 - **Files:** `src/index.css`, Tailwind theme
 - **Reports:** B (`(1).md:315-325`) — resolved in Phase 0 #3
+- **Decision:** Adopt **orange (`#f97316`) + gray surfaces** as the canonical EsiFit brand. Audit brief pine/bone/ember/brass palette not used.
+- **After:** Documented in `src/index.css` `@theme` comment; existing `--color-brand` / `--color-surface` tokens retained as source of truth for future refactors.
+- **Verification:** `phase8-ux-verify.mjs` static check.
 
 ### PERF-1 — Lighthouse not completed
 - **Severity:** Low

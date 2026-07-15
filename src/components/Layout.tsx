@@ -42,7 +42,7 @@ export default function Layout({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col">
+    <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col overflow-x-hidden">
       {/* Navbar */}
       <nav className="sticky top-0 z-50 bg-gray-950/90 backdrop-blur-md border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -58,7 +58,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             </Link>
 
             {/* Desktop Nav */}
-            <div className="hidden md:flex items-center gap-1">
+            <div className="hidden lg:flex items-center gap-1 min-w-0">
               {navLinks.map(link => (
                 <Link
                   key={link.href}
@@ -75,7 +75,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             </div>
 
             {/* User Menu & Lang Switcher */}
-            <div className="hidden md:flex items-center gap-3">
+            <div className="hidden lg:flex items-center gap-3 shrink-0">
               <div className="relative">
                 <button
                   onClick={() => { setLangMenuOpen(!langMenuOpen); setUserMenuOpen(false); }}
@@ -145,7 +145,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             </div>
 
             {/* Mobile toggle */}
-            <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden p-2 hover:bg-gray-800 rounded-lg">
+            <button onClick={() => setMobileOpen(!mobileOpen)} className="lg:hidden p-2 hover:bg-gray-800 rounded-lg">
               {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
@@ -153,7 +153,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 
         {/* Mobile Menu */}
         {mobileOpen && (
-          <div className="md:hidden border-t border-gray-800 bg-gray-950 animate-fade-in">
+          <div className="lg:hidden border-t border-gray-800 bg-gray-950 animate-fade-in">
             <div className="px-4 py-4 space-y-1">
               <div className="flex items-center gap-2 mb-4">
                 <button onClick={() => setLang('en')} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${lang === 'en' ? 'bg-orange-500/20 text-orange-400' : 'text-gray-400 hover:bg-gray-800'}`}>EN</button>

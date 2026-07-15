@@ -33,7 +33,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
-          <img src="/images/hero-bg.jpg" alt="" className="w-full h-full object-cover opacity-20" />
+          <img src="/images/hero-bg.jpg" alt="" aria-hidden="true" className="w-full h-full object-cover opacity-20" />
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-gray-950/80 via-gray-950/60 to-gray-950" />
         <div className="absolute top-20 start-1/4 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl" />

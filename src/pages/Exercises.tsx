@@ -130,14 +130,14 @@ export function ExerciseList() {
       )}
 
       {viewMode === 'anatomy' && (
-        <div className="mb-10 bg-gray-900/50 border border-gray-800 rounded-2xl p-6 flex flex-col md:flex-row gap-8 items-center md:items-start animate-fade-in">
+        <div className="mb-10 bg-gray-900/50 border border-gray-800 rounded-2xl p-6 flex flex-col md:flex-row gap-8 items-center md:items-start animate-fade-in max-w-full min-w-0 overflow-hidden">
           <div className="flex-1 flex flex-col items-center">
             <div className="flex gap-2 mb-6 p-1 bg-gray-900 rounded-lg">
               <button onClick={() => setAnatomyGender('male')} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${anatomyGender === 'male' ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-gray-200'}`}>{t({ en: 'Male', fa: 'آقا' })}</button>
               <button onClick={() => setAnatomyGender('female')} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${anatomyGender === 'female' ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-gray-200'}`}>{t({ en: 'Female', fa: 'خانم' })}</button>
             </div>
             
-            <div className="h-[400px] w-full flex items-center justify-center">
+            <div className="h-[400px] w-full max-w-full overflow-hidden flex items-center justify-center">
               <Model
                 data={Object.keys(MUSCLE_MAPPING)
                   .filter(slug => MUSCLE_MAPPING[slug] === muscle)

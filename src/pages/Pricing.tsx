@@ -27,10 +27,18 @@ export default function Pricing() {
   const handleSubscribe = async (tier: SubscriptionTier) => {
     setNotice('');
     if (tier === 'FREE') {
+      setNotice(t({
+        en: 'Taking you to get started with the Free plan…',
+        fa: 'در حال انتقال برای شروع با طرح رایگان…',
+      }));
       navigate(user ? '/dashboard' : '/register');
       return;
     }
     if (!user) {
+      setNotice(t({
+        en: 'Create an account to subscribe to paid plans.',
+        fa: 'برای اشتراک طرح‌های پولی ابتدا حساب بسازید.',
+      }));
       navigate('/register');
       return;
     }
@@ -42,6 +50,10 @@ export default function Pricing() {
       return;
     }
     setLoadingTier(tier);
+    setNotice(t({
+      en: 'Redirecting to secure checkout…',
+      fa: 'در حال انتقال به پرداخت امن…',
+    }));
     try {
       await startCheckout(tier);
     } catch (err) {
@@ -92,7 +104,7 @@ export default function Pricing() {
       {paymentsEnabled === false && <PaymentsNotice />}
 
       {notice && (
-        <div className="mb-8 rounded-xl border border-orange-500/30 bg-orange-500/10 px-4 py-3 text-sm text-orange-200 text-center">
+        <div role="status" aria-live="polite" className="mb-8 rounded-xl border border-orange-500/30 bg-orange-500/10 px-4 py-3 text-sm text-orange-200 text-center">
           {notice}
         </div>
       )}
@@ -174,7 +186,7 @@ export default function Pricing() {
         <div className="p-6 border-b border-gray-800">
           <h2 className="text-2xl font-black">{t({ en: 'Feature Comparison', fa: 'مقایسه امکانات' })}</h2>
         </div>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto max-w-full min-w-0">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-800">

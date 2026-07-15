@@ -2,6 +2,8 @@
 @import "tailwindcss";
 
 @theme {
+  /* Canonical EsiFit brand (UI-1): orange accent + gray surfaces.
+     Audit brief pine/bone/ember/brass palette was not adopted. */
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-fa: 'Vazirmatn', ui-sans-serif, system-ui, sans-serif;
   --color-brand: #f97316;
