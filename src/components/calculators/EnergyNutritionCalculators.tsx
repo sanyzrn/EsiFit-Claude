@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useI18n } from '@/lib/i18n';
 import { calcBMR, calcTDEE, calcMacros, calcWaterIntake, ACTIVITY_FACTORS } from '@/lib/calculators';
-import { SliderInput, SegmentedToggle, CircularGauge, BarChart, CalculatorLayout, PersianNumber } from './SharedCalculatorUI';
+import { SliderInput, SegmentedToggle, CircularGauge, BarChart, CalculatorLayout, PersianNumber, MacroProgressBars } from './SharedCalculatorUI';
 
 export function BmrCalculator() {
   const { t } = useI18n();
@@ -105,12 +105,21 @@ export function MacrosCalculator() {
         <div className="flex flex-col items-center w-full">
           {result.ok ? (
             <>
-              <div className="text-3xl font-black text-brand mb-4 font-display"><PersianNumber value={result.value.calories} /> kcal</div>
-              <BarChart items={[
-                { label: t({ en: 'Protein', fa: 'پروتئین' }), value: result.value.protein, unit: 'g' },
-                { label: t({ en: 'Carbs', fa: 'کربوهیدرات' }), value: result.value.carbs, unit: 'g' },
-                { label: t({ en: 'Fat', fa: 'چربی' }), value: result.value.fat, unit: 'g' },
+              <div className="text-3xl font-black text-brand mb-2 font-display tabular-nums">
+                <PersianNumber value={result.value.calories} /> <span className="text-lg text-fg-subtle font-semibold">kcal</span>
+              </div>
+              <MacroProgressBars items={[
+                { label: t({ en: 'Protein', fa: 'پروتئین' }), value: result.value.protein, goal: Math.max(result.value.protein, result.value.carbs, result.value.fat), unit: 'g' },
+                { label: t({ en: 'Carbs', fa: 'کربوهیدرات' }), value: result.value.carbs, goal: Math.max(result.value.protein, result.value.carbs, result.value.fat), unit: 'g' },
+                { label: t({ en: 'Fat', fa: 'چربی' }), value: result.value.fat, goal: Math.max(result.value.protein, result.value.carbs, result.value.fat), unit: 'g' },
               ]} />
+              <div className="mt-5 w-full">
+                <BarChart items={[
+                  { label: t({ en: 'Protein', fa: 'پروتئین' }), value: result.value.protein, unit: 'g' },
+                  { label: t({ en: 'Carbs', fa: 'کربوهیدرات' }), value: result.value.carbs, unit: 'g' },
+                  { label: t({ en: 'Fat', fa: 'چربی' }), value: result.value.fat, unit: 'g' },
+                ]} />
+              </div>
             </>
           ) : (
             <div className="text-danger font-medium p-4 bg-danger/10 rounded-xl border border-danger/20">{result.error}</div>
