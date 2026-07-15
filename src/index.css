@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Self-hosted Vazirmatn (no Google Fonts CDN — Iran-reachable) */
+/* Self-hosted Vazirmatn — Persian-friendly, Iran-reachable */
 @font-face {
   font-family: 'Vazirmatn';
   src: url('/fonts/Vazirmatn-Variable.woff2') format('woff2');
@@ -9,96 +9,124 @@
   font-display: swap;
 }
 
-/* ─── Iranian visual identity (UI-12): saffron · firuze · terracotta · pomegranate ─── */
+/*
+ * Brand guidelines — premium Iranian fitness platform
+ * Light: cream + deep pomegranate | Dark: graphite + Persian turquoise
+ * No shadows · flat cards · subtle borders · calm motion
+ */
+
+/* Default / dark: Dark Graphite + Authentic Persian Turquoise */
 html,
 html[data-theme="dark"] {
-  --theme-app: #0c1118;
-  --theme-surface: #151d28;
-  --theme-elevated: #1e2a38;
-  --theme-elevated-hover: #2a3848;
-  --theme-border: #243040;
-  --theme-border-strong: #334155;
-  --theme-fg: #f5f0e8;
-  --theme-fg-muted: #d4cdc0;
-  --theme-fg-subtle: #9ca8b4;
-  --theme-fg-faint: #6b7a8a;
+  --theme-app: #1f2328;
+  --theme-surface: #2a2f36;
+  --theme-elevated: #32383f;
+  --theme-elevated-hover: #3a4149;
+  --theme-border: #3a4048;
+  --theme-border-strong: #4a515a;
+  --theme-fg: #f5f5f5;
+  --theme-fg-muted: #d4d4d4;
+  --theme-fg-subtle: #a3a8ae;
+  --theme-fg-faint: #6f767e;
 
-  --theme-primary: #e8b84a;
-  --theme-primary-hover: #f0c96a;
-  --theme-primary-muted: rgba(232, 184, 74, 0.14);
-  --theme-secondary: #2bb5a8;
-  --theme-secondary-hover: #3cc9bc;
-  --theme-secondary-muted: rgba(43, 181, 168, 0.14);
-  --theme-accent: #d97745;
-  --theme-accent-hover: #e8926a;
-  --theme-accent-muted: rgba(217, 119, 69, 0.14);
-  --theme-success: #2bb5a8;
-  --theme-warning: #e8b84a;
-  --theme-error: #e05a4a;
+  --theme-primary: #14b8a6;
+  --theme-primary-hover: #2dd4bf;
+  --theme-primary-muted: rgba(20, 184, 166, 0.14);
+  --theme-primary-fg: #1f2328;
 
-  --theme-chart-1: #e8b84a;
-  --theme-chart-2: #2bb5a8;
-  --theme-chart-3: #d97745;
-  --theme-chart-4: #a78bfa;
-  --theme-chart-grid: #2a3848;
-  --theme-chart-track: #243040;
-  --theme-chart-tooltip-bg: #1e2a38;
-  --theme-chart-tooltip-border: #334155;
-  --theme-scrollbar-track: #151d28;
-  --theme-scrollbar-thumb: #334155;
-  --theme-scrollbar-thumb-hover: #4a5d72;
-  --theme-pattern-stroke: rgba(232, 184, 74, 0.08);
+  --theme-secondary: #14b8a6;
+  --theme-secondary-hover: #2dd4bf;
+  --theme-secondary-muted: rgba(20, 184, 166, 0.12);
+
+  --theme-accent: #8c1d40;
+  --theme-accent-hover: #a3244c;
+  --theme-accent-muted: rgba(140, 29, 64, 0.18);
+
+  --theme-success: #14b8a6;
+  --theme-warning: #d4a017;
+  --theme-error: #c45c5c;
+
+  --theme-chart-1: #14b8a6;
+  --theme-chart-2: #8c1d40;
+  --theme-chart-3: #d4a017;
+  --theme-chart-4: #7c9cbf;
+  --theme-chart-grid: #3a4048;
+  --theme-chart-track: #32383f;
+  --theme-chart-tooltip-bg: #2a2f36;
+  --theme-chart-tooltip-border: #4a515a;
+
+  --theme-scrollbar-track: #1f2328;
+  --theme-scrollbar-thumb: #4a515a;
+  --theme-scrollbar-thumb-hover: #5c646e;
+  --theme-pattern-stroke: rgba(20, 184, 166, 0.06);
 }
 
+/* Light: Warm Cream + Deep Pomegranate */
 html[data-theme="light"] {
-  --theme-app: #f7f3ec;
-  --theme-surface: #fffcf7;
-  --theme-elevated: #f0eae0;
-  --theme-elevated-hover: #e4dcd0;
-  --theme-border: #e0d6c8;
-  --theme-border-strong: #cfc3b0;
-  --theme-fg: #1a1410;
-  --theme-fg-muted: #3d342c;
-  --theme-fg-subtle: #5c5248;
-  --theme-fg-faint: #8a7f72;
+  --theme-app: #f6f1e8;
+  --theme-surface: #ffffff;
+  --theme-elevated: #efe9df;
+  --theme-elevated-hover: #e6dfd3;
+  --theme-border: #e5ddd2;
+  --theme-border-strong: #d4c9ba;
+  --theme-fg: #222222;
+  --theme-fg-muted: #3d3d3d;
+  --theme-fg-subtle: #5c5c5c;
+  --theme-fg-faint: #8a8a8a;
 
-  --theme-primary: #b8860b;
-  --theme-primary-hover: #9a7209;
-  --theme-primary-muted: rgba(184, 134, 11, 0.12);
-  --theme-secondary: #0e7c6b;
-  --theme-secondary-hover: #0a6557;
-  --theme-secondary-muted: rgba(14, 124, 107, 0.12);
-  --theme-accent: #c4613a;
-  --theme-accent-hover: #a84f2e;
-  --theme-accent-muted: rgba(196, 97, 58, 0.12);
-  --theme-success: #0e7c6b;
+  --theme-primary: #8c1d40;
+  --theme-primary-hover: #751836;
+  --theme-primary-muted: rgba(140, 29, 64, 0.1);
+  --theme-primary-fg: #ffffff;
+
+  --theme-secondary: #0f766e;
+  --theme-secondary-hover: #0d9488;
+  --theme-secondary-muted: rgba(15, 118, 110, 0.1);
+
+  --theme-accent: #8c1d40;
+  --theme-accent-hover: #751836;
+  --theme-accent-muted: rgba(140, 29, 64, 0.1);
+
+  --theme-success: #0f766e;
   --theme-warning: #b8860b;
-  --theme-error: #b83a2e;
+  --theme-error: #b83a3a;
 
-  --theme-chart-1: #b8860b;
-  --theme-chart-2: #0e7c6b;
-  --theme-chart-3: #c4613a;
-  --theme-chart-4: #7c5cbf;
-  --theme-chart-grid: #e0d6c8;
-  --theme-chart-track: #e4dcd0;
-  --theme-chart-tooltip-bg: #fffcf7;
-  --theme-chart-tooltip-border: #cfc3b0;
-  --theme-scrollbar-track: #f0eae0;
-  --theme-scrollbar-thumb: #cfc3b0;
-  --theme-scrollbar-thumb-hover: #a89888;
-  --theme-pattern-stroke: rgba(184, 134, 11, 0.1);
+  --theme-chart-1: #8c1d40;
+  --theme-chart-2: #0f766e;
+  --theme-chart-3: #b8860b;
+  --theme-chart-4: #5c6b7a;
+  --theme-chart-grid: #e5ddd2;
+  --theme-chart-track: #efe9df;
+  --theme-chart-tooltip-bg: #ffffff;
+  --theme-chart-tooltip-border: #d4c9ba;
+
+  --theme-scrollbar-track: #efe9df;
+  --theme-scrollbar-thumb: #d4c9ba;
+  --theme-scrollbar-thumb-hover: #b8ab9a;
+  --theme-pattern-stroke: rgba(140, 29, 64, 0.05);
+}
+
+/* Radius scale (brand guidelines) */
+html {
+  --radius-btn: 12px;
+  --radius-input: 12px;
+  --radius-card: 20px;
+  --radius-dialog: 24px;
+  --radius-image: 20px;
+  --radius-chart: 16px;
+  --motion-fast: 180ms;
 }
 
 @theme {
-  /* UI-12: Iranian palette — saffron primary, firuze secondary, terracotta accent */
-  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Vazirmatn', ui-sans-serif, system-ui, sans-serif;
   --font-fa: 'Vazirmatn', ui-sans-serif, system-ui, sans-serif;
-  --font-display: 'Vazirmatn', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Vazirmatn', ui-sans-serif, system-ui, sans-serif;
 
   --color-brand: var(--theme-primary);
   --color-brand-dark: var(--theme-primary-hover);
   --color-brand-light: var(--theme-primary);
   --color-brand-muted: var(--theme-primary-muted);
+  --color-brand-fg: var(--theme-primary-fg);
   --color-accent: var(--theme-secondary);
   --color-accent-dark: var(--theme-secondary-hover);
   --color-accent-light: var(--theme-secondary);
@@ -125,10 +153,17 @@ html[data-theme="light"] {
   --color-chart-3: var(--theme-chart-3);
   --color-chart-4: var(--theme-chart-4);
 
-  --text-display-xl: 3.5rem;
-  --text-display-lg: 2.75rem;
-  --text-display-md: 2.25rem;
-  --text-display-sm: 1.75rem;
+  --radius-btn: 12px;
+  --radius-input: 12px;
+  --radius-card: 20px;
+  --radius-dialog: 24px;
+  --radius-image: 20px;
+  --radius-chart: 16px;
+
+  --text-display-xl: 3.25rem;
+  --text-display-lg: 2.5rem;
+  --text-display-md: 2rem;
+  --text-display-sm: 1.625rem;
 }
 
 html {
@@ -140,6 +175,7 @@ body {
   -webkit-font-smoothing: antialiased;
   background-color: var(--theme-app);
   color: var(--theme-fg);
+  line-height: 1.65;
 }
 
 html.farsi-font,
@@ -149,7 +185,8 @@ html.farsi-font body {
 
 h1, h2, h3, .font-display {
   font-family: var(--font-display);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
 }
 
 ::-webkit-scrollbar {
@@ -167,75 +204,84 @@ h1, h2, h3, .font-display {
 }
 
 .content-locked {
-  filter: blur(6px);
+  filter: blur(5px);
   pointer-events: none;
   user-select: none;
 }
 
-/* Subtle girih-inspired geometric tile pattern */
+/* Very subtle geometric wash — optional atmospheres only */
 .persian-pattern {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%23e8b84a' stroke-opacity='0.12' stroke-width='0.75'%3E%3Cpath d='M40 0L80 40L40 80L0 40Z'/%3E%3Cpath d='M40 10L70 40L40 70L10 40Z'/%3E%3Cpath d='M40 20L60 40L40 60L20 40Z'/%3E%3Ccircle cx='40' cy='40' r='4'/%3E%3C/g%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%2314b8a6' stroke-opacity='0.06' stroke-width='0.75'%3E%3Cpath d='M40 0L80 40L40 80L0 40Z'/%3E%3Cpath d='M40 16L64 40L40 64L16 40Z'/%3E%3C/g%3E%3C/svg%3E");
   background-size: 80px 80px;
 }
 
 html[data-theme="light"] .persian-pattern {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%23b8860b' stroke-opacity='0.1' stroke-width='0.75'%3E%3Cpath d='M40 0L80 40L40 80L0 40Z'/%3E%3Cpath d='M40 10L70 40L40 70L10 40Z'/%3E%3Cpath d='M40 20L60 40L40 60L20 40Z'/%3E%3Ccircle cx='40' cy='40' r='4'/%3E%3C/g%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%238c1d40' stroke-opacity='0.05' stroke-width='0.75'%3E%3Cpath d='M40 0L80 40L40 80L0 40Z'/%3E%3Cpath d='M40 16L64 40L40 64L16 40Z'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 .persian-pattern-fade {
-  mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 20%, transparent 75%);
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 15%, transparent 70%);
 }
 
+/* Soft atmospheric wash — not a loud gradient CTA */
 .gradient-hero {
-  background: linear-gradient(135deg, var(--theme-primary-muted) 0%, transparent 45%, var(--theme-secondary-muted) 100%);
+  background: color-mix(in srgb, var(--theme-primary-muted) 55%, transparent);
 }
 
+/* Solid brand fill (no multi-stop gradients on CTAs) */
 .gradient-brand {
-  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-accent) 55%, var(--theme-secondary) 100%);
+  background: var(--theme-primary);
+  color: var(--theme-primary-fg);
 }
 
 .text-gradient-brand {
-  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-accent) 50%, var(--theme-secondary) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--theme-primary);
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
 }
 
-.card-iranian {
+/* Flat premium card — border + spacing, never shadow */
+.card-iranian,
+.card-premium {
   background: var(--theme-surface);
   border: 1px solid var(--theme-border);
-  border-radius: 1rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.06);
+  border-radius: var(--radius-card);
+  box-shadow: none;
 }
 
-html[data-theme="dark"] .card-iranian {
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 8px 24px rgba(0, 0, 0, 0.25);
+.img-premium {
+  border-radius: var(--radius-image);
+}
+
+.dialog-premium {
+  border-radius: var(--radius-dialog);
+  border: 1px solid var(--theme-border);
+  background: var(--theme-surface);
+  box-shadow: none;
+}
+
+.chart-surface {
+  border-radius: var(--radius-chart);
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 .animate-fade-in {
-  animation: fadeIn 0.5s ease-out;
+  animation: fadeIn var(--motion-fast) ease-out;
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 .animate-slide-up {
-  animation: slideUp 0.6s ease-out;
+  animation: slideUp 220ms ease-out;
 }
 
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px color-mix(in srgb, var(--theme-primary) 35%, transparent); }
-  50% { box-shadow: 0 0 40px color-mix(in srgb, var(--theme-primary) 55%, transparent); }
-}
-.animate-pulse-glow {
-  animation: pulse-glow 2s ease-in-out infinite;
-}
-
+/* Quiet loading shimmer — no glow */
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
@@ -243,5 +289,10 @@ html[data-theme="dark"] .card-iranian {
 .animate-shimmer {
   background: linear-gradient(90deg, var(--theme-elevated) 25%, var(--theme-elevated-hover) 50%, var(--theme-elevated) 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+/* Kill legacy glow utility if referenced */
+.animate-pulse-glow {
+  animation: none;
 }

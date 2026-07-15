@@ -1,46 +1,45 @@
 import { type HTMLAttributes, type ReactNode } from 'react';
-import { PersianPattern } from './PersianPattern';
 
 type CardProps = HTMLAttributes<HTMLDivElement> & {
   children: ReactNode;
   padding?: 'none' | 'sm' | 'md' | 'lg';
   elevated?: boolean;
+  /** @deprecated Pattern overlays removed for minimal brand; ignored. */
   pattern?: boolean;
 };
 
 const paddingClasses = {
   none: '',
-  sm: 'p-4',
-  md: 'p-6',
-  lg: 'p-8',
+  sm: 'p-5',
+  md: 'p-7',
+  lg: 'p-9',
 };
 
 export function Card({
   children,
   padding = 'md',
   elevated = false,
-  pattern = false,
+  pattern: _pattern = false,
   className = '',
   ...props
 }: CardProps) {
   return (
     <div
       className={[
-        'card-iranian relative overflow-hidden',
+        'card-premium relative',
         elevated ? 'bg-elevated' : 'bg-surface',
         paddingClasses[padding],
         className,
       ].filter(Boolean).join(' ')}
       {...props}
     >
-      {pattern && <PersianPattern opacity={0.5} />}
-      <div className="relative z-10">{children}</div>
+      {children}
     </div>
   );
 }
 
 export function CardHeader({ children, className = '' }: { children: ReactNode; className?: string }) {
-  return <div className={`mb-4 ${className}`}>{children}</div>;
+  return <div className={`mb-5 ${className}`}>{children}</div>;
 }
 
 export function CardTitle({ children, className = '' }: { children: ReactNode; className?: string }) {

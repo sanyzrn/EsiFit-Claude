@@ -11,7 +11,7 @@ import { programImage } from '@/lib/media';
 import { Breadcrumbs } from '@/components/ui/Breadcrumbs';
 import { PageContainer } from '@/components/ui/PageContainer';
 
-const goalColors: Record<string, string> = { MUSCLE_GAIN: 'bg-blue-500/20 text-blue-400', FAT_LOSS: 'bg-red-500/20 text-red-400', GENERAL_FITNESS: 'bg-green-500/20 text-green-400', STRENGTH: 'bg-purple-500/20 text-purple-400' };
+const goalColors: Record<string, string> = { MUSCLE_GAIN: 'bg-accent-muted text-accent', FAT_LOSS: 'bg-danger/15 text-danger', GENERAL_FITNESS: 'bg-success/15 text-success', STRENGTH: 'bg-terracotta/15 text-terracotta' };
 
 export function ProgramList() {
   const { t, lang } = useI18n();
@@ -48,7 +48,7 @@ export function ProgramList() {
                   <img
                     src={img.src}
                     alt={t(img.alt)}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover transition-[filter] duration-[200ms]"
                     loading="lazy"
                   />
                 ) : (
@@ -120,7 +120,7 @@ export function ProgramDetail() {
           { label: t({ en: 'Not found', fa: 'یافت نشد' }) },
         ]} />
         <h1 className="text-2xl font-bold mb-4">{t({ en: 'Program not found', fa: 'برنامه یافت نشد' })}</h1>
-        <button onClick={() => navigate('/programs')} className="text-orange-400">{t({ en: '← Back to programs', fa: '← بازگشت به برنامه‌ها' })}</button>
+        <button onClick={() => navigate('/programs')} className="text-brand">{t({ en: '← Back to programs', fa: '← بازگشت به برنامه‌ها' })}</button>
       </PageContainer>
     );
   }
@@ -157,7 +157,7 @@ export function ProgramDetail() {
         { label: copy.title },
       ]} />
 
-      <div className="bg-surface border border-border rounded-2xl p-6 md:p-8 mb-6">
+      <div className="card-iranian p-6 md:p-8 mb-6">
         <div className="flex items-center gap-2 mb-3">
           <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${goalColors[program.goal]}`}>{goalLabels[program.goal]}</span>
           <span className="text-xs px-2.5 py-1 rounded-full bg-elevated-hover text-fg-muted">
@@ -181,8 +181,8 @@ export function ProgramDetail() {
               <button
                 key={day.id}
                 onClick={() => setActiveDay(i)}
-                className={`px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-colors ${
-                  activeDay === i ? 'bg-orange-500 text-white' : 'bg-elevated text-fg-muted hover:bg-elevated-hover'
+                className={`px-4 py-2 rounded-[12px] font-medium text-sm whitespace-nowrap transition-[color,background-color] duration-[180ms] ${
+                  activeDay === i ? 'bg-brand text-brand-fg font-semibold' : 'bg-elevated text-fg-muted hover:bg-elevated-hover'
                 }`}
               >
                 {t({ en: 'Day', fa: 'روز' })} {day.dayNumber}: {copy.days[i]?.title ?? day.title}
@@ -196,15 +196,15 @@ export function ProgramDetail() {
               {program.days[activeDay].exercises.map(pe => (
                 <div
                   key={pe.id}
-                  className={`flex items-center gap-4 bg-surface border rounded-xl p-4 transition-all flex-row-reverse rtl:flex-row ${
-                    completedExercises.has(pe.id) ? 'border-green-500/30 bg-green-500/5' : 'border-border'
+                  className={`flex items-center gap-4 bg-surface border rounded-[20px] p-4 transition-[border-color,background-color] duration-[180ms] flex-row-reverse rtl:flex-row ${
+                    completedExercises.has(pe.id) ? 'border-success/30 bg-success/5' : 'border-border'
                   }`}
                 >
                   <button onClick={() => toggleComplete(pe.id, pe.exerciseId)} className="shrink-0">
-                    <CheckCircle2 className={`w-6 h-6 transition-colors ${completedExercises.has(pe.id) ? 'text-green-400' : 'text-fg-faint'}`} />
+                    <CheckCircle2 className={`w-6 h-6 transition-colors ${completedExercises.has(pe.id) ? 'text-success' : 'text-fg-faint'}`} />
                   </button>
                   <div className="flex-1 text-right rtl:text-left">
-                    <Link to={`/exercises/${getExerciseSlugById(pe.exerciseId) ?? ''}`} className="font-bold hover:text-orange-400 transition-colors">
+                    <Link to={`/exercises/${getExerciseSlugById(pe.exerciseId) ?? ''}`} className="font-bold hover:text-brand transition-colors">
                       {getExerciseNameById(pe.exerciseId, lang)}
                     </Link>
                     <div className="text-sm text-fg-subtle mt-1">
@@ -223,7 +223,7 @@ export function ProgramDetail() {
         <TierGate minTier={program.requiredTier}>
           <div className="space-y-3">
             {program.days[0]?.exercises.map(pe => (
-              <div key={pe.id} className="flex items-center gap-4 bg-surface border border-border rounded-xl p-4 flex-row-reverse rtl:flex-row">
+              <div key={pe.id} className="flex items-center gap-4 bg-surface border border-border rounded-[20px] p-4 flex-row-reverse rtl:flex-row">
                 <CheckCircle2 className="w-6 h-6 text-fg-faint shrink-0" />
                 <div className="flex-1 text-right rtl:text-left">
                   <div className="font-bold">{getExerciseNameById(pe.exerciseId, lang)}</div>

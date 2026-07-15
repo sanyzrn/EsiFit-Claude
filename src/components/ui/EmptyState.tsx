@@ -22,7 +22,7 @@ export function EmptyState({
   variant = 'firuze',
 }: EmptyStateProps) {
   return (
-    <div className="relative flex flex-col items-center justify-center text-center py-12 px-4 overflow-hidden rounded-2xl border border-border bg-surface">
+    <div className="relative flex flex-col items-center justify-center text-center py-12 px-4 overflow-hidden card-iranian">
       <PersianPattern opacity={0.35} />
       {Icon && (
         <div className="relative z-10 mb-4">

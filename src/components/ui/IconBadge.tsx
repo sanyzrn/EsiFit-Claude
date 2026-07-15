@@ -1,12 +1,14 @@
 import type { LucideIcon } from 'lucide-react';
 import type { HTMLAttributes } from 'react';
 
-type Variant = 'saffron' | 'firuze' | 'terracotta' | 'neutral';
+type Variant = 'saffron' | 'firuze' | 'terracotta' | 'neutral' | 'brand' | 'accent';
 
 const variants: Record<Variant, string> = {
-  saffron: 'bg-brand-muted text-brand border-brand/25 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]',
-  firuze: 'bg-accent-muted text-accent border-accent/25 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]',
-  terracotta: 'bg-terracotta/15 text-terracotta border-terracotta/25',
+  brand: 'bg-brand-muted text-brand border-brand/20',
+  saffron: 'bg-brand-muted text-brand border-brand/20',
+  firuze: 'bg-accent-muted text-accent border-accent/20',
+  accent: 'bg-accent-muted text-accent border-accent/20',
+  terracotta: 'bg-terracotta/10 text-terracotta border-terracotta/20',
   neutral: 'bg-elevated text-fg-muted border-border',
 };
 
@@ -17,14 +19,14 @@ type IconBadgeProps = HTMLAttributes<HTMLDivElement> & {
 };
 
 const sizes = {
-  sm: { box: 'w-9 h-9 rounded-lg', icon: 'w-4 h-4' },
-  md: { box: 'w-12 h-12 rounded-xl', icon: 'w-6 h-6' },
-  lg: { box: 'w-16 h-16 rounded-2xl', icon: 'w-8 h-8' },
+  sm: { box: 'w-9 h-9 rounded-[12px]', icon: 'w-4 h-4' },
+  md: { box: 'w-12 h-12 rounded-[12px]', icon: 'w-5 h-5' },
+  lg: { box: 'w-14 h-14 rounded-[16px]', icon: 'w-7 h-7' },
 };
 
 export function IconBadge({
   icon: Icon,
-  variant = 'saffron',
+  variant = 'brand',
   size = 'md',
   className = '',
   ...props
@@ -40,7 +42,7 @@ export function IconBadge({
       ].join(' ')}
       {...props}
     >
-      <Icon className={s.icon} strokeWidth={2.25} aria-hidden />
+      <Icon className={s.icon} strokeWidth={1.75} aria-hidden />
     </div>
   );
 }

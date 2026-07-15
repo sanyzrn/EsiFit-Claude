@@ -5,9 +5,9 @@ type SkeletonProps = HTMLAttributes<HTMLDivElement> & {
 };
 
 const roundedClasses = {
-  sm: 'rounded',
-  md: 'rounded-lg',
-  lg: 'rounded-xl',
+  sm: 'rounded-[8px]',
+  md: 'rounded-[12px]',
+  lg: 'rounded-[20px]',
   full: 'rounded-full',
 };
 
@@ -17,7 +17,7 @@ export function Skeleton({ rounded = 'md', className = '', ...props }: SkeletonP
       role="status"
       aria-label="Loading"
       className={[
-        'animate-pulse bg-elevated',
+        'animate-shimmer',
         roundedClasses[rounded],
         className,
       ].join(' ')}

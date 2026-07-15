@@ -116,7 +116,7 @@ export default function Pricing() {
       {paymentsEnabled === false && <PaymentsNotice />}
 
       {notice && (
-        <div role="status" aria-live="polite" className="mb-8 rounded-xl border border-brand/30 bg-brand-muted px-4 py-3 text-sm text-fg text-center">
+        <div role="status" aria-live="polite" className="mb-8 rounded-[12px] border border-brand/30 bg-brand-muted px-4 py-3 text-sm text-fg text-center">
           {notice}
         </div>
       )}
@@ -138,7 +138,7 @@ export default function Pricing() {
               <PersianPattern opacity={isPopular ? 0.35 : 0.2} />
               <div className="relative z-10 flex flex-col flex-1">
               {isPopular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 gradient-brand text-[#1a1410] text-xs font-bold rounded-full whitespace-nowrap">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-brand text-brand-fg text-xs font-semibold rounded-[12px] whitespace-nowrap">
                   {t({ en: 'MOST POPULAR', fa: 'پرطرفدارترین' })}
                 </div>
               )}
@@ -176,14 +176,14 @@ export default function Pricing() {
               <button
                 onClick={() => handleSubscribe(plan.tier)}
                 disabled={checkoutDisabled || loadingTier === plan.tier}
-                className={`w-full py-3 rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-2 ${
+                className={`w-full py-3 rounded-[12px] font-semibold text-sm transition-[color,background-color,filter] duration-[180ms] flex items-center justify-center gap-2 ${
                   isCurrent
                     ? 'bg-elevated-hover text-fg-subtle cursor-not-allowed'
                     : checkoutDisabled
-                    ? 'bg-elevated text-fg-faint cursor-not-allowed border border-strong'
+                    ? 'bg-elevated text-fg-faint cursor-not-allowed border border-border'
                     : isPopular
-                    ? 'gradient-brand text-[#1a1410] hover:brightness-110'
-                    : 'bg-elevated text-fg hover:bg-elevated-hover border border-strong'
+                    ? 'bg-brand text-brand-fg hover:bg-brand-dark'
+                    : 'bg-elevated text-fg hover:bg-elevated-hover border border-border'
                 }`}
               >
                 {loadingTier === plan.tier && <Loader2 className="w-4 h-4 animate-spin" />}
@@ -196,7 +196,7 @@ export default function Pricing() {
       </div>
 
       {/* Feature Comparison */}
-      <div className="bg-surface border border-border rounded-2xl overflow-hidden">
+      <div className="card-iranian overflow-hidden p-0">
         <div className="p-6 border-b border-border">
           <h2 className="text-2xl font-black">{t({ en: 'Feature Comparison', fa: 'مقایسه امکانات' })}</h2>
         </div>

@@ -164,17 +164,17 @@ export function Login() {
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center mb-4">
-            <Dumbbell className="w-7 h-7 text-white" />
+          <div className="w-14 h-14 mx-auto rounded-[20px] bg-brand text-brand-fg flex items-center justify-center mb-4">
+            <Dumbbell className="w-7 h-7" />
           </div>
           <h1 className="text-2xl font-black">{t({ en: 'Welcome Back', fa: 'خوش آمدید' })}</h1>
           <p className="text-fg-subtle text-sm mt-1">{t({ en: 'Sign in to your EsiFit account', fa: 'به حساب اسی‌فیت خود وارد شوید' })}</p>
         </div>
 
-        <Card className="rounded-2xl">
+        <Card>
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm">
+              <div className="flex items-center gap-2 p-3 bg-danger/10 border border-danger/20 rounded-[12px] text-danger text-sm">
                 <AlertCircle className="w-4 h-4 shrink-0" /> {error}
               </div>
             )}
@@ -202,7 +202,7 @@ export function Login() {
           </form>
 
           <div className="mt-4 text-center text-sm text-fg-subtle">
-            <Link to="/forgot-password" className="text-orange-400 hover:text-orange-300">{t({ en: 'Forgot password?', fa: 'رمز عبور را فراموش کرده‌اید؟' })}</Link>
+            <Link to="/forgot-password" className="text-brand hover:text-brand-dark">{t({ en: 'Forgot password?', fa: 'رمز عبور را فراموش کرده‌اید؟' })}</Link>
           </div>
 
           <PhoneOtpSection
@@ -216,7 +216,7 @@ export function Login() {
 
         <p className="text-center text-sm text-fg-subtle mt-6">
           {t({ en: "Don't have an account?", fa: 'حساب کاربری ندارید؟' })}{' '}
-          <Link to="/register" className="text-orange-400 hover:text-orange-300 font-medium">{t({ en: 'Sign up', fa: 'ثبت‌نام' })}</Link>
+          <Link to="/register" className="text-brand hover:text-brand-dark font-medium">{t({ en: 'Sign up', fa: 'ثبت‌نام' })}</Link>
         </p>
       </div>
     </div>
@@ -261,17 +261,17 @@ export function Register() {
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center mb-4">
-            <Dumbbell className="w-7 h-7 text-white" />
+          <div className="w-14 h-14 mx-auto rounded-[20px] bg-brand text-brand-fg flex items-center justify-center mb-4">
+            <Dumbbell className="w-7 h-7" />
           </div>
           <h1 className="text-2xl font-black">{t({ en: 'Create Your Account', fa: 'حساب خود را بسازید' })}</h1>
           <p className="text-fg-subtle text-sm mt-1">{t({ en: 'Start your fitness journey with EsiFit', fa: 'سفر تناسب اندام خود را با اسی‌فیت آغاز کنید' })}</p>
         </div>
 
-        <Card className="rounded-2xl">
+        <Card>
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm">
+              <div className="flex items-center gap-2 p-3 bg-danger/10 border border-danger/20 rounded-[12px] text-danger text-sm">
                 <AlertCircle className="w-4 h-4 shrink-0" /> {error}
               </div>
             )}
@@ -312,7 +312,7 @@ export function Register() {
                 </button>
               )}
               hint={password.length > 0 ? (
-                <span className={password.length < 6 ? 'text-red-400' : password.length < 10 ? 'text-yellow-400' : 'text-green-400'}>
+                <span className={password.length < 6 ? 'text-danger' : password.length < 10 ? 'text-warning' : 'text-success'}>
                   {password.length < 6
                     ? t({ en: 'Too short (min. 6 characters)', fa: 'کوتاه است (حداقل ۶ کاراکتر)' })
                     : password.length < 10
@@ -337,7 +337,7 @@ export function Register() {
 
         <p className="text-center text-sm text-fg-subtle mt-6">
           {t({ en: 'Already have an account?', fa: 'قبلاً حساب دارید؟' })}{' '}
-          <Link to="/login" className="text-orange-400 hover:text-orange-300 font-medium">{t({ en: 'Sign in', fa: 'ورود' })}</Link>
+          <Link to="/login" className="text-brand hover:text-brand-dark font-medium">{t({ en: 'Sign in', fa: 'ورود' })}</Link>
         </p>
       </div>
     </div>
@@ -376,7 +376,7 @@ export function ForgotPassword() {
           <h1 className="text-2xl font-black">{t({ en: 'Reset Password', fa: 'بازیابی رمز عبور' })}</h1>
           <p className="text-fg-subtle text-sm mt-1">{t({ en: 'Enter your email to receive a reset link', fa: 'ایمیل خود را برای دریافت لینک بازیابی وارد کنید' })}</p>
         </div>
-        <Card className="rounded-2xl">
+        <Card>
           {sent ? (
             <div className="text-center py-4">
               <div className="text-4xl mb-4">📧</div>
@@ -386,7 +386,7 @@ export function ForgotPassword() {
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
-                <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm">
+                <div className="flex items-center gap-2 p-3 bg-danger/10 border border-danger/20 rounded-[12px] text-danger text-sm">
                   <AlertCircle className="w-4 h-4 shrink-0" /> {error}
                 </div>
               )}
@@ -454,7 +454,7 @@ export function ResetPassword() {
         <div className="text-center mb-8">
           <h1 className="text-2xl font-black">{t({ en: 'Set New Password', fa: 'رمز عبور جدید' })}</h1>
         </div>
-        <Card className="rounded-2xl">
+        <Card>
           {done ? (
             <div className="text-center py-4 space-y-4">
               <p className="text-fg-muted">{t({ en: 'Your password has been updated.', fa: 'رمز عبور شما به‌روزرسانی شد.' })}</p>
@@ -465,7 +465,7 @@ export function ResetPassword() {
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
-                <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm">
+                <div className="flex items-center gap-2 p-3 bg-danger/10 border border-danger/20 rounded-[12px] text-danger text-sm">
                   <AlertCircle className="w-4 h-4 shrink-0" /> {error}
                 </div>
               )}

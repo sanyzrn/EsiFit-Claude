@@ -49,7 +49,7 @@ export default function TierGate({ minTier, children, showBlur = true }: TierGat
     <div className="relative min-h-[12rem] flex items-center justify-center">
       {showBlur && (
         <div
-          className="absolute inset-0 rounded-xl border border-dashed border-border bg-surface/70"
+          className="absolute inset-0 rounded-[20px] border border-dashed border-border bg-surface/70"
           aria-hidden="true"
         />
       )}

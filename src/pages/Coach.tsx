@@ -31,8 +31,8 @@ export default function Coach() {
   return (
     <PageContainer padY="md">
       <div className="flex items-center gap-3 mb-8">
-        <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
-          <GraduationCap className="w-5 h-5 text-purple-400" />
+        <div className="w-10 h-10 rounded-[12px] bg-terracotta/15 flex items-center justify-center">
+          <GraduationCap className="w-5 h-5 text-terracotta" />
         </div>
         <div>
           <h1 className="text-2xl font-black">{t({ en: 'Coach Dashboard', fa: 'داشبورد مربی' })}</h1>
@@ -45,8 +45,8 @@ export default function Coach() {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-colors ${
-              activeTab === tab.id ? 'bg-orange-500 text-white' : 'bg-elevated text-fg-muted hover:bg-elevated-hover'
+            className={`flex items-center gap-2 px-4 py-2 rounded-[12px] font-medium text-sm whitespace-nowrap transition-[color,background-color] duration-[180ms] ${
+              activeTab === tab.id ? 'bg-brand text-brand-fg font-semibold' : 'bg-elevated text-fg-muted hover:bg-elevated-hover'
             }`}
           >
             <tab.icon className="w-4 h-4" /> {tab.label}
@@ -62,12 +62,12 @@ export default function Coach() {
               <button
                 key={c.id}
                 onClick={() => setSelectedClient(c.id)}
-                className={`w-full text-left p-4 rounded-xl border transition-colors ${
-                  selectedClient === c.id ? 'bg-elevated border-orange-500/30' : 'bg-surface border-border hover:border-strong'
+                className={`w-full text-left p-4 rounded-[20px] border transition-[color,background-color,border-color] duration-[180ms] ${
+                  selectedClient === c.id ? 'bg-elevated border-brand/30' : 'bg-surface border-border hover:border-strong'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center font-bold text-sm">
+                  <div className="w-10 h-10 rounded-[12px] bg-brand text-brand-fg flex items-center justify-center font-semibold text-sm">
                     {c.name[0]}
                   </div>
                   <div>
@@ -83,9 +83,9 @@ export default function Coach() {
           <div className="md:col-span-2">
             {client ? (
               <div className="space-y-4">
-                <div className="bg-surface border border-border rounded-xl p-6">
+                <div className="card-iranian p-6">
                   <div className="flex items-center gap-4 mb-4">
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center font-bold text-2xl">
+                    <div className="w-16 h-16 rounded-[20px] bg-brand text-brand-fg flex items-center justify-center font-semibold text-2xl">
                       {client.name[0]}
                     </div>
                     <div>
@@ -94,22 +94,22 @@ export default function Coach() {
                     </div>
                   </div>
                   <div className="grid grid-cols-3 gap-4 mt-4">
-                    <div className="bg-elevated rounded-lg p-3 text-center">
+                    <div className="bg-elevated rounded-[12px] p-3 text-center">
                       <div className="text-sm text-fg-subtle">{t({ en: 'Weight', fa: 'وزن' })}</div>
                       <div className="font-bold">{client.weight}</div>
                     </div>
-                    <div className="bg-elevated rounded-lg p-3 text-center">
+                    <div className="bg-elevated rounded-[12px] p-3 text-center">
                       <div className="text-sm text-fg-subtle">{t({ en: 'Progress', fa: 'پیشرفت' })}</div>
-                      <div className="font-bold text-green-400">{client.progress}</div>
+                      <div className="font-bold text-success">{client.progress}</div>
                     </div>
-                    <div className="bg-elevated rounded-lg p-3 text-center">
+                    <div className="bg-elevated rounded-[12px] p-3 text-center">
                       <div className="text-sm text-fg-subtle">{t({ en: 'Last Active', fa: 'آخرین فعالیت' })}</div>
                       <div className="font-bold text-sm">{client.lastActive}</div>
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-surface border border-border rounded-xl p-6">
+                <div className="card-iranian p-6">
                   <h3 className="font-bold mb-4">{t({ en: 'Body Log History', fa: 'تاریخچه لاگ بدن' })}</h3>
                   <div className="space-y-2">
                     {[
@@ -121,23 +121,23 @@ export default function Coach() {
                       <div key={i} className="flex justify-between text-sm py-2 border-b border-border last:border-0">
                         <span className="text-fg-subtle">{log.date}</span>
                         <span>{log.weight}</span>
-                        <span className="text-orange-400">{log.bf}</span>
+                        <span className="text-brand">{log.bf}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 <div className="flex gap-3">
-                  <button className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600 transition-colors">
+                  <button className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-brand text-brand-fg font-semibold rounded-[12px] hover:bg-brand-dark transition-[color,background-color] duration-[180ms]">
                     <Target className="w-4 h-4" /> {t({ en: 'Assign Program', fa: 'تخصیص برنامه' })}
                   </button>
-                  <button className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-elevated-hover text-fg font-bold rounded-lg hover:bg-elevated-hover transition-colors">
+                  <button className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-elevated text-fg font-semibold rounded-[12px] hover:bg-elevated-hover border border-border transition-[color,background-color] duration-[180ms]">
                     <MessageSquare className="w-4 h-4" /> {t({ en: 'Send Message', fa: 'ارسال پیام' })}
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="bg-surface border border-border rounded-xl p-12 text-center">
+              <div className="card-iranian p-12 text-center">
                 <User className="w-12 h-12 mx-auto mb-3 text-fg-faint" />
                 <p className="text-fg-subtle">{t({ en: 'Select a client to view their details', fa: 'برای مشاهده جزئیات، یک مشتری انتخاب کنید' })}</p>
               </div>
@@ -147,14 +147,14 @@ export default function Coach() {
       )}
 
       {activeTab === 'messages' && (
-        <div className="bg-surface border border-border rounded-xl p-8 text-center animate-fade-in">
+        <div className="card-iranian p-8 text-center animate-fade-in">
           <MessageSquare className="w-12 h-12 mx-auto mb-4 text-fg-faint" />
           <h3 className="font-bold text-lg mb-2">Client Messages</h3>
           <p className="text-fg-subtle text-sm">Messages from your VIP and Elite clients will appear here.</p>
           <div className="mt-6 space-y-3 text-left max-w-lg mx-auto">
             {clients.map(c => (
-              <div key={c.id} className="flex items-center gap-3 p-3 bg-elevated rounded-lg">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center font-bold text-sm">{c.name[0]}</div>
+              <div key={c.id} className="flex items-center gap-3 p-3 bg-elevated rounded-[12px]">
+                <div className="w-8 h-8 rounded-[12px] bg-brand text-brand-fg flex items-center justify-center font-semibold text-sm">{c.name[0]}</div>
                 <div className="flex-1">
                   <div className="text-sm font-medium">{c.name}</div>
                   <div className="text-xs text-fg-subtle">Thanks for the program update!</div>
@@ -167,11 +167,11 @@ export default function Coach() {
       )}
 
       {activeTab === 'programs' && (
-        <div className="bg-surface border border-border rounded-xl p-8 text-center animate-fade-in">
+        <div className="card-iranian p-8 text-center animate-fade-in">
           <BarChart3 className="w-12 h-12 mx-auto mb-4 text-fg-faint" />
           <h3 className="font-bold text-lg mb-2">Program Builder</h3>
           <p className="text-fg-subtle text-sm mb-4">Create and customize training programs for your clients.</p>
-          <button className="px-6 py-3 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600 transition-colors">
+          <button className="px-6 py-3 bg-brand text-brand-fg font-semibold rounded-[12px] hover:bg-brand-dark transition-[color,background-color] duration-[180ms]">
             + Create New Program
           </button>
         </div>

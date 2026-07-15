@@ -25,7 +25,7 @@ export function AdminCharts({ revenueByPlan, userGrowth, mrr }: AdminChartsProps
           <p className="text-xs text-fg-subtle mb-4">
             {t({ en: 'Total MRR: ', fa: 'کل درآمد ماهانه: ' })}{formatToman(mrr)}
           </p>
-          <div className="h-56" style={{ direction: 'ltr' }}>
+          <div className="h-56 chart-surface overflow-hidden" style={{ direction: 'ltr' }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={revenueByPlan} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke={chart.grid} />
@@ -51,7 +51,7 @@ export function AdminCharts({ revenueByPlan, userGrowth, mrr }: AdminChartsProps
         <PersianPattern opacity={0.3} />
         <div className="relative z-10">
           <h3 className="font-bold mb-4 font-display">{t({ en: 'User Growth', fa: 'رشد کاربران' })}</h3>
-          <div className="h-56" style={{ direction: 'ltr' }}>
+          <div className="h-56 chart-surface overflow-hidden" style={{ direction: 'ltr' }}>
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={userGrowth} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
                 <defs>
@@ -172,7 +172,7 @@ export function ProgressCharts({
         <div key={c.key} className="card-iranian p-5 relative overflow-hidden">
           <PersianPattern opacity={0.25} />
           <h3 className="relative z-10 font-bold mb-4 font-display">{c.title}</h3>
-          <div className="relative z-10 h-52" style={{ direction: 'ltr' }}>
+          <div className="relative z-10 h-52 chart-surface overflow-hidden" style={{ direction: 'ltr' }}>
             <ResponsiveContainer width="100%" height="100%">{c.node}</ResponsiveContainer>
           </div>
         </div>

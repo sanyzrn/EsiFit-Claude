@@ -38,7 +38,7 @@ export function DietList() {
                   <img
                     src={img.src}
                     alt={t(img.alt)}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover transition-[filter] duration-[200ms]"
                     loading="lazy"
                   />
                 ) : (
@@ -88,7 +88,7 @@ export function DietDetail() {
           { label: t({ en: 'Not found', fa: 'یافت نشد' }) },
         ]} />
         <h1 className="text-2xl font-bold mb-4">{t({ en: 'Diet plan not found', fa: 'برنامه غذایی یافت نشد' })}</h1>
-        <button onClick={() => navigate('/diet')} className="text-orange-400">← {t({ en: 'Back to diet plans', fa: 'بازگشت به برنامه‌های غذایی' })}</button>
+        <button onClick={() => navigate('/diet')} className="text-brand">← {t({ en: 'Back to diet plans', fa: 'بازگشت به برنامه‌های غذایی' })}</button>
       </PageContainer>
     );
   }
@@ -117,13 +117,13 @@ export function DietDetail() {
         }), { calories: 0, protein: 0, carbs: 0, fat: 0 });
 
         return (
-          <div key={meal.id} className="bg-surface border border-border rounded-xl overflow-hidden">
+          <div key={meal.id} className="card-iranian overflow-hidden p-0">
             <div className="px-5 py-4 border-b border-border flex justify-between items-center">
               <div className="flex items-center gap-2">
-                <UtensilsCrossed className="w-4 h-4 text-orange-400" />
+                <UtensilsCrossed className="w-4 h-4 text-brand" />
                 <h3 className="font-bold">{meal.name}</h3>
               </div>
-              <span className="text-sm text-orange-400 font-bold">{Math.round(mealTotals.calories)} kcal</span>
+              <span className="text-sm text-brand font-bold">{Math.round(mealTotals.calories)} kcal</span>
             </div>
             <div className="divide-y divide-border">
               {meal.items.map(item => (
@@ -134,9 +134,9 @@ export function DietDetail() {
                   </div>
                   <div className="flex gap-4 text-xs text-fg-subtle">
                     <span>{Math.round(item.calories)} cal</span>
-                    <span className="text-blue-400">P: {Math.round(item.protein)}g</span>
-                    <span className="text-green-400">C: {Math.round(item.carbs)}g</span>
-                    <span className="text-yellow-400">F: {Math.round(item.fat)}g</span>
+                    <span className="text-accent">P: {Math.round(item.protein)}g</span>
+                    <span className="text-success">C: {Math.round(item.carbs)}g</span>
+                    <span className="text-warning">F: {Math.round(item.fat)}g</span>
                   </div>
                 </div>
               ))}
@@ -144,9 +144,9 @@ export function DietDetail() {
             <div className="px-5 py-3 bg-elevated/50 flex justify-between text-xs font-medium">
               <span className="text-fg-subtle">Meal Total</span>
               <div className="flex gap-4">
-                <span className="text-blue-400">P: {Math.round(mealTotals.protein)}g</span>
-                <span className="text-green-400">C: {Math.round(mealTotals.carbs)}g</span>
-                <span className="text-yellow-400">F: {Math.round(mealTotals.fat)}g</span>
+                <span className="text-accent">P: {Math.round(mealTotals.protein)}g</span>
+                <span className="text-success">C: {Math.round(mealTotals.carbs)}g</span>
+                <span className="text-warning">F: {Math.round(mealTotals.fat)}g</span>
               </div>
             </div>
           </div>
@@ -163,25 +163,25 @@ export function DietDetail() {
         { label: copy.title },
       ]} />
 
-      <div className="bg-surface border border-border rounded-2xl p-6 md:p-8 mb-6">
+      <div className="card-iranian p-6 md:p-8 mb-6">
         <h1 className="text-3xl font-black mb-4">{copy.title}</h1>
         <p className="text-fg-subtle leading-relaxed mb-6">{copy.description}</p>
 
         <div className="grid grid-cols-4 gap-3">
-          <div className="bg-elevated rounded-xl p-4 text-center">
-            <div className="text-2xl font-black text-orange-400">{Math.round(totalMacros.calories)}</div>
+          <div className="bg-elevated rounded-[12px] p-4 text-center">
+            <div className="text-2xl font-black text-brand">{Math.round(totalMacros.calories)}</div>
             <div className="text-xs text-fg-subtle">{t({ en: 'Total Calories', fa: 'کل کالری' })}</div>
           </div>
-          <div className="bg-elevated rounded-xl p-4 text-center">
-            <div className="text-2xl font-black text-blue-400">{Math.round(totalMacros.protein)}g</div>
+          <div className="bg-elevated rounded-[12px] p-4 text-center">
+            <div className="text-2xl font-black text-accent">{Math.round(totalMacros.protein)}g</div>
             <div className="text-xs text-fg-subtle">{t({ en: 'Protein', fa: 'پروتئین' })}</div>
           </div>
-          <div className="bg-elevated rounded-xl p-4 text-center">
-            <div className="text-2xl font-black text-green-400">{Math.round(totalMacros.carbs)}g</div>
+          <div className="bg-elevated rounded-[12px] p-4 text-center">
+            <div className="text-2xl font-black text-success">{Math.round(totalMacros.carbs)}g</div>
             <div className="text-xs text-fg-subtle">{t({ en: 'Carbs', fa: 'کربوهیدرات' })}</div>
           </div>
-          <div className="bg-elevated rounded-xl p-4 text-center">
-            <div className="text-2xl font-black text-yellow-400">{Math.round(totalMacros.fat)}g</div>
+          <div className="bg-elevated rounded-[12px] p-4 text-center">
+            <div className="text-2xl font-black text-warning">{Math.round(totalMacros.fat)}g</div>
             <div className="text-xs text-fg-subtle">{t({ en: 'Fat', fa: 'چربی' })}</div>
           </div>
         </div>

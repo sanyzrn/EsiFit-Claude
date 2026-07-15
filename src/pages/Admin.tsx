@@ -117,8 +117,8 @@ export default function Admin() {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-colors ${
-              activeTab === tab.id ? 'bg-brand text-[#1a1410] font-bold' : 'bg-elevated text-fg-muted hover:bg-elevated-hover'
+            className={`flex items-center gap-2 px-4 py-2 rounded-[12px] font-medium text-sm whitespace-nowrap transition-[color,background-color] duration-[180ms] ${
+              activeTab === tab.id ? 'bg-brand text-brand-fg font-semibold' : 'bg-elevated text-fg-muted hover:bg-elevated-hover'
             }`}
           >
             <tab.icon className="w-4 h-4" /> {tab.label}
@@ -188,9 +188,9 @@ export default function Admin() {
       )}
 
       {activeTab === 'users' && (
-        <div className="bg-surface border border-border rounded-xl overflow-hidden animate-fade-in">
+        <div className="card-iranian overflow-hidden p-0 animate-fade-in">
           {usersError && (
-            <div className="p-4 text-sm text-red-400 border-b border-border">{usersError}</div>
+            <div className="p-4 text-sm text-danger border-b border-border">{usersError}</div>
           )}
           {usersLoading ? (
             <div className="p-8 flex justify-center" role="status">
@@ -221,8 +221,8 @@ export default function Admin() {
                       <td className="p-4 text-fg-subtle">{u.email ?? '—'}</td>
                       <td className="p-4 text-center">
                         <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                          u.role === 'ADMIN' ? 'bg-red-500/20 text-red-400' :
-                          u.role === 'COACH' ? 'bg-purple-500/20 text-purple-400' :
+                          u.role === 'ADMIN' ? 'bg-danger/15 text-danger' :
+                          u.role === 'COACH' ? 'bg-terracotta/15 text-terracotta' :
                           'bg-elevated-hover text-fg-muted'
                         }`}>
                           {u.role}
@@ -230,9 +230,9 @@ export default function Admin() {
                       </td>
                       <td className="p-4 text-center">
                         <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                          u.subscriptionTier === 'ELITE' ? 'bg-purple-500/20 text-purple-400' :
-                          u.subscriptionTier === 'VIP' ? 'bg-orange-500/20 text-orange-400' :
-                          u.subscriptionTier === 'ECONOMY' ? 'bg-blue-500/20 text-blue-400' :
+                          u.subscriptionTier === 'ELITE' ? 'bg-terracotta/15 text-terracotta' :
+                          u.subscriptionTier === 'VIP' ? 'bg-brand-muted text-brand' :
+                          u.subscriptionTier === 'ECONOMY' ? 'bg-accent-muted text-accent' :
                           'bg-elevated-hover text-fg-muted'
                         }`}>
                           {u.subscriptionTier}
@@ -251,10 +251,10 @@ export default function Admin() {
       )}
 
       {activeTab === 'exercises' && (
-        <div className="bg-surface border border-border rounded-xl overflow-hidden animate-fade-in">
+        <div className="card-iranian overflow-hidden p-0 animate-fade-in">
           <div className="p-4 border-b border-border flex justify-between items-center">
             <h3 className="font-bold">{t({ en: 'Exercise Library', fa: 'کتابخانه تمرین‌ها' })} ({EXERCISES.length} {t({ en: 'exercises', fa: 'تمرین' })})</h3>
-            <button className="px-3 py-1.5 bg-orange-500 text-white text-sm font-bold rounded-lg">+ {t({ en: 'Add Exercise', fa: 'افزودن تمرین' })}</button>
+            <button className="px-3 py-1.5 bg-brand text-brand-fg text-sm font-semibold rounded-[12px] hover:bg-brand-dark transition-[color,background-color] duration-[180ms]">+ {t({ en: 'Add Exercise', fa: 'افزودن تمرین' })}</button>
           </div>
           <div className="divide-y divide-border">
             {EXERCISES.map(ex => (
@@ -271,10 +271,10 @@ export default function Admin() {
       )}
 
       {activeTab === 'programs' && (
-        <div className="bg-surface border border-border rounded-xl overflow-hidden animate-fade-in">
+        <div className="card-iranian overflow-hidden p-0 animate-fade-in">
           <div className="p-4 border-b border-border flex justify-between items-center">
             <h3 className="font-bold">{t({ en: 'Training Programs', fa: 'برنامه‌های آموزشی' })} ({PROGRAMS.length})</h3>
-            <button className="px-3 py-1.5 bg-orange-500 text-white text-sm font-bold rounded-lg">+ {t({ en: 'Add Program', fa: 'افزودن برنامه' })}</button>
+            <button className="px-3 py-1.5 bg-brand text-brand-fg text-sm font-semibold rounded-[12px] hover:bg-brand-dark transition-[color,background-color] duration-[180ms]">+ {t({ en: 'Add Program', fa: 'افزودن برنامه' })}</button>
           </div>
           <div className="divide-y divide-border">
             {PROGRAMS.map(p => (
@@ -291,10 +291,10 @@ export default function Admin() {
       )}
 
       {activeTab === 'diet' && (
-        <div className="bg-surface border border-border rounded-xl overflow-hidden animate-fade-in">
+        <div className="card-iranian overflow-hidden p-0 animate-fade-in">
           <div className="p-4 border-b border-border flex justify-between items-center">
             <h3 className="font-bold">{t({ en: 'Diet Plans', fa: 'برنامه‌های غذایی' })} ({DIET_PLANS.length})</h3>
-            <button className="px-3 py-1.5 bg-orange-500 text-white text-sm font-bold rounded-lg">+ {t({ en: 'Add Diet Plan', fa: 'افزودن برنامه غذایی' })}</button>
+            <button className="px-3 py-1.5 bg-brand text-brand-fg text-sm font-semibold rounded-[12px] hover:bg-brand-dark transition-[color,background-color] duration-[180ms]">+ {t({ en: 'Add Diet Plan', fa: 'افزودن برنامه غذایی' })}</button>
           </div>
           <div className="divide-y divide-border">
             {DIET_PLANS.map(d => (
@@ -311,10 +311,10 @@ export default function Admin() {
       )}
 
       {activeTab === 'articles' && (
-        <div className="bg-surface border border-border rounded-xl overflow-hidden animate-fade-in">
+        <div className="card-iranian overflow-hidden p-0 animate-fade-in">
           <div className="p-4 border-b border-border flex justify-between items-center">
             <h3 className="font-bold">{t({ en: 'Blog Articles', fa: 'مقاله‌های وبلاگ' })} ({ARTICLES.length})</h3>
-            <button className="px-3 py-1.5 bg-orange-500 text-white text-sm font-bold rounded-lg">+ {t({ en: 'Add Article', fa: 'افزودن مقاله' })}</button>
+            <button className="px-3 py-1.5 bg-brand text-brand-fg text-sm font-semibold rounded-[12px] hover:bg-brand-dark transition-[color,background-color] duration-[180ms]">+ {t({ en: 'Add Article', fa: 'افزودن مقاله' })}</button>
           </div>
           <div className="divide-y divide-border">
             {ARTICLES.map(a => (

@@ -43,12 +43,12 @@ export function CalculatorIndex() {
           <Link
             key={c.slug}
             to={`/calculators/${c.slug}`}
-            className="group bg-surface border border-border rounded-xl p-5 hover:border-orange-500/50 transition-all"
+            className="group card-iranian p-5 hover:border-brand/50 transition-[border-color] duration-[180ms]"
           >
-            <div className="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center mb-3 group-hover:bg-orange-500/20 transition-colors">
-              <Calculator className="w-5 h-5 text-orange-400" />
+            <div className="w-10 h-10 rounded-[12px] bg-brand-muted flex items-center justify-center mb-3 transition-[background-color] duration-[180ms]">
+              <Calculator className="w-5 h-5 text-brand" />
             </div>
-            <h3 className="font-bold text-sm mb-1 group-hover:text-orange-400 transition-colors">{c.name}</h3>
+            <h3 className="font-bold text-sm mb-1 group-hover:text-brand transition-colors">{c.name}</h3>
             <p className="text-fg-subtle text-xs">{c.desc}</p>
           </Link>
         ))}
@@ -76,7 +76,7 @@ export function CalculatorDetail() {
           { label: t({ en: 'Not found', fa: 'یافت نشد' }) },
         ]} />
         <h1 className="text-2xl font-bold mb-4">{t({ en: 'Calculator not found', fa: 'ماشین‌حساب یافت نشد' })}</h1>
-        <button onClick={() => navigate('/calculators')} className="text-orange-400 hover:text-orange-300">
+        <button onClick={() => navigate('/calculators')} className="text-brand hover:text-brand">
           {t({ en: '← Back to calculators', fa: 'بازگشت به ماشین‌حساب‌ها' })}
         </button>
       </PageContainer>
@@ -90,10 +90,10 @@ export function CalculatorDetail() {
         { label: t({ en: 'Calculators', fa: 'ماشین‌حساب‌ها' }), href: '/calculators' },
         { label: calcInfo.name },
       ]} />
-      <div className="bg-surface border border-border rounded-2xl p-6 md:p-8">
+      <div className="card-iranian p-6 md:p-8">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center">
-            <Calculator className="w-6 h-6 text-orange-400" />
+          <div className="w-12 h-12 rounded-[12px] bg-brand-muted flex items-center justify-center">
+            <Calculator className="w-6 h-6 text-brand" />
           </div>
           <div>
             <h1 className="text-2xl font-black">{calcInfo.name}</h1>
@@ -102,7 +102,7 @@ export function CalculatorDetail() {
         </div>
         <Suspense fallback={
           <div className="flex justify-center items-center h-48">
-            <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-brand border-t-transparent rounded-full animate-spin" />
           </div>
         }>
           <CalcComponent />
