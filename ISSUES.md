@@ -77,8 +77,8 @@ Status legend: `open` · `fixed` · `deferred` · `investigated-not-reproducible
 | AUTH-1 | High | 2 | fixed | Register "Sign up with Google" is a no-op |
 | AUTH-2 | High | 2 | fixed | Forgot password never calls `sendPasswordResetEmail` |
 | AUTH-3 | Medium | 2 | fixed | `syncUserFromFirebase` hardcodes fake profile defaults |
-| DATA-1 | Medium | 4 | open | Body/exercise logs, tickets, saves, calculator history are localStorage-only |
-| DATA-2 | Medium | 4 | open | Profile fields not persisted to Firestore |
+| DATA-1 | Medium | 4 | fixed | Body/exercise logs, tickets, saves, calculator history are localStorage-only |
+| DATA-2 | Medium | 4 | fixed | Profile fields not persisted to Firestore |
 | CALC-1 | Low | 5 | fixed | Home has 13 widgets / 14 slugs (`rep-max-table` not separate on Home) |
 | CALC-2 | Medium | 5 | fixed | BMI `height=0` → Infinity (no guard) |
 | CALC-3 | Medium | 5 | fixed | WHR `hip=0` → Infinity (no guard) |

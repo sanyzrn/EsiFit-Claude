@@ -185,10 +185,12 @@ export function DashboardProfile() {
     injuries: user?.injuries || '',
   });
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    updateProfile({
+    setSaving(true);
+    await updateProfile({
       name: form.name,
       age: Number(form.age) || undefined,
       gender: form.gender,
@@ -198,6 +200,7 @@ export function DashboardProfile() {
       activityLevel: form.activityLevel as ActivityLevel,
       injuries: form.injuries,
     });
+    setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
@@ -255,8 +258,8 @@ export function DashboardProfile() {
             <label className="block text-sm font-medium text-gray-300 mb-1">{t({ en: 'Injuries / Notes', fa: 'آسیب‌دیدگی‌ها / یادداشت‌ها' })}</label>
             <textarea value={form.injuries} onChange={e => setForm({...form, injuries: e.target.value})} rows={3} className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-orange-500 outline-none resize-none" placeholder={t({ en: 'Any injuries or conditions to note...', fa: 'هرگونه آسیب‌دیدگی یا شرایط پزشکی...' })} />
           </div>
-          <button type="submit" className="flex items-center gap-2 px-6 py-3 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600 transition-colors">
-            <Save className="w-4 h-4" /> {saved ? t({ en: 'Saved!', fa: 'ذخیره شد!' }) : t({ en: 'Save Profile', fa: 'ذخیره نمایه' })}
+          <button type="submit" disabled={saving} className="flex items-center gap-2 px-6 py-3 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50">
+            <Save className="w-4 h-4" /> {saving ? t({ en: 'Saving...', fa: 'در حال ذخیره...' }) : saved ? t({ en: 'Saved!', fa: 'ذخیره شد!' }) : t({ en: 'Save Profile', fa: 'ذخیره نمایه' })}
           </button>
         </form>
       </div>
