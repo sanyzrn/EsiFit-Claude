@@ -4,6 +4,13 @@ export type Theme = 'light' | 'dark';
 
 const STORAGE_KEY = 'esifit_theme';
 
+export function getSystemTheme(): Theme {
+  if (typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: light)').matches) {
+    return 'light';
+  }
+  return 'dark';
+}
+
 export function getStoredTheme(): Theme {
   try {
     const value = localStorage.getItem(STORAGE_KEY);
@@ -11,7 +18,7 @@ export function getStoredTheme(): Theme {
   } catch {
     /* ignore */
   }
-  return 'dark';
+  return getSystemTheme();
 }
 
 export function applyTheme(theme: Theme): void {
@@ -45,6 +52,26 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     applyTheme(theme);
   }, [theme]);
 
+  // Follow OS preference when user has not locked a choice
+  useEffect(() => {
+    let stored: string | null = null;
+    try {
+      stored = localStorage.getItem(STORAGE_KEY);
+    } catch {
+      /* ignore */
+    }
+    if (stored === 'light' || stored === 'dark') return;
+
+    const mq = window.matchMedia('(prefers-color-scheme: light)');
+    const onChange = () => {
+      const next: Theme = mq.matches ? 'light' : 'dark';
+      setThemeState(next);
+      applyTheme(next);
+    };
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
   return (
     <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
       {children}
@@ -64,7 +91,7 @@ export function getThemeCssVar(name: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
 
-/** Chart colors that follow the active Iranian palette (UI-12). */
+/** Chart colors that follow the active brand palette. */
 export function useChartTheme() {
   useTheme();
   return {
@@ -82,9 +109,10 @@ export function useChartTheme() {
     tooltipStyle: {
       background: getThemeCssVar('--theme-chart-tooltip-bg'),
       border: `1px solid ${getThemeCssVar('--theme-chart-tooltip-border')}`,
-      borderRadius: '12px',
+      borderRadius: '16px',
       color: getThemeCssVar('--theme-fg'),
       fontFamily: 'inherit',
+      boxShadow: 'none',
     },
   };
 }

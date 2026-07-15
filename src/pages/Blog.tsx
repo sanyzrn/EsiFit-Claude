@@ -24,11 +24,11 @@ export function BlogList() {
           <Link
             key={article.id}
             to={`/blog/${article.slug}`}
-            className="group bg-surface border border-border rounded-2xl overflow-hidden hover:border-strong transition-all"
+            className="group card-iranian overflow-hidden hover:border-border-strong transition-[border-color] duration-[180ms] p-0"
           >
-            <div className="h-48 bg-gradient-to-br from-orange-500/5 to-purple-500/5 overflow-hidden">
+            <div className="h-48 bg-elevated overflow-hidden">
               {article.coverImage ? (
-                <img src={article.coverImage} alt={copy.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                <img src={article.coverImage} alt={copy.title} className="w-full h-full object-cover img-premium transition-[filter] duration-[200ms]" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center"><div className="text-4xl">📝</div></div>
               )}
@@ -64,7 +64,7 @@ export function BlogDetail() {
           { label: t({ en: 'Not found', fa: 'یافت نشد' }) },
         ]} />
         <h1 className="text-2xl font-bold mb-4">{t({ en: 'Article not found', fa: 'مقاله یافت نشد' })}</h1>
-        <button onClick={() => navigate('/blog')} className="text-orange-400">← {t({ en: 'Back to blog', fa: 'بازگشت به وبلاگ' })}</button>
+        <button onClick={() => navigate('/blog')} className="text-brand">← {t({ en: 'Back to blog', fa: 'بازگشت به وبلاگ' })}</button>
       </PageContainer>
     );
   }
@@ -103,10 +103,10 @@ export function BlogDetail() {
         { label: copy.title },
       ]} />
 
-      <article className="bg-surface border border-border rounded-2xl p-6 md:p-10">
+      <article className="card-iranian p-6 md:p-10">
         <div className="flex items-center gap-3 mb-4 text-sm text-fg-subtle">
           <span className="flex items-center gap-1"><Calendar className="w-4 h-4" />{formatDate(article.publishedAt, { month: 'long', day: 'numeric', year: 'numeric' })}</span>
-          <span className="px-2 py-0.5 rounded-full bg-orange-500/10 text-orange-400 text-xs font-medium">{copy.category}</span>
+          <span className="px-2 py-0.5 rounded-full bg-brand-muted text-brand text-xs font-medium">{copy.category}</span>
         </div>
         <h1 className="text-3xl md:text-4xl font-black mb-6">{copy.title}</h1>
         <div className="prose prose-invert max-w-none">

@@ -35,7 +35,7 @@ export function BmiCalculator() {
               <div className="mt-4 text-xl font-bold">{result.value.category}</div>
             </>
           ) : (
-            <div className="text-red-400 font-medium p-4 bg-red-400/10 rounded-xl border border-red-400/20">{result.error}</div>
+            <div className="text-danger font-medium p-4 bg-danger/10 rounded-xl border border-danger/20">{result.error}</div>
           )}
         </div>
       }
@@ -76,7 +76,7 @@ export function BodyFatCalculator() {
               <div className="mt-4 text-xl font-bold">{result.value.category}</div>
             </>
           ) : (
-            <div className="text-red-400 font-medium p-4 bg-red-400/10 rounded-xl border border-red-400/20">{result.error}</div>
+            <div className="text-danger font-medium p-4 bg-danger/10 rounded-xl border border-danger/20">{result.error}</div>
           )}
         </div>
       }
@@ -136,11 +136,11 @@ export function WhrCalculator() {
         <div className="flex flex-col items-center">
           {result.ok ? (
             <>
-              <div className="text-5xl font-black text-orange-400 mb-2"><PersianNumber value={result.value.whr} /></div>
+              <div className="text-5xl font-black text-brand mb-2"><PersianNumber value={result.value.whr} /></div>
               <div className="text-xl font-bold">{result.value.risk}</div>
             </>
           ) : (
-            <div className="text-red-400 font-medium p-4 bg-red-400/10 rounded-xl border border-red-400/20">{result.error}</div>
+            <div className="text-danger font-medium p-4 bg-danger/10 rounded-xl border border-danger/20">{result.error}</div>
           )}
         </div>
       }
@@ -201,7 +201,7 @@ export function BodyTypeQuiz() {
                     <button
                       key={aIdx}
                       onClick={() => handleAnswer(qIdx, aIdx)}
-                      className={`w-full text-left rtl:text-right p-3 rounded-lg border transition-colors ${answers[qIdx] === aIdx ? 'bg-orange-500/20 border-orange-500 text-orange-400' : 'bg-elevated border-strong hover:border-strong'}`}
+                      className={`w-full text-left rtl:text-right p-3 rounded-lg border transition-colors ${answers[qIdx] === aIdx ? 'bg-brand-muted border-brand text-brand' : 'bg-elevated border-strong hover:border-strong'}`}
                     >
                       {translateQuizText(opt.text)}
                     </button>
@@ -213,7 +213,7 @@ export function BodyTypeQuiz() {
         </div>
       ) : (
         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center bg-elevated p-8 rounded-2xl border border-strong">
-          <div className="text-3xl font-black text-orange-400 uppercase mb-4">
+          <div className="text-3xl font-black text-brand uppercase mb-4">
             {result ? t(bodyTypeLabels[result.type]) : ''}
           </div>
           <p className="text-fg-muted leading-relaxed mb-6">

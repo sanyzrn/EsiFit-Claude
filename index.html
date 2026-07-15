@@ -5,13 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EsiFit — Fitness & Bodybuilding Platform</title>
     <meta name="description" content="EsiFit: Your complete fitness platform with training programs, diet plans, calculators, progress tracking, and personal coaching." />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <script>
       (function () {
-        var theme = localStorage.getItem('esifit_theme');
-        document.documentElement.setAttribute('data-theme', theme === 'light' ? 'light' : 'dark');
+        try {
+          var theme = localStorage.getItem('esifit_theme');
+          if (theme !== 'light' && theme !== 'dark') {
+            theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+          }
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
       })();
     </script>
   </head>

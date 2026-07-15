@@ -26,18 +26,18 @@ export class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         <div className="min-h-screen bg-app flex flex-col items-center justify-center p-4 text-center">
-          <h1 className="text-4xl font-black text-red-500 mb-4">Something went wrong</h1>
+          <h1 className="text-4xl font-black text-danger mb-4">Something went wrong</h1>
           <p className="text-fg-subtle mb-8 max-w-md">
             We've encountered an unexpected error. Please try refreshing the page.
           </p>
           <button
             onClick={() => window.location.reload()}
-            className="px-6 py-3 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600 transition-colors"
+            className="px-6 py-3 bg-brand text-brand-fg font-semibold rounded-[12px] hover:bg-brand-dark transition-[color,background-color] duration-[180ms]"
           >
             Refresh Page
           </button>
           {process.env.NODE_ENV !== 'production' && this.state.error && (
-            <pre className="mt-8 p-4 bg-surface rounded-lg text-left text-red-400 text-sm overflow-auto max-w-2xl w-full">
+            <pre className="mt-8 p-4 bg-surface border border-border rounded-[20px] text-left text-danger text-sm overflow-auto max-w-2xl w-full">
               {this.state.error.stack}
             </pre>
           )}

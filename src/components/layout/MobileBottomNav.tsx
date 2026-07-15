@@ -16,7 +16,7 @@ export function MobileBottomNav({ onMoreOpen, moreOpen }: MobileBottomNavProps) 
 
   return (
     <nav
-      className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-surface/95 backdrop-blur-md border-t border-border pb-[env(safe-area-inset-bottom)]"
+      className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-surface border-t border-border pb-[env(safe-area-inset-bottom)]"
       aria-label={t({ en: 'Main navigation', fa: 'ناوبری اصلی' })}
     >
       <div className="flex items-stretch justify-around h-16 max-w-lg mx-auto">
@@ -33,8 +33,8 @@ export function MobileBottomNav({ onMoreOpen, moreOpen }: MobileBottomNavProps) 
                 type="button"
                 onClick={onMoreOpen}
                 aria-expanded={moreOpen}
-                className={`flex flex-col items-center justify-center flex-1 gap-0.5 text-xs font-medium transition-colors ${
-                  active ? 'text-accent' : 'text-fg-subtle hover:text-fg-muted'
+                className={`flex flex-col items-center justify-center flex-1 gap-0.5 text-xs font-medium transition-colors duration-[180ms] ${
+                  active ? 'text-brand' : 'text-fg-subtle hover:text-fg-muted'
                 }`}
               >
                 <Icon className="w-5 h-5" aria-hidden />
@@ -47,8 +47,8 @@ export function MobileBottomNav({ onMoreOpen, moreOpen }: MobileBottomNavProps) 
             <Link
               key={tab.href}
               to={tab.href}
-              className={`flex flex-col items-center justify-center flex-1 gap-0.5 text-xs font-medium transition-colors ${
-                active ? 'text-orange-400' : 'text-fg-subtle hover:text-fg-muted'
+              className={`flex flex-col items-center justify-center flex-1 gap-0.5 text-xs font-medium transition-colors duration-[180ms] ${
+                active ? 'text-brand' : 'text-fg-subtle hover:text-fg-muted'
               }`}
               aria-current={active ? 'page' : undefined}
             >

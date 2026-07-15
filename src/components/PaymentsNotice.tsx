@@ -5,8 +5,8 @@ export default function PaymentsNotice() {
   const { t } = useI18n();
 
   return (
-    <div className="mb-8 flex items-start gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
-      <Info className="w-5 h-5 shrink-0 mt-0.5 text-amber-400" />
+    <div className="mb-8 flex items-start gap-3 rounded-[12px] border border-warning/30 bg-warning/10 px-4 py-3 text-sm text-fg-muted">
+      <Info className="w-5 h-5 shrink-0 mt-0.5 text-warning" />
       <p>
         {t({
           en: 'Paid subscriptions are not live yet. Stripe checkout will unlock when payment processing is configured. Your current plan always comes from your account — never from local storage.',

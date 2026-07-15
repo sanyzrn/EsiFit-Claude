@@ -1,7 +1,6 @@
 import React, { useId, useMemo } from 'react';
 import { motion } from 'motion/react';
 import { useI18n } from '@/lib/i18n';
-import { PersianPattern } from '@/components/ui/PersianPattern';
 import { getThemeCssVar } from '@/lib/theme';
 
 export function PersianNumber({ value }: { value: number | string }) {
@@ -20,14 +19,14 @@ export function PersianNumber({ value }: { value: number | string }) {
 
 export function gaugeColorForStatus(status: 'low' | 'ok' | 'high' | 'neutral' = 'neutral'): string {
   if (typeof document === 'undefined') {
-    const map = { low: '#e8b84a', ok: '#2bb5a8', high: '#e05a4a', neutral: '#2bb5a8' };
+    const map = { low: '#d4a017', ok: '#14b8a6', high: '#c45c5c', neutral: '#14b8a6' };
     return map[status];
   }
   const map = {
     low: getThemeCssVar('--theme-warning'),
     ok: getThemeCssVar('--theme-success'),
     high: getThemeCssVar('--theme-error'),
-    neutral: getThemeCssVar('--theme-secondary'),
+    neutral: getThemeCssVar('--theme-primary'),
   };
   return map[status];
 }
@@ -41,11 +40,11 @@ export function SliderInput({
   const valueText = unit ? `${value} ${unit}` : String(value);
 
   return (
-    <div className="mb-4">
-      <div className="flex justify-between mb-1">
+    <div className="mb-5">
+      <div className="flex justify-between mb-2">
         <label htmlFor={inputId} className="text-sm font-medium text-fg-muted">{label}</label>
-        <span className="text-brand font-bold text-sm" aria-hidden="true">
-          <PersianNumber value={value} /> {unit && <span className="text-xs text-fg-faint">{unit}</span>}
+        <span className="text-brand font-semibold text-sm" aria-hidden="true">
+          <PersianNumber value={value} /> {unit && <span className="text-xs text-fg-faint font-normal">{unit}</span>}
         </span>
       </div>
       <input
@@ -60,7 +59,7 @@ export function SliderInput({
         aria-valuemin={min}
         aria-valuemax={max}
         aria-valuetext={valueText}
-        className="w-full h-2 bg-elevated-hover rounded-full appearance-none cursor-pointer accent-brand"
+        className="w-full h-1.5 bg-elevated rounded-full appearance-none cursor-pointer accent-brand"
       />
     </div>
   );
@@ -72,14 +71,14 @@ export function SegmentedToggle<T extends string>({
   options: { value: T; label: string }[]; value: T; onChange: (v: T) => void;
 }) {
   return (
-    <div className="flex bg-elevated p-1 rounded-xl mb-4 border border-strong">
+    <div className="flex bg-elevated p-1 rounded-[12px] mb-5 border border-border">
       {options.map((opt) => (
         <button
           key={opt.value}
           type="button"
           onClick={() => onChange(opt.value)}
-          className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${
-            value === opt.value ? 'bg-brand text-[#1a1410] shadow-md' : 'text-fg-subtle hover:text-fg-muted'
+          className={`flex-1 py-2.5 text-sm font-medium rounded-[10px] transition-colors duration-[180ms] ${
+            value === opt.value ? 'bg-brand text-brand-fg' : 'text-fg-subtle hover:text-fg-muted'
           }`}
         >
           {opt.label}
@@ -107,18 +106,18 @@ export function CircularGauge({
         {label}: {value}
       </p>
       <svg width="132" height="132" viewBox="0 0 100 100" className="transform -rotate-90" aria-hidden="true">
-        <circle cx="50" cy="50" r={radius} fill="none" stroke="var(--theme-chart-track)" strokeWidth="7" />
+        <circle cx="50" cy="50" r={radius} fill="none" stroke="var(--theme-chart-track)" strokeWidth="6" />
         <motion.circle
-          cx="50" cy="50" r={radius} fill="none" stroke={stroke} strokeWidth="7"
+          cx="50" cy="50" r={radius} fill="none" stroke={stroke} strokeWidth="6"
           strokeDasharray={circumference}
           initial={{ strokeDashoffset: circumference }}
           animate={{ strokeDashoffset }}
-          transition={{ type: 'spring', duration: 1, bounce: 0 }}
+          transition={{ duration: 0.22, ease: 'easeOut' }}
           strokeLinecap="round"
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center pt-1" aria-hidden="true">
-        <div className="text-3xl font-black text-fg font-display"><PersianNumber value={value} /></div>
+        <div className="text-3xl font-bold text-fg font-display"><PersianNumber value={value} /></div>
       </div>
       <div id={`${gaugeId}-label`} className="mt-2 text-sm text-fg-subtle font-medium">{label}</div>
     </div>
@@ -137,8 +136,8 @@ export function BarChart({
   ];
   const total = items.reduce((acc, item) => acc + item.value, 0) || 1;
   return (
-    <div className="w-full mt-4">
-      <div className="flex h-5 rounded-full overflow-hidden mb-3 bg-elevated border border-border">
+    <div className="w-full mt-5">
+      <div className="flex h-4 rounded-[16px] overflow-hidden mb-3 bg-elevated border border-border">
         {items.map((item, i) => (
           <motion.div
             key={i}
@@ -146,14 +145,14 @@ export function BarChart({
             style={{ backgroundColor: item.color ?? defaultColors[i % defaultColors.length] }}
             initial={{ width: 0 }}
             animate={{ width: `${(item.value / total) * 100}%` }}
-            transition={{ type: 'spring', duration: 1 }}
+            transition={{ duration: 0.22, ease: 'easeOut' }}
           />
         ))}
       </div>
-      <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-fg-subtle">
+      <div className="flex flex-wrap justify-center gap-x-5 gap-y-1.5 text-xs text-fg-subtle">
         {items.map((item, i) => (
           <div key={i} className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color ?? defaultColors[i % defaultColors.length] }} />
+            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color ?? defaultColors[i % defaultColors.length] }} />
             <span>{item.label}: <PersianNumber value={item.value} />{item.unit}</span>
           </div>
         ))}
@@ -169,24 +168,20 @@ export function CalculatorLayout({
 }) {
   const { t } = useI18n();
   return (
-    <div className="grid md:grid-cols-2 gap-8">
-      <div className="card-iranian p-6 relative overflow-hidden">
-        <PersianPattern opacity={0.25} />
-        <div className="relative z-10">
-          <h3 className="text-xl font-bold mb-2 font-display">{title}</h3>
-          <p className="text-fg-subtle text-sm mb-6">{description}</p>
-          <div className="space-y-4">{inputs}</div>
-        </div>
+    <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+      <div className="card-premium p-7 md:p-8">
+        <h3 className="text-xl font-bold mb-2 font-display">{title}</h3>
+        <p className="text-fg-subtle text-sm mb-7 leading-relaxed">{description}</p>
+        <div className="space-y-1">{inputs}</div>
       </div>
-      <div className="card-iranian p-6 relative overflow-hidden gradient-hero flex flex-col justify-center items-center text-center min-h-[280px]">
-        <PersianPattern opacity={0.4} />
-        <div className="relative z-10 w-full" aria-live="polite" aria-atomic="true">
+      <div className="card-premium p-7 md:p-8 flex flex-col justify-center items-center text-center min-h-[280px] bg-elevated/40">
+        <div className="w-full" aria-live="polite" aria-atomic="true">
           {results}
           {onSave && (
             <button
               type="button"
               onClick={onSave}
-              className="mt-8 px-6 py-2.5 bg-elevated hover:bg-elevated-hover text-fg text-sm font-bold rounded-xl transition-colors border border-strong"
+              className="mt-8 px-6 py-3 bg-brand text-brand-fg text-sm font-semibold rounded-[12px] transition-colors duration-[180ms] hover:bg-brand-dark"
             >
               {t({ en: 'Save Result', fa: 'ذخیره نتیجه' })}
             </button>

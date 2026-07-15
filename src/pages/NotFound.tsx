@@ -7,8 +7,8 @@ export default function NotFound() {
   
   return (
     <div className="min-h-[80vh] flex flex-col items-center justify-center p-4 text-center animate-fade-in">
-      <div className="w-20 h-20 bg-orange-500/10 rounded-full flex items-center justify-center mb-6">
-        <Dumbbell className="w-10 h-10 text-orange-500" />
+      <div className="w-20 h-20 bg-brand-muted rounded-[20px] flex items-center justify-center mb-6">
+        <Dumbbell className="w-10 h-10 text-brand" />
       </div>
       <h1 className="text-6xl font-black mb-4">404</h1>
       <h2 className="text-2xl font-bold mb-6">
@@ -22,7 +22,7 @@ export default function NotFound() {
       </p>
       <Link 
         to="/"
-        className="px-6 py-3 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600 transition-colors"
+        className="px-6 py-3 bg-brand text-brand-fg font-semibold rounded-[12px] hover:bg-brand-dark transition-[color,background-color] duration-[180ms]"
       >
         {t({ en: 'Go Home', fa: 'بازگشت به خانه' })}
       </Link>

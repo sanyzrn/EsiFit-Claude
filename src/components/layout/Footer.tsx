@@ -12,11 +12,11 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-teal-600 flex items-center justify-center">
-                <Dumbbell className="w-4 h-4 text-white" />
+              <div className="w-8 h-8 rounded-[12px] bg-brand flex items-center justify-center">
+                <Dumbbell className="w-4 h-4 text-brand-fg" />
               </div>
               <span className="text-lg font-extrabold">
-                Esi<span className="text-orange-500">Fit</span>
+                Esi<span className="text-brand">Fit</span>
               </span>
             </div>
             <p className="text-sm text-fg-subtle">
@@ -33,7 +33,7 @@ export function Footer() {
                 <Link
                   key={link.href}
                   to={link.href}
-                  className="block text-sm text-fg-subtle hover:text-fg"
+                  className="block text-sm text-fg-subtle hover:text-fg transition-colors duration-[180ms]"
                 >
                   {t(link.label)}
                 </Link>
@@ -47,7 +47,7 @@ export function Footer() {
                 <Link
                   key={link.href}
                   to={link.href}
-                  className="block text-sm text-fg-subtle hover:text-fg"
+                  className="block text-sm text-fg-subtle hover:text-fg transition-colors duration-[180ms]"
                 >
                   {t(link.label)}
                 </Link>
@@ -57,13 +57,13 @@ export function Footer() {
           <div>
             <h4 className="font-semibold text-sm mb-3">{t({ en: 'Account', fa: 'حساب کاربری' })}</h4>
             <div className="space-y-2">
-              <Link to="/login" className="block text-sm text-fg-subtle hover:text-fg">
+              <Link to="/login" className="block text-sm text-fg-subtle hover:text-fg transition-colors duration-[180ms]">
                 {t({ en: 'Sign In', fa: 'ورود' })}
               </Link>
-              <Link to="/register" className="block text-sm text-fg-subtle hover:text-fg">
+              <Link to="/register" className="block text-sm text-fg-subtle hover:text-fg transition-colors duration-[180ms]">
                 {t({ en: 'Register', fa: 'ثبت‌نام' })}
               </Link>
-              <Link to="/dashboard" className="block text-sm text-fg-subtle hover:text-fg">
+              <Link to="/dashboard" className="block text-sm text-fg-subtle hover:text-fg transition-colors duration-[180ms]">
                 {t({ en: 'Dashboard', fa: 'داشبورد' })}
               </Link>
             </div>

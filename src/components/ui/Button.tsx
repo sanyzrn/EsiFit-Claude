@@ -4,18 +4,18 @@ type Variant = 'primary' | 'secondary' | 'accent' | 'ghost' | 'danger' | 'terrac
 type Size = 'sm' | 'md' | 'lg';
 
 const variantClasses: Record<Variant, string> = {
-  primary: 'bg-brand text-[#1a1410] hover:brightness-110 shadow-md shadow-brand/25 font-bold',
-  secondary: 'bg-elevated text-fg border border-strong hover:bg-elevated-hover',
-  accent: 'bg-accent text-white hover:bg-accent-dark shadow-md shadow-accent/20',
-  terracotta: 'bg-terracotta text-white hover:bg-terracotta-dark shadow-md shadow-terracotta/20',
+  primary: 'bg-brand text-brand-fg hover:bg-brand-dark font-semibold',
+  secondary: 'bg-surface text-fg border border-border hover:bg-elevated',
+  accent: 'bg-accent text-white hover:bg-accent-dark',
+  terracotta: 'bg-terracotta text-white hover:bg-terracotta-dark',
   ghost: 'text-fg-muted hover:text-fg hover:bg-elevated',
-  danger: 'bg-danger/10 text-danger border border-danger/25 hover:bg-danger/15',
+  danger: 'bg-danger/10 text-danger border border-danger/20 hover:bg-danger/15',
 };
 
 const sizeClasses: Record<Size, string> = {
-  sm: 'px-3 py-1.5 text-sm rounded-lg',
-  md: 'px-4 py-2.5 text-sm font-medium rounded-xl',
-  lg: 'px-6 py-3 text-base font-bold rounded-xl',
+  sm: 'px-3.5 py-2 text-sm rounded-[12px]',
+  md: 'px-5 py-2.5 text-sm font-medium rounded-[12px]',
+  lg: 'px-7 py-3.5 text-base font-semibold rounded-[12px]',
 };
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -38,10 +38,9 @@ export function Button({
     <button
       type={type}
       className={[
-        'inline-flex items-center justify-center gap-2 transition-all duration-200',
-        'active:scale-[0.98]',
+        'inline-flex items-center justify-center gap-2 transition-[color,background-color,filter] duration-[180ms]',
         'disabled:opacity-50 disabled:pointer-events-none',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 focus-visible:ring-offset-app',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2 focus-visible:ring-offset-app',
         variantClasses[variant],
         sizeClasses[size],
         fullWidth ? 'w-full' : '',

@@ -24,25 +24,25 @@ export function InputField({
   return (
     <div>
       {label && (
-        <label htmlFor={inputId} className="block text-sm font-medium text-fg-muted mb-1">
+        <label htmlFor={inputId} className="block text-sm font-medium text-fg-muted mb-1.5">
           {label}
         </label>
       )}
       <div className="relative">
         {icon && (
-          <span className="absolute inset-y-0 start-3 flex items-center pointer-events-none text-fg-subtle [&>svg]:w-4 [&>svg]:h-4">
+          <span className="absolute inset-y-0 start-3.5 flex items-center pointer-events-none text-fg-subtle [&>svg]:w-4 [&>svg]:h-4">
             {icon}
           </span>
         )}
         <input
           id={inputId}
           className={[
-            'w-full py-2.5 bg-elevated border rounded-lg text-fg outline-none transition-colors',
-            'border-strong focus:border-orange-500 focus:ring-1 focus:ring-orange-500',
-            'disabled:opacity-50',
+            'w-full py-3 bg-surface border border-border rounded-[12px] text-fg outline-none transition-colors duration-[180ms]',
+            'focus:border-brand focus:ring-1 focus:ring-brand/30',
+            'disabled:opacity-50 placeholder:text-fg-faint',
             icon ? 'ps-10' : 'ps-4',
             trailing ? 'pe-10' : 'pe-4',
-            error ? 'border-red-500/50' : '',
+            error ? 'border-danger/50' : '',
             className,
           ].filter(Boolean).join(' ')}
           aria-invalid={error ? true : undefined}
@@ -50,13 +50,13 @@ export function InputField({
           {...props}
         />
         {trailing && (
-          <span className="absolute inset-y-0 end-3 flex items-center">{trailing}</span>
+          <span className="absolute inset-y-0 end-3.5 flex items-center">{trailing}</span>
         )}
       </div>
       {(hint || error) && (
         <p
           id={`${inputId}-hint`}
-          className={`text-xs mt-1 ${error ? 'text-red-400' : 'text-fg-subtle'}`}
+          className={`text-xs mt-1.5 ${error ? 'text-danger' : 'text-fg-subtle'}`}
           aria-live={hint ? 'polite' : undefined}
         >
           {error ?? hint}

@@ -36,14 +36,14 @@ export function MobileMoreSheet({ open, onClose, isLoggedIn, onLogout }: MobileM
         role="dialog"
         aria-modal="true"
         aria-label={t({ en: 'More navigation', fa: 'منوی بیشتر' })}
-        className="fixed inset-x-0 bottom-0 z-50 lg:hidden bg-surface border-t border-border rounded-t-2xl animate-slide-up max-h-[85vh] overflow-y-auto pb-[env(safe-area-inset-bottom)]"
+        className="fixed inset-x-0 bottom-0 z-50 lg:hidden bg-surface border border-border rounded-t-[24px] animate-slide-up max-h-[85vh] overflow-y-auto pb-[env(safe-area-inset-bottom)]"
       >
         <div className="flex items-center justify-between px-4 py-3 border-b border-border">
           <h2 className="font-bold text-fg">{t({ en: 'More', fa: 'بیشتر' })}</h2>
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-lg hover:bg-elevated"
+            className="p-2 rounded-[12px] hover:bg-elevated transition-colors duration-[180ms]"
             aria-label={t({ en: 'Close', fa: 'بستن' })}
           >
             <X className="w-5 h-5" />
@@ -56,7 +56,7 @@ export function MobileMoreSheet({ open, onClose, isLoggedIn, onLogout }: MobileM
               key={link.href}
               to={link.href}
               onClick={onClose}
-              className="flex items-center gap-3 p-3 rounded-xl bg-elevated hover:bg-elevated-hover transition-colors"
+              className="flex items-center gap-3 p-3 rounded-[20px] bg-elevated hover:bg-elevated-hover transition-colors duration-[180ms]"
             >
               <link.icon className="w-5 h-5 text-accent shrink-0" />
               <span className="text-sm font-medium">{link.label}</span>
@@ -74,7 +74,7 @@ export function MobileMoreSheet({ open, onClose, isLoggedIn, onLogout }: MobileM
                 key={link.href}
                 to={link.href}
                 onClick={onClose}
-                className="block px-3 py-2 rounded-lg text-sm text-fg-muted hover:bg-elevated"
+                className="block px-3 py-2 rounded-[12px] text-sm text-fg-muted hover:bg-elevated transition-colors duration-[180ms]"
               >
                 {t(link.label)}
               </Link>
@@ -86,7 +86,7 @@ export function MobileMoreSheet({ open, onClose, isLoggedIn, onLogout }: MobileM
           <button
             type="button"
             onClick={toggleTheme}
-            className="flex items-center justify-center p-2 rounded-lg hover:bg-elevated text-fg-muted"
+            className="flex items-center justify-center p-2 rounded-[12px] hover:bg-elevated text-fg-muted transition-colors duration-[180ms]"
             aria-label={theme === 'dark'
               ? t({ en: 'Switch to light theme', fa: 'تغییر به تم روشن' })
               : t({ en: 'Switch to dark theme', fa: 'تغییر به تم تیره' })}
@@ -97,14 +97,14 @@ export function MobileMoreSheet({ open, onClose, isLoggedIn, onLogout }: MobileM
           <button
             type="button"
             onClick={() => setLang('en')}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium ${lang === 'en' ? 'bg-accent/15 text-accent' : 'text-fg-subtle hover:bg-elevated'}`}
+            className={`px-3 py-1.5 rounded-[12px] text-sm font-medium transition-colors duration-[180ms] ${lang === 'en' ? 'bg-brand-muted text-brand' : 'text-fg-subtle hover:bg-elevated'}`}
           >
             EN
           </button>
           <button
             type="button"
             onClick={() => setLang('fa')}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium ${lang === 'fa' ? 'bg-accent/15 text-accent' : 'text-fg-subtle hover:bg-elevated'}`}
+            className={`px-3 py-1.5 rounded-[12px] text-sm font-medium transition-colors duration-[180ms] ${lang === 'fa' ? 'bg-brand-muted text-brand' : 'text-fg-subtle hover:bg-elevated'}`}
           >
             FA
           </button>
@@ -115,7 +115,7 @@ export function MobileMoreSheet({ open, onClose, isLoggedIn, onLogout }: MobileM
             <button
               type="button"
               onClick={() => { onLogout(); onClose(); }}
-              className="w-full py-2.5 text-sm font-medium text-red-400 bg-red-500/10 rounded-lg hover:bg-red-500/15"
+              className="w-full py-2.5 text-sm font-medium text-danger bg-danger/10 rounded-[12px] hover:bg-danger/15 transition-colors duration-[180ms]"
             >
               {t({ en: 'Sign Out', fa: 'خروج' })}
             </button>
@@ -124,14 +124,14 @@ export function MobileMoreSheet({ open, onClose, isLoggedIn, onLogout }: MobileM
               <Link
                 to="/login"
                 onClick={onClose}
-                className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-lg border border-strong hover:bg-elevated"
+                className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-[12px] border border-border-strong hover:bg-elevated transition-colors duration-[180ms]"
               >
                 <LogIn className="w-4 h-4" /> {t({ en: 'Sign In', fa: 'ورود' })}
               </Link>
               <Link
                 to="/register"
                 onClick={onClose}
-                className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-bold rounded-lg bg-orange-500 text-white hover:bg-orange-600"
+                className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-bold rounded-[12px] bg-brand text-brand-fg hover:bg-brand-dark transition-colors duration-[180ms]"
               >
                 <UserPlus className="w-4 h-4" /> {t({ en: 'Join', fa: 'عضویت' })}
               </Link>

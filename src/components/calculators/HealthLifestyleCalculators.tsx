@@ -26,12 +26,12 @@ export function GoalDateCalculator() {
         <div className="flex flex-col items-center">
           {result.ok ? (
             <>
-              <div className="text-5xl font-black text-orange-400 mb-2"><PersianNumber value={result.value.weeks} /> {t({ en: 'Weeks', fa: 'هفته' })}</div>
+              <div className="text-5xl font-black text-brand mb-2"><PersianNumber value={result.value.weeks} /> {t({ en: 'Weeks', fa: 'هفته' })}</div>
               <div className="text-xl font-bold text-fg-muted mb-4">{result.value.estimatedDate}</div>
               {result.value.message && <div className="text-xs text-fg-subtle">{result.value.message}</div>}
             </>
           ) : (
-            <div className="text-red-400 font-medium p-4 bg-red-400/10 rounded-xl border border-red-400/20">{result.error}</div>
+            <div className="text-danger font-medium p-4 bg-danger/10 rounded-xl border border-danger/20">{result.error}</div>
           )}
         </div>
       }
@@ -67,7 +67,7 @@ export function CaloriesBurnedCalculator() {
       }
       results={
         <div className="flex flex-col items-center">
-          <div className="text-5xl font-black text-orange-400 mb-2"><PersianNumber value={result} /></div>
+          <div className="text-5xl font-black text-brand mb-2"><PersianNumber value={result} /></div>
           <div className="text-fg-subtle font-medium">{t({ en: 'kcal burned', fa: 'کالری سوزانده شده' })}</div>
         </div>
       }

@@ -5,7 +5,6 @@ import { hasTierAccess, type SubscriptionTier } from '@/lib/types';
 import { useEntitlements } from '@/lib/entitlements';
 import { useI18n } from '@/lib/i18n';
 import { IconBadge } from '@/components/ui/IconBadge';
-import { PersianPattern } from '@/components/ui/PersianPattern';
 import { Button } from '@/components/ui/Button';
 
 interface TierGateProps {
@@ -49,40 +48,37 @@ export default function TierGate({ minTier, children, showBlur = true }: TierGat
     <div className="relative min-h-[12rem] flex items-center justify-center">
       {showBlur && (
         <div
-          className="absolute inset-0 rounded-xl border border-dashed border-border bg-surface/70"
+          className="absolute inset-0 rounded-[20px] border border-dashed border-border bg-surface/80"
           aria-hidden="true"
         />
       )}
       <div
-        className="relative z-10 card-iranian p-8 text-center max-w-sm mx-4 overflow-hidden"
+        className="relative z-10 card-premium p-8 text-center max-w-sm mx-4"
         role="region"
         aria-labelledby="tier-gate-title"
       >
-        <PersianPattern opacity={0.3} />
-        <div className="relative z-10">
-          <div className="mb-4 flex justify-center">
-            <IconBadge
-              icon={minTier === 'VIP' || minTier === 'ELITE' ? Crown : Lock}
-              variant={TIER_VARIANT[minTier]}
-              size="lg"
-            />
-          </div>
-          <h3 id="tier-gate-title" className="text-lg font-bold mb-2 font-display">
-            {t({ en: `${minTier} Content`, fa: `محتوای ${tierLabel}` })}
-          </h3>
-          <p className="text-fg-subtle text-sm mb-4">
-            {t({
-              en: `This content requires a ${minTier} subscription or higher. Upgrade now to unlock.`,
-              fa: `این محتوا به اشتراک ${tierLabel} یا بالاتر نیاز دارد. برای باز کردن، هم‌اکنون ارتقا دهید.`,
-            })}
-          </p>
-          <Link to="/pricing">
-            <Button className="gap-2">
-              <Crown className="w-4 h-4" />
-              {t({ en: `Upgrade to ${minTier}`, fa: `ارتقا به ${tierLabel}` })}
-            </Button>
-          </Link>
+        <div className="mb-4 flex justify-center">
+          <IconBadge
+            icon={minTier === 'VIP' || minTier === 'ELITE' ? Crown : Lock}
+            variant={TIER_VARIANT[minTier]}
+            size="lg"
+          />
         </div>
+        <h3 id="tier-gate-title" className="text-lg font-bold mb-2 font-display">
+          {t({ en: `${minTier} Content`, fa: `محتوای ${tierLabel}` })}
+        </h3>
+        <p className="text-fg-subtle text-sm mb-4 leading-relaxed">
+          {t({
+            en: `This content requires a ${minTier} subscription or higher. Upgrade now to unlock.`,
+            fa: `این محتوا به اشتراک ${tierLabel} یا بالاتر نیاز دارد. برای باز کردن، هم‌اکنون ارتقا دهید.`,
+          })}
+        </p>
+        <Link to="/pricing">
+          <Button className="gap-2">
+            <Crown className="w-4 h-4" />
+            {t({ en: `Upgrade to ${minTier}`, fa: `ارتقا به ${tierLabel}` })}
+          </Button>
+        </Link>
       </div>
     </div>
   );
