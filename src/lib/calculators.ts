@@ -2,15 +2,24 @@
 
 export type Result<T, E = string> = { ok: true; value: T } | { ok: false; error: E };
 
-export function calcBMI(weightKg: number, heightCm: number): { bmi: number; category: string } {
+export function calcBMI(weightKg: number, heightCm: number): Result<{ bmi: number; category: string }> {
+  if (heightCm <= 0) {
+    return { ok: false, error: 'Height must be greater than zero' };
+  }
+  if (weightKg <= 0) {
+    return { ok: false, error: 'Weight must be greater than zero' };
+  }
   const heightM = heightCm / 100;
   const bmi = weightKg / (heightM * heightM);
+  if (!Number.isFinite(bmi)) {
+    return { ok: false, error: 'Invalid BMI — check height and weight inputs' };
+  }
   let category = 'Normal weight';
   if (bmi < 18.5) category = 'Underweight';
   else if (bmi < 25) category = 'Normal weight';
   else if (bmi < 30) category = 'Overweight';
   else category = 'Obese';
-  return { bmi: Math.round(bmi * 10) / 10, category };
+  return { ok: true, value: { bmi: Math.round(bmi * 10) / 10, category } };
 }
 
 export function calcBodyFat(
@@ -102,13 +111,29 @@ export function calcOneRepMax(
   weight: number,
   reps: number,
   formula: 'epley' | 'brzycki' = 'epley'
-): number {
-  if (reps <= 0) return weight;
-  if (reps === 1) return weight;
-  if (formula === 'epley') {
-    return Math.round(weight * (1 + reps / 30));
+): Result<number> {
+  if (weight <= 0) {
+    return { ok: false, error: 'Weight must be greater than zero' };
   }
-  return Math.round(weight * 36 / (37 - reps));
+  if (reps <= 0) {
+    return { ok: true, value: weight };
+  }
+  if (reps === 1) {
+    return { ok: true, value: weight };
+  }
+  if (formula === 'brzycki' && reps >= 37) {
+    return { ok: false, error: 'Brzycki formula requires fewer than 37 reps' };
+  }
+  let oneRM: number;
+  if (formula === 'epley') {
+    oneRM = weight * (1 + reps / 30);
+  } else {
+    oneRM = weight * 36 / (37 - reps);
+  }
+  if (!Number.isFinite(oneRM)) {
+    return { ok: false, error: 'Could not estimate 1RM — check weight and reps' };
+  }
+  return { ok: true, value: Math.round(oneRM) };
 }
 
 export function getRepMaxTable(oneRM: number): { percentage: number; reps: number; weight: number }[] {
@@ -145,11 +170,20 @@ export function calcFFMI(weightKg: number, heightCm: number, bodyFatPct: number)
   };
 }
 
-export function calcWHR(waistCm: number, hipCm: number, gender: 'male' | 'female'): { whr: number; risk: string } {
+export function calcWHR(waistCm: number, hipCm: number, gender: 'male' | 'female'): Result<{ whr: number; risk: string }> {
+  if (hipCm <= 0) {
+    return { ok: false, error: 'Hip circumference must be greater than zero' };
+  }
+  if (waistCm <= 0) {
+    return { ok: false, error: 'Waist circumference must be greater than zero' };
+  }
   const whr = Math.round((waistCm / hipCm) * 100) / 100;
+  if (!Number.isFinite(whr)) {
+    return { ok: false, error: 'Invalid WHR — check waist and hip inputs' };
+  }
   const threshold = gender === 'male' ? 0.90 : 0.85;
   const risk = whr > threshold ? 'Elevated health risk' : 'Normal range';
-  return { whr, risk };
+  return { ok: true, value: { whr, risk } };
 }
 
 export function calcWaterIntake(weightKg: number): { liters: number } {

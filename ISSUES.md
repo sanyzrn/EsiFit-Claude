@@ -79,10 +79,10 @@ Status legend: `open` · `fixed` · `deferred` · `investigated-not-reproducible
 | AUTH-3 | Medium | 2 | fixed | `syncUserFromFirebase` hardcodes fake profile defaults |
 | DATA-1 | Medium | 4 | fixed | Body/exercise logs, tickets, saves, calculator history are localStorage-only |
 | DATA-2 | Medium | 4 | fixed | Profile fields not persisted to Firestore |
-| CALC-1 | Low | 5 | open | Home has 13 widgets / 14 slugs (`rep-max-table` not separate on Home) |
-| CALC-2 | Medium | 5 | open | BMI `height=0` → Infinity (no guard) |
-| CALC-3 | Medium | 5 | open | WHR `hip=0` → Infinity (no guard) |
-| CALC-4 | Medium | 5 | open | Brzycki 1RM `reps≥37` → NaN |
+| CALC-1 | Low | 5 | fixed | Home has 13 widgets / 14 slugs (`rep-max-table` not separate on Home) |
+| CALC-2 | Medium | 5 | fixed | BMI `height=0` → Infinity (no guard) |
+| CALC-3 | Medium | 5 | fixed | WHR `hip=0` → Infinity (no guard) |
+| CALC-4 | Medium | 5 | fixed | Brzycki 1RM `reps≥37` → NaN |
 | BUG-1 | Medium | 7 | open | Program detail exercise links use wrong slug (404) |
 | BUG-2 | Low | 7 | open | Anatomy "Neck" maps to muscle group with zero exercises |
 | BUG-3 | Low | 7 | open | `TierGate` gate copy not i18n-wrapped |
@@ -186,31 +186,42 @@ Status legend: `open` · `fixed` · `deferred` · `investigated-not-reproducible
 ### CALC-1 — Home: 13 widgets vs 14 calculator slugs
 - **Severity:** Low (product consistency, not broken math)
 - **Phase:** 5
-- **Status:** open
-- **Files:** `src/components/calculators/HomeSmartTools.tsx`, `src/pages/Calculators.tsx:27,45`
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/components/calculators/HomeSmartTools.tsx`, `src/pages/Calculators.tsx:27,45`, `src/pages/Home.tsx`
 - **Reports:** A (`EsiFit_Full_Audit_2026-07-15.md:44`) vs B (`(1).md:163-164`) — **resolved in Phase 0** (see above)
-- **Action:** Optional separate Home entry for `rep-max-table` OR update marketing copy to "13 interactive tools (14 on /calculators)".
+- **Before:** Home marketing claimed "14 calculators" while Home mounts 13 widgets; `rep-max-table` is a duplicate slug for the embedded %1RM table inside `OneRepMaxCalculator`.
+- **After:** Home copy documents "13 interactive tools on Home; 14 dedicated calculator pages". Stats hero shows "13 Home tools". `/calculators` `rep-max-table` description clarifies it shares the 1RM component with `one-rep-max`.
+- **Verification:** `phase5-calculator-verify.mjs` static checks; no separate Home widget added (functionality already present in 1RM calculator).
 
 ### CALC-2 — BMI `height=0` → Infinity
 - **Severity:** Medium
 - **Phase:** 5
-- **Status:** open
-- **Files:** `src/lib/calculators.ts:5-7`
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/lib/calculators.ts`, `src/components/calculators/BodyCompositionCalculators.tsx`
 - **Reports:** B (`(1).md:170-171`) · A notes sliders floor weight at 40kg (`EsiFit_Full_Audit_2026-07-15.md:191`)
+- **Before:** `calcBMI` divided by zero height → `Infinity`; UI rendered it as a valid gauge value.
+- **After:** `calcBMI` returns `Result<{ bmi, category }>`; rejects `heightCm <= 0`, `weightKg <= 0`, and non-finite BMI. `BmiCalculator` shows error message on failure.
+- **Verification:** `src/lib/calculators.test.ts` + `phase5-calculator-verify.mjs` runtime check.
 
 ### CALC-3 — WHR `hip=0` → Infinity
 - **Severity:** Medium
 - **Phase:** 5
-- **Status:** open
-- **Files:** `src/lib/calculators.ts:148-152`
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/lib/calculators.ts`, `src/components/calculators/BodyCompositionCalculators.tsx`
 - **Reports:** B (`(1).md:173,252-258`)
+- **Before:** `calcWHR` divided by zero hip → `Infinity`.
+- **After:** `calcWHR` returns `Result<{ whr, risk }>`; rejects `hipCm <= 0` and `waistCm <= 0`. `WhrCalculator` shows error message on failure.
+- **Verification:** `src/lib/calculators.test.ts` + `phase5-calculator-verify.mjs` runtime check.
 
 ### CALC-4 — Brzycki 1RM `reps≥37` → NaN
 - **Severity:** Medium
 - **Phase:** 5
-- **Status:** open
-- **Files:** `src/lib/calculators.ts:111`
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/lib/calculators.ts`, `src/components/calculators/StrengthTrainingCalculators.tsx`
 - **Reports:** B (`(1).md:174,262-266`)
+- **Before:** Brzycki formula `weight * 36 / (37 - reps)` produced `NaN` when `reps >= 37`.
+- **After:** `calcOneRepMax` returns `Result<number>`; rejects Brzycki when `reps >= 37`, non-positive weight, and non-finite results. `OneRepMaxCalculator` shows error and empty table on failure.
+- **Verification:** `src/lib/calculators.test.ts` + `phase5-calculator-verify.mjs` runtime check.
 
 ### BUG-1 — Program exercise links 404 (wrong slug)
 - **Severity:** Medium
