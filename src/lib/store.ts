@@ -128,11 +128,6 @@ export function updateProfile(updates: Partial<User>) {
   }
 }
 
-/** Local-only UI hint — does NOT grant server entitlements (Phase 3 adds real payments). */
-export function upgradeTier(_tier: import('./types').SubscriptionTier) {
-  // No-op: tier changes require trusted server write (Cloud Function / webhook).
-}
-
 function generateId(prefix: string) {
   const uuid = typeof crypto !== 'undefined' && crypto.randomUUID
     ? crypto.randomUUID()

@@ -82,7 +82,7 @@ export const setUserEntitlements = onCall(async (request) => {
 });
 
 /**
- * Payment webhook stub — Phase 3 will replace with real Stripe verification.
+ * Dev/manual webhook stub — use stripeWebhook in production.
  * Protected by X-Webhook-Secret header (set WEBHOOK_SECRET in Functions config).
  */
 export const paymentWebhookStub = onRequest(async (req, res) => {
@@ -119,3 +119,9 @@ export const paymentWebhookStub = onRequest(async (req, res) => {
   await ref.update({ subscriptionTier, updatedAt: FieldValue.serverTimestamp() });
   res.json({ ok: true, userId, subscriptionTier });
 });
+
+export {
+  getPaymentsStatus,
+  createCheckoutSession,
+  stripeWebhook,
+} from "./payments";

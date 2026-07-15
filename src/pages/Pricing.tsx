@@ -1,27 +1,62 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Check, Crown, Zap, Star } from 'lucide-react';
+import { Check, Crown, Zap, Star, Loader2 } from 'lucide-react';
 import { PLANS, getState, subscribe } from '@/lib/store';
 import type { SubscriptionTier } from '@/lib/types';
 import { useI18n, faDict } from '@/lib/i18n';
 import { useEntitlements } from '@/lib/entitlements';
+import { fetchPaymentsEnabled, startCheckout, PaymentsNotConfiguredError } from '@/lib/payments';
+import PaymentsNotice from '@/components/PaymentsNotice';
 
 export default function Pricing() {
   const { t } = useI18n();
   const [state, setState] = useState(getState());
   const navigate = useNavigate();
   const { subscriptionTier } = useEntitlements();
+  const [paymentsEnabled, setPaymentsEnabled] = useState<boolean | null>(null);
+  const [loadingTier, setLoadingTier] = useState<SubscriptionTier | null>(null);
+  const [notice, setNotice] = useState('');
+
   useEffect(() => { const u = subscribe(() => setState(getState())); return () => { u(); }; }, []);
+  useEffect(() => {
+    fetchPaymentsEnabled().then(setPaymentsEnabled);
+  }, []);
 
   const user = state.currentUser;
 
-  const handleSubscribe = (_tier: SubscriptionTier) => {
+  const handleSubscribe = async (tier: SubscriptionTier) => {
+    setNotice('');
+    if (tier === 'FREE') {
+      navigate(user ? '/dashboard' : '/register');
+      return;
+    }
     if (!user) {
       navigate('/register');
       return;
     }
-    // Phase 3: real payment flow. Tier changes require server-side entitlement write.
-    navigate('/dashboard/billing');
+    if (!paymentsEnabled) {
+      setNotice(t({
+        en: 'Paid plans are coming soon. Subscriptions will be available once Stripe checkout is configured.',
+        fa: 'طرح‌های پولی به‌زودی فعال می‌شوند. پس از پیکربندی Stripe در دسترس خواهند بود.',
+      }));
+      return;
+    }
+    setLoadingTier(tier);
+    try {
+      await startCheckout(tier);
+    } catch (err) {
+      if (err instanceof PaymentsNotConfiguredError) {
+        setPaymentsEnabled(false);
+        setNotice(t({
+          en: 'Checkout is not available yet. Please try again later.',
+          fa: 'پرداخت هنوز در دسترس نیست. لطفاً بعداً تلاش کنید.',
+        }));
+      } else {
+        setNotice(err instanceof Error ? err.message : t({ en: 'Checkout failed', fa: 'پرداخت ناموفق بود' }));
+      }
+    } finally {
+      setLoadingTier(null);
+    }
   };
 
   const tierIcons: Record<string, React.ReactNode> = {
@@ -38,6 +73,13 @@ export default function Pricing() {
     ELITE: 'border-purple-500/30',
   };
 
+  const paidButtonLabel = (plan: typeof PLANS[number], isCurrent: boolean) => {
+    if (isCurrent) return t({ en: 'Current Plan', fa: 'طرح فعلی' });
+    if (plan.priceMonthly === 0) return t({ en: 'Get Started Free', fa: 'شروع رایگان' });
+    if (paymentsEnabled === false) return t({ en: 'Coming Soon', fa: 'به‌زودی' });
+    return t({ en: 'Subscribe Now', fa: 'هم‌اکنون مشترک شوید' });
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="text-center mb-12">
@@ -47,10 +89,20 @@ export default function Pricing() {
         </p>
       </div>
 
+      {paymentsEnabled === false && <PaymentsNotice />}
+
+      {notice && (
+        <div className="mb-8 rounded-xl border border-orange-500/30 bg-orange-500/10 px-4 py-3 text-sm text-orange-200 text-center">
+          {notice}
+        </div>
+      )}
+
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
         {PLANS.map(plan => {
           const isCurrent = subscriptionTier === plan.tier;
           const isPopular = plan.tier === 'VIP';
+          const isPaid = plan.priceMonthly > 0;
+          const checkoutDisabled = isCurrent || (isPaid && paymentsEnabled === false);
 
           return (
             <div
@@ -98,16 +150,19 @@ export default function Pricing() {
 
               <button
                 onClick={() => handleSubscribe(plan.tier)}
-                disabled={isCurrent}
-                className={`w-full py-3 rounded-lg font-bold text-sm transition-colors ${
+                disabled={checkoutDisabled || loadingTier === plan.tier}
+                className={`w-full py-3 rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-2 ${
                   isCurrent
                     ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                    : checkoutDisabled
+                    ? 'bg-gray-800 text-gray-500 cursor-not-allowed border border-gray-700'
                     : isPopular
                     ? 'bg-orange-500 text-white hover:bg-orange-600'
                     : 'bg-gray-800 text-white hover:bg-gray-700 border border-gray-700'
                 }`}
               >
-                {isCurrent ? t({ en: 'Current Plan', fa: 'طرح فعلی' }) : plan.priceMonthly === 0 ? t({ en: 'Get Started Free', fa: 'شروع رایگان' }) : t({ en: 'Subscribe Now', fa: 'هم‌اکنون مشترک شوید' })}
+                {loadingTier === plan.tier && <Loader2 className="w-4 h-4 animate-spin" />}
+                {paidButtonLabel(plan, isCurrent)}
               </button>
             </div>
           );
