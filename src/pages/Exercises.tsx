@@ -4,6 +4,7 @@ import { ArrowLeft, Search, Filter, Bookmark, BookmarkCheck, Dumbbell, LayoutGri
 import Model, { ExtendedBodyPart, Slug } from 'react-muscle-highlighter';
 import { EXERCISES, ALL_MUSCLE_GROUPS, ALL_EQUIPMENT, getState, toggleSavedExercise, subscribe } from '@/lib/store';
 import { useI18n } from '@/lib/i18n';
+import { localizedExercise, localizedMuscleGroup, localizedEquipment } from '@/lib/content-i18n';
 
 const MUSCLE_MAPPING: Record<string, string> = {
   'abs': 'Core',
@@ -23,7 +24,7 @@ const MUSCLE_MAPPING: Record<string, string> = {
 };
 
 export function ExerciseList() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState(searchParams.get('q') || '');
   const [muscle, setMuscle] = useState(searchParams.get('muscle') || '');
@@ -53,7 +54,11 @@ export function ExerciseList() {
   };
 
   const filtered = EXERCISES.filter(ex => {
-    if (search && !ex.name.toLowerCase().includes(search.toLowerCase())) return false;
+    const copy = localizedExercise(ex, lang);
+    if (search) {
+      const q = search.toLowerCase();
+      if (!copy.name.toLowerCase().includes(q) && !ex.name.toLowerCase().includes(q)) return false;
+    }
     if (muscle && !ex.muscleGroups.includes(muscle)) return false;
     if (equip && !ex.equipment.includes(equip)) return false;
     if (diff && ex.difficulty !== diff) return false;
@@ -107,11 +112,11 @@ export function ExerciseList() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 animate-fade-in">
           <select value={muscle} onChange={e => { setMuscle(e.target.value); updateParams('muscle', e.target.value); }} className="px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white text-sm">
             <option value="">{t({ en: 'All Muscles', fa: 'همه عضلات' })}</option>
-            {ALL_MUSCLE_GROUPS.map(m => <option key={m} value={m}>{m}</option>)}
+            {ALL_MUSCLE_GROUPS.map(m => <option key={m} value={m}>{localizedMuscleGroup(lang, m)}</option>)}
           </select>
           <select value={equip} onChange={e => { setEquip(e.target.value); updateParams('equipment', e.target.value); }} className="px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white text-sm">
             <option value="">{t({ en: 'All Equipment', fa: 'همه تجهیزات' })}</option>
-            {ALL_EQUIPMENT.map(e => <option key={e} value={e}>{e}</option>)}
+            {ALL_EQUIPMENT.map(e => <option key={e} value={e}>{localizedEquipment(lang, e)}</option>)}
           </select>
           <select value={diff} onChange={e => { setDiff(e.target.value); updateParams('difficulty', e.target.value); }} className="px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white text-sm">
             <option value="">{t({ en: 'All Difficulties', fa: 'همه سختی‌ها' })}</option>
@@ -157,7 +162,7 @@ export function ExerciseList() {
           </div>
           
           <div className="flex-1 w-full md:w-auto">
-            <h3 className="text-xl font-bold mb-4">{t({ en: 'Selected Muscle', fa: 'عضله انتخاب شده' })}: <span className="text-orange-500">{muscle || t({ en: 'None (Showing All)', fa: 'هیچ (نمایش همه)' })}</span></h3>
+            <h3 className="text-xl font-bold mb-4">{t({ en: 'Selected Muscle', fa: 'عضله انتخاب شده' })}: <span className="text-orange-500">{muscle ? localizedMuscleGroup(lang, muscle) : t({ en: 'None (Showing All)', fa: 'هیچ (نمایش همه)' })}</span></h3>
             <p className="text-gray-400 mb-6">{t({ en: 'Click on a muscle group on the model to filter exercises specifically for that area.', fa: 'روی یک گروه عضلانی در مدل کلیک کنید تا تمرینات مخصوص آن قسمت فیلتر شود.' })}</p>
             
             {muscle && (
@@ -176,7 +181,9 @@ export function ExerciseList() {
 
       {/* Exercise Grid */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filtered.map(ex => (
+        {filtered.map(ex => {
+          const copy = localizedExercise(ex, lang);
+          return (
           <div key={ex.id} className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden hover:border-gray-700 transition-all group">
             <div className="h-40 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center relative">
               <Dumbbell className="w-12 h-12 text-gray-600" />
@@ -196,19 +203,20 @@ export function ExerciseList() {
             <Link to={`/exercises/${ex.slug}`} className="block p-4">
               <div className="flex items-center gap-2 mb-2">
                 <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${diffColors[ex.difficulty]}`}>
-                  {ex.difficulty}
+                  {copy.difficulty}
                 </span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-gray-700 text-gray-300 capitalize">{ex.type}</span>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-gray-700 text-gray-300 capitalize">{copy.type}</span>
               </div>
-              <h3 className="font-bold text-lg mb-2 group-hover:text-orange-400 transition-colors">{ex.name}</h3>
+              <h3 className="font-bold text-lg mb-2 group-hover:text-orange-400 transition-colors">{copy.name}</h3>
               <div className="flex flex-wrap gap-1">
-                {ex.muscleGroups.map(mg => (
+                {copy.muscleGroups.map(mg => (
                   <span key={mg} className="text-xs px-2 py-0.5 rounded bg-orange-500/10 text-orange-400">{mg}</span>
                 ))}
               </div>
             </Link>
           </div>
-        ))}
+          );
+        })}
       </div>
 
       {filtered.length === 0 && (
@@ -223,7 +231,7 @@ export function ExerciseList() {
 }
 
 export function ExerciseDetail() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { slug } = useParams();
   const navigate = useNavigate();
   const exercise = EXERCISES.find(e => e.slug === slug);
@@ -240,6 +248,7 @@ export function ExerciseDetail() {
   }
 
   const diffColors = { beginner: 'bg-green-500/20 text-green-400', intermediate: 'bg-yellow-500/20 text-yellow-400', advanced: 'bg-red-500/20 text-red-400' };
+  const copy = localizedExercise(exercise, lang);
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -266,16 +275,16 @@ export function ExerciseDetail() {
 
         <div className="p-6 md:p-8">
           <div className="flex items-center gap-2 mb-3">
-            <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${diffColors[exercise.difficulty]}`}>{exercise.difficulty}</span>
-            <span className="text-xs px-2.5 py-1 rounded-full bg-gray-700 text-gray-300 capitalize">{exercise.type}</span>
+            <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${diffColors[exercise.difficulty]}`}>{copy.difficulty}</span>
+            <span className="text-xs px-2.5 py-1 rounded-full bg-gray-700 text-gray-300 capitalize">{copy.type}</span>
           </div>
-          <h1 className="text-3xl font-black mb-4">{exercise.name}</h1>
+          <h1 className="text-3xl font-black mb-4">{copy.name}</h1>
 
           <div className="grid md:grid-cols-2 gap-4 mb-6">
             <div>
               <h3 className="text-sm font-medium text-gray-400 mb-2">{t({ en: 'Target Muscles', fa: 'عضلات هدف' })}</h3>
               <div className="flex flex-wrap gap-2">
-                {exercise.muscleGroups.map(mg => (
+                {copy.muscleGroups.map(mg => (
                   <span key={mg} className="px-3 py-1.5 rounded-lg bg-orange-500/10 text-orange-400 text-sm font-medium">{mg}</span>
                 ))}
               </div>
@@ -283,7 +292,7 @@ export function ExerciseDetail() {
             <div>
               <h3 className="text-sm font-medium text-gray-400 mb-2">{t({ en: 'Equipment', fa: 'تجهیزات' })}</h3>
               <div className="flex flex-wrap gap-2">
-                {exercise.equipment.map(eq => (
+                {copy.equipment.map(eq => (
                   <span key={eq} className="px-3 py-1.5 rounded-lg bg-gray-700 text-gray-300 text-sm">{eq}</span>
                 ))}
               </div>
@@ -292,13 +301,13 @@ export function ExerciseDetail() {
 
           <div className="mb-6">
             <h2 className="text-lg font-bold mb-3">{t({ en: 'Instructions', fa: 'دستورالعمل‌ها' })}</h2>
-            <p className="text-gray-300 leading-relaxed whitespace-pre-line">{exercise.instructions}</p>
+            <p className="text-gray-300 leading-relaxed whitespace-pre-line">{copy.instructions}</p>
           </div>
 
-          {exercise.commonMistakes && (
+          {copy.commonMistakes && (
             <div className="bg-red-500/5 border border-red-500/20 rounded-xl p-5">
               <h2 className="text-lg font-bold mb-3 text-red-400">{t({ en: 'Common Mistakes', fa: 'اشتباهات رایج' })}</h2>
-              <p className="text-gray-300 leading-relaxed">{exercise.commonMistakes}</p>
+              <p className="text-gray-300 leading-relaxed">{copy.commonMistakes}</p>
             </div>
           )}
         </div>

@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Target, Calendar, Clock, CheckCircle2, Lock } from 'lucide-react';
-import { PROGRAMS, getExerciseSlugById, getState, addExerciseLog, subscribe } from '@/lib/store';
+import { PROGRAMS, getExerciseSlugById, getExerciseNameById, getState, addExerciseLog, subscribe } from '@/lib/store';
 import TierGate from '@/components/TierGate';
 import { hasTierAccess } from '@/lib/types';
-import { useI18n, faDict } from '@/lib/i18n';
+import { useI18n } from '@/lib/i18n';
+import { localizedProgram } from '@/lib/content-i18n';
 import { useEntitlements } from '@/lib/entitlements';
 
 const goalColors: Record<string, string> = { MUSCLE_GAIN: 'bg-blue-500/20 text-blue-400', FAT_LOSS: 'bg-red-500/20 text-red-400', GENERAL_FITNESS: 'bg-green-500/20 text-green-400', STRENGTH: 'bg-purple-500/20 text-purple-400' };
 
 export function ProgramList() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { subscriptionTier } = useEntitlements();
   const userTier = subscriptionTier;
 
@@ -31,6 +32,7 @@ export function ProgramList() {
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {PROGRAMS.map(prog => {
           const locked = !hasTierAccess(userTier, prog.requiredTier);
+          const copy = localizedProgram(prog, lang);
           return (
             <Link
               key={prog.id}
@@ -54,23 +56,14 @@ export function ProgramList() {
                     {goalLabels[prog.goal]}
                   </span>
                   <span className="text-xs px-2 py-0.5 rounded-full bg-gray-700 text-gray-300">
-                    {t({
-                      en: prog.level,
-                      fa: faDict[prog.level] || prog.level
-                    })}
+                    {copy.level}
                   </span>
                 </div>
                 <h3 className="text-lg font-bold mb-2 group-hover:text-orange-400 transition-colors">
-                  {t({
-                    en: prog.title,
-                    fa: faDict[prog.title] || prog.title
-                  })}
+                  {copy.title}
                 </h3>
                 <p className="text-gray-400 text-sm mb-4 line-clamp-2">
-                  {t({
-                    en: prog.description,
-                    fa: faDict[prog.description] || prog.description
-                  })}
+                  {copy.description}
                 </p>
                 <div className="flex items-center gap-4 text-sm text-gray-400 flex-row-reverse rtl:flex-row justify-end rtl:justify-start">
                   <span className="flex items-center gap-1"><Calendar className="w-4 h-4 ml-1 rtl:ml-0 rtl:mr-1" />{prog.daysPerWeek} {t({ en: 'days/week', fa: 'روز در هفته' })}</span>
@@ -86,7 +79,7 @@ export function ProgramList() {
 }
 
 export function ProgramDetail() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { slug } = useParams();
   const navigate = useNavigate();
   const [state, setState] = useState(getState());
@@ -114,8 +107,9 @@ export function ProgramDetail() {
 
   const userTier = subscriptionTier;
   const hasAccess = hasTierAccess(userTier, program.requiredTier);
+  const copy = localizedProgram(program, lang);
 
-  const toggleComplete = (peId: string, exerciseName: string) => {
+  const toggleComplete = (peId: string, exerciseId: string) => {
     const next = new Set(completedExercises);
     if (next.has(peId)) {
       next.delete(peId);
@@ -123,8 +117,8 @@ export function ProgramDetail() {
       next.add(peId);
       if (state.currentUser) {
         addExerciseLog({
-          exerciseId: peId,
-          exerciseName,
+          exerciseId: exerciseId,
+          exerciseName: getExerciseNameById(exerciseId, lang),
           date: new Date().toISOString(),
           sets: 3,
           reps: 10,
@@ -145,24 +139,15 @@ export function ProgramDetail() {
         <div className="flex items-center gap-2 mb-3">
           <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${goalColors[program.goal]}`}>{goalLabels[program.goal]}</span>
           <span className="text-xs px-2.5 py-1 rounded-full bg-gray-700 text-gray-300">
-            {t({
-              en: program.level,
-              fa: faDict[program.level] || program.level
-            })}
+            {copy.level}
           </span>
           <span className="text-xs px-2.5 py-1 rounded-full bg-gray-700 text-gray-300">{program.daysPerWeek} {t({ en: 'days/week', fa: 'روز در هفته' })}</span>
         </div>
         <h1 className="text-3xl font-black mb-4">
-          {t({
-            en: program.title,
-            fa: faDict[program.title] || program.title
-          })}
+          {copy.title}
         </h1>
         <p className="text-gray-400 leading-relaxed">
-          {t({
-            en: program.description,
-            fa: faDict[program.description] || program.description
-          })}
+          {copy.description}
         </p>
       </div>
 
@@ -178,10 +163,7 @@ export function ProgramDetail() {
                   activeDay === i ? 'bg-orange-500 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                 }`}
               >
-                {t({ en: 'Day', fa: 'روز' })} {day.dayNumber}: {t({
-                  en: day.title,
-                  fa: faDict[day.title] || day.title
-                })}
+                {t({ en: 'Day', fa: 'روز' })} {day.dayNumber}: {copy.days[i]?.title ?? day.title}
               </button>
             ))}
           </div>
@@ -196,12 +178,12 @@ export function ProgramDetail() {
                     completedExercises.has(pe.id) ? 'border-green-500/30 bg-green-500/5' : 'border-gray-800'
                   }`}
                 >
-                  <button onClick={() => toggleComplete(pe.id, pe.exerciseName)} className="shrink-0">
+                  <button onClick={() => toggleComplete(pe.id, pe.exerciseId)} className="shrink-0">
                     <CheckCircle2 className={`w-6 h-6 transition-colors ${completedExercises.has(pe.id) ? 'text-green-400' : 'text-gray-600'}`} />
                   </button>
                   <div className="flex-1 text-right rtl:text-left">
                     <Link to={`/exercises/${getExerciseSlugById(pe.exerciseId) ?? ''}`} className="font-bold hover:text-orange-400 transition-colors">
-                      {pe.exerciseName}
+                      {getExerciseNameById(pe.exerciseId, lang)}
                     </Link>
                     <div className="text-sm text-gray-400 mt-1">
                       {pe.sets} {t({ en: 'sets', fa: 'ست' })} × {pe.reps} {t({ en: 'reps', fa: 'تکرار' })} · {pe.restSeconds}s {t({ en: 'rest', fa: 'استراحت' })}
@@ -222,7 +204,7 @@ export function ProgramDetail() {
               <div key={pe.id} className="flex items-center gap-4 bg-gray-900 border border-gray-800 rounded-xl p-4 flex-row-reverse rtl:flex-row">
                 <CheckCircle2 className="w-6 h-6 text-gray-600 shrink-0" />
                 <div className="flex-1 text-right rtl:text-left">
-                  <div className="font-bold">{pe.exerciseName}</div>
+                  <div className="font-bold">{getExerciseNameById(pe.exerciseId, lang)}</div>
                   <div className="text-sm text-gray-400 mt-1">{pe.sets} {t({ en: 'sets', fa: 'ست' })} × {pe.reps} {t({ en: 'reps', fa: 'تکرار' })}</div>
                 </div>
               </div>
