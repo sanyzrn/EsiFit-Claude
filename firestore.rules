@@ -35,14 +35,24 @@ service cloud.firestore {
              data.createdAt is string;
     }
 
+    // New users may only self-register as USER / FREE.
+    function isValidUserCreate(data) {
+      return isValidUser(data) &&
+             data.role == 'USER' &&
+             data.subscriptionTier == 'FREE';
+    }
+
     match /users/{userId} {
       allow get: if isSignedIn() && isValidId(userId) && isOwner(userId);
       allow list: if isSignedIn() && resource.data.id == request.auth.uid;
       allow create: if isSignedIn() && isValidId(userId) && isOwner(userId) &&
-                       isValidUser(incoming());
+                       isValidUserCreate(incoming());
+      // Clients may update display name only — role/tier are server-managed.
       allow update: if isSignedIn() && isValidId(userId) && isOwner(userId) &&
                        isValidUser(incoming()) &&
-                       incoming().diff(existing()).affectedKeys().hasOnly(['name', 'role', 'subscriptionTier']);
+                       incoming().diff(existing()).affectedKeys().hasOnly(['name']) &&
+                       incoming().role == existing().role &&
+                       incoming().subscriptionTier == existing().subscriptionTier;
     }
 
     function isValidBodyLog(data) {

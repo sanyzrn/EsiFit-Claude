@@ -18,6 +18,7 @@ import Admin from './pages/Admin';
 import Coach from './pages/Coach';
 import NotFound from './pages/NotFound';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { AuthBootstrap } from './components/AuthBootstrap';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -31,6 +32,7 @@ export default function App() {
   return (
     <I18nProvider>
       <BrowserRouter>
+        <AuthBootstrap />
         <ScrollToTop />
         <ErrorBoundary>
           <Layout>

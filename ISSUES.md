@@ -71,8 +71,8 @@ Status legend: `open` · `fixed` · `deferred` · `investigated-not-reproducible
 
 | ID | Severity | Phase | Status | Title |
 |----|----------|-------|--------|-------|
-| SEC-1 | Critical | 1 | open | Firestore rules allow users to self-write `role` and `subscriptionTier` |
-| SEC-2 | Critical | 1 | open | Tier/role gating reads client-controlled `localStorage` only |
+| SEC-1 | Critical | 1 | fixed | Firestore rules allow users to self-write `role` and `subscriptionTier` |
+| SEC-2 | Critical | 1 | fixed | Tier/role gating reads client-controlled `localStorage` only |
 | SEC-3 | High | 3 | open | Fake payment upgrade (`upgradeTier` local flip only) |
 | AUTH-1 | High | 2 | open | Register "Sign up with Google" is a no-op |
 | AUTH-2 | High | 2 | open | Forgot password never calls `sendPasswordResetEmail` |
@@ -116,20 +116,26 @@ Status legend: `open` · `fixed` · `deferred` · `investigated-not-reproducible
 ### SEC-1 — Firestore rules allow users to self-write `role` and `subscriptionTier`
 - **Severity:** Critical
 - **Phase:** 1
-- **Status:** open
-- **Files:** `firestore.rules:43-45`
+- **Status:** fixed (2026-07-15)
+- **Files:** `firestore.rules`, `functions/src/index.ts`
 - **Reports:** A (`EsiFit_Full_Audit_2026-07-15.md:65-72`) — B does not cite this separately (B focuses on localStorage bypass)
-- **Evidence:** `allow update` permits `incoming().diff(existing()).affectedKeys().hasOnly(['name', 'role', 'subscriptionTier'])` with no privileged caller check. Any signed-in user can `updateDoc` their own `role: 'ADMIN'`, `subscriptionTier: 'ELITE'`.
-- **Note:** Root cause behind both localStorage bypass AND direct SDK bypass.
+- **Before:** `allow update` permitted `incoming().diff(existing()).affectedKeys().hasOnly(['name', 'role', 'subscriptionTier'])` — any signed-in user could self-promote.
+- **After:** Create enforces `role == 'USER'` and `subscriptionTier == 'FREE'` only. Update allows `name` changes only; `role` and `subscriptionTier` must remain unchanged. Cloud Functions (`syncUserClaims`, `setUserEntitlements`, `paymentWebhookStub`) are the trusted write path via Admin SDK.
+- **Verification:** Rules logic reviewed; client `updateDoc` for role/tier rejected by `hasOnly(['name'])` + immutable field checks. Deploy rules + functions to Firebase project to enforce in production.
 
 ### SEC-2 — Tier/role gating reads client-controlled `localStorage` only
 - **Severity:** Critical
 - **Phase:** 1
-- **Status:** open
-- **Files:** `src/lib/store.ts:9-33`, `src/components/TierGate.tsx:17-21`, `src/pages/Admin.tsx:13-17`, `src/pages/Programs.tsx:114-115`, `src/pages/Coach.tsx:14-16`
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/lib/entitlements.ts`, `src/lib/store.ts`, `src/components/TierGate.tsx`, `src/pages/Admin.tsx`, `src/pages/Coach.tsx`, `src/pages/Programs.tsx`, `src/pages/Diet.tsx`, `src/components/Layout.tsx`, `src/pages/Dashboard.tsx`, `src/pages/Pricing.tsx`, `src/components/AuthBootstrap.tsx`
 - **Reports:** A SEC-2 (`EsiFit_Full_Audit_2026-07-15.md:74-80`) · B Critical tier bypass (`(1).md:182-188`) · B Critical admin bypass (`(1).md:192-198`)
-- **Repro (verified in prior audit runs):** Set `esifit_store.currentUser.subscriptionTier='ELITE'` or `role='ADMIN'` in localStorage → reload → VIP program content and Admin dashboard render.
-- **Conflict note:** A treats Firestore self-write (SEC-1) as primary; B emphasizes localStorage. Both are valid attack paths; fix both in Phase 1.
+- **Before:** Set `esifit_store.currentUser.subscriptionTier='ELITE'` or `role='ADMIN'` in localStorage → reload → VIP program content and Admin dashboard rendered.
+- **After:** `role`/`subscriptionTier` stripped from localStorage persistence. All gating reads `useEntitlements()` → custom claims (primary) or live Firestore read (fallback). `upgradeTier()` is a no-op for authorization.
+- **Verification (2026-07-15, `phase1-auth-verify.mjs` on preview:4173):**
+  - localStorage ADMIN bypass → Admin panel did not render ✓
+  - localStorage ELITE bypass → VIP program remains locked ✓
+  - `/admin` without auth → redirected to `/` ✓
+  - Anonymous user on VIP program → upgrade gate shown ✓
 
 ### SEC-3 — Fake payment upgrade (`upgradeTier` local flip only)
 - **Severity:** High

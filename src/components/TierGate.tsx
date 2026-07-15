@@ -1,8 +1,8 @@
-import { type ReactNode, useEffect, useState } from 'react';
+import { type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { Lock, Crown } from 'lucide-react';
-import { getState, subscribe } from '@/lib/store';
 import { hasTierAccess, type SubscriptionTier } from '@/lib/types';
+import { useEntitlements } from '@/lib/entitlements';
 
 interface TierGateProps {
   minTier: SubscriptionTier;
@@ -11,13 +11,17 @@ interface TierGateProps {
 }
 
 export default function TierGate({ minTier, children, showBlur = true }: TierGateProps) {
-  const [state, setState] = useState(getState());
-  useEffect(() => { const u = subscribe(() => setState(getState())); return () => { u(); }; }, []);
+  const { subscriptionTier, loading } = useEntitlements();
 
-  const user = state.currentUser;
-  const userTier = user?.subscriptionTier || 'FREE';
+  if (loading) {
+    return showBlur ? (
+      <div className="relative min-h-[12rem] flex items-center justify-center">
+        <div className="text-gray-400 text-sm">Loading access…</div>
+      </div>
+    ) : null;
+  }
 
-  if (hasTierAccess(userTier, minTier)) {
+  if (hasTierAccess(subscriptionTier, minTier)) {
     return <>{children}</>;
   }
 

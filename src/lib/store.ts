@@ -1,4 +1,5 @@
-import type { User, Exercise, Program, DietPlan, Article, BodyLog, ExerciseLog, CalculatorResult, Ticket, Plan, SubscriptionTier } from './types';
+import type { User, Exercise, Program, DietPlan, Article, BodyLog, ExerciseLog, CalculatorResult, Ticket, Plan } from './types';
+import { fetchEntitlements } from './entitlements';
 
 // Simple reactive store with localStorage persistence
 type Listener = () => void;
@@ -17,10 +18,21 @@ interface StoreState {
   savedExercises: string[];
 }
 
+function stripAuthFieldsFromUser(user: User | null): User | null {
+  if (!user) return null;
+  const { role: _role, subscriptionTier: _tier, ...profile } = user;
+  return { ...profile, role: 'USER', subscriptionTier: 'FREE' } as User;
+}
+
 function loadState(): StoreState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
+    if (raw) {
+      const parsed = JSON.parse(raw) as StoreState;
+      // Never restore role/tier from localStorage — authorization uses server entitlements.
+      parsed.currentUser = stripAuthFieldsFromUser(parsed.currentUser);
+      return parsed;
+    }
   } catch { /* ignore */ }
   return { currentUser: null, bodyLogs: [], exerciseLogs: [], calculatorResults: [], tickets: [], savedExercises: [] };
 }
@@ -28,7 +40,13 @@ function loadState(): StoreState {
 let state = loadState();
 
 function saveState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  const toPersist = {
+    ...state,
+    currentUser: state.currentUser
+      ? stripAuthFieldsFromUser(state.currentUser)
+      : null,
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(toPersist));
   notify();
 }
 
@@ -41,12 +59,13 @@ export async function syncUserFromFirebase(uid: string) {
     const userDoc = await getDoc(doc(db, 'users', uid));
     if (userDoc.exists()) {
       const data = userDoc.data();
+      const entitlements = await fetchEntitlements();
       state.currentUser = {
         id: uid,
         email: data.email,
         name: data.name,
-        role: data.role as 'ADMIN' | 'COACH' | 'USER',
-        subscriptionTier: data.subscriptionTier as 'FREE' | 'ECONOMY' | 'VIP' | 'ELITE',
+        role: entitlements?.role ?? 'USER',
+        subscriptionTier: entitlements?.subscriptionTier ?? 'FREE',
         createdAt: data.createdAt,
         age: 28,
         gender: 'male',
@@ -77,11 +96,9 @@ export function updateProfile(updates: Partial<User>) {
   }
 }
 
-export function upgradeTier(tier: SubscriptionTier) {
-  if (state.currentUser) {
-    state.currentUser.subscriptionTier = tier;
-    saveState();
-  }
+/** Local-only UI hint — does NOT grant server entitlements (Phase 3 adds real payments). */
+export function upgradeTier(_tier: import('./types').SubscriptionTier) {
+  // No-op: tier changes require trusted server write (Cloud Function / webhook).
 }
 
 function generateId(prefix: string) {

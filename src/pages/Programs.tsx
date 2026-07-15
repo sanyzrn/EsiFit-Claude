@@ -5,14 +5,14 @@ import { PROGRAMS, getState, addExerciseLog, subscribe } from '@/lib/store';
 import TierGate from '@/components/TierGate';
 import { hasTierAccess } from '@/lib/types';
 import { useI18n, faDict } from '@/lib/i18n';
+import { useEntitlements } from '@/lib/entitlements';
 
 const goalColors: Record<string, string> = { MUSCLE_GAIN: 'bg-blue-500/20 text-blue-400', FAT_LOSS: 'bg-red-500/20 text-red-400', GENERAL_FITNESS: 'bg-green-500/20 text-green-400', STRENGTH: 'bg-purple-500/20 text-purple-400' };
 
 export function ProgramList() {
   const { t } = useI18n();
-  const [state, setState] = useState(getState());
-  useEffect(() => { const u = subscribe(() => setState(getState())); return () => { u(); }; }, []);
-  const userTier = state.currentUser?.subscriptionTier || 'FREE';
+  const { subscriptionTier } = useEntitlements();
+  const userTier = subscriptionTier;
 
   const goalLabels: Record<string, string> = { 
     MUSCLE_GAIN: t({ en: 'Muscle Gain', fa: 'عضله‌سازی' }), 
@@ -111,7 +111,8 @@ export function ProgramDetail() {
     );
   }
 
-  const userTier = state.currentUser?.subscriptionTier || 'FREE';
+  const { subscriptionTier } = useEntitlements();
+  const userTier = subscriptionTier;
   const hasAccess = hasTierAccess(userTier, program.requiredTier);
 
   const toggleComplete = (peId: string, exerciseName: string) => {
