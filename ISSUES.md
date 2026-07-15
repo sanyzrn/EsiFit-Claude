@@ -107,6 +107,7 @@ Status legend: `open` · `fixed` · `deferred` · `investigated-not-reproducible
 | CONTENT-3 | Low | 9 | intentional-demo | Admin/Coach dashboards use hardcoded demo data |
 | CONTENT-4 | Low | 9 | intentional-demo | Coach chat auto-reply via `setTimeout` (demo) |
 | UI-1 | — | 8 | fixed | Design token decision: orange/gray vs pine/bone/ember/brass |
+| UI-11 | — | 11 | fixed | Modernize & Iranize UI: Persian teal accent, layout split, mobile bottom nav |
 | PERF-1 | Low | 10 | verified-alt | Lighthouse CLI unavailable; build metrics + a11y static checks used |
 
 ---
@@ -470,6 +471,15 @@ Status legend: `open` · `fixed` · `deferred` · `investigated-not-reproducible
 - **Decision:** Adopt **orange (`#f97316`) + gray surfaces** as the canonical EsiFit brand. Audit brief pine/bone/ember/brass palette not used.
 - **After:** Documented in `src/index.css` `@theme` comment; existing `--color-brand` / `--color-surface` tokens retained as source of truth for future refactors.
 - **Verification:** `phase8-ux-verify.mjs` static check.
+
+### UI-11 — Modernize & Iranize UI/UX
+- **Severity:** N/A (enhancement)
+- **Phase:** 11
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/components/layout/*`, `src/components/ui/*`, `src/lib/design-tokens.ts`, `src/index.css`, `src/pages/Auth.tsx`, `src/pages/Home.tsx`
+- **Decision:** Persian teal (`#0d9488`) as secondary accent; orange remains primary. Desktop primary nav: Calculators, Programs, Diet, Exercises; secondary: Blog, Pricing. Mobile bottom nav: Home, Tools, Programs, Dashboard, More sheet.
+- **After:** Layout split into `AppShell`, `TopNav`, `MobileBottomNav`, `MobileMoreSheet`, `Footer`, `UserMenu`. Shared UI primitives (`Button`, `Card`, `InputField`, `Skeleton`, `EmptyState`). Auth forms migrated to RTL-safe `InputField`.
+- **Verification:** `phase11-ui-verify.mjs` static checks; `phase8-ux-verify.mjs` updated for new layout paths.
 
 ### PERF-1 — Lighthouse not completed
 - **Severity:** Low

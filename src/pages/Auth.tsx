@@ -17,6 +17,9 @@ import {
   mapAuthError,
 } from '@/lib/auth';
 import { useI18n } from '@/lib/i18n';
+import { InputField } from '@/components/ui/InputField';
+import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 
 function authErrorCode(err: unknown): string {
   if (err instanceof ApiError) return err.code;
@@ -84,55 +87,44 @@ function PhoneOtpSection({
         {t({ en: 'Or sign in with phone (SMS)', fa: 'یا ورود با شماره موبایل (پیامک)' })}
       </p>
       {mode === 'register' && (
-        <div>
-          <label className="block text-sm font-medium text-fg-muted mb-1">{t({ en: 'Full Name', fa: 'نام کامل' })}</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full px-4 py-2.5 bg-elevated border border-strong rounded-lg text-fg focus:border-orange-500 outline-none"
-            disabled={loading}
-          />
-        </div>
+        <InputField
+          label={t({ en: 'Full Name', fa: 'نام کامل' })}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          disabled={loading}
+        />
       )}
-      <div>
-        <label className="block text-sm font-medium text-fg-muted mb-1">{t({ en: 'Phone', fa: 'شماره موبایل' })}</label>
-        <div className="relative">
-          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-subtle" />
-          <input
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder={t({ en: '09123456789', fa: '۰۹۱۲۳۴۵۶۷۸۹' })}
-            className="w-full pl-10 pr-4 py-2.5 bg-elevated border border-strong rounded-lg text-fg focus:border-orange-500 outline-none"
-            disabled={loading || otpSent}
-          />
-        </div>
-      </div>
+      <InputField
+        label={t({ en: 'Phone', fa: 'شماره موبایل' })}
+        type="tel"
+        icon={<Phone />}
+        value={phone}
+        onChange={(e) => setPhone(e.target.value)}
+        placeholder={t({ en: '09123456789', fa: '۰۹۱۲۳۴۵۶۷۸۹' })}
+        disabled={loading || otpSent}
+      />
       {otpSent && (
-        <div>
-          <label className="block text-sm font-medium text-fg-muted mb-1">{t({ en: 'Verification code', fa: 'کد تأیید' })}</label>
-          <input
-            type="text"
-            inputMode="numeric"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            placeholder={t({ en: '123456', fa: '۱۲۳۴۵۶' })}
-            className="w-full px-4 py-2.5 bg-elevated border border-strong rounded-lg text-fg focus:border-orange-500 outline-none"
-            disabled={loading}
-          />
-        </div>
+        <InputField
+          label={t({ en: 'Verification code', fa: 'کد تأیید' })}
+          type="text"
+          inputMode="numeric"
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+          placeholder={t({ en: '123456', fa: '۱۲۳۴۵۶' })}
+          disabled={loading}
+        />
       )}
-      <button
+      <Button
         type="button"
+        variant="secondary"
+        fullWidth
         onClick={otpSent ? handleVerifyOtp : handleRequestOtp}
         disabled={loading}
-        className="w-full py-2.5 bg-elevated border border-strong text-fg font-medium rounded-lg hover:bg-elevated-hover transition-colors disabled:opacity-50"
       >
         {otpSent
           ? (loading ? t({ en: 'Verifying...', fa: 'در حال تأیید...' }) : t({ en: 'Verify & Sign In', fa: 'تأیید و ورود' }))
           : (loading ? t({ en: 'Sending code...', fa: 'در حال ارسال کد...' }) : t({ en: 'Send SMS Code', fa: 'ارسال کد پیامکی' }))}
-      </button>
+      </Button>
     </div>
   );
 }
@@ -179,32 +171,34 @@ export function Login() {
           <p className="text-fg-subtle text-sm mt-1">{t({ en: 'Sign in to your EsiFit account', fa: 'به حساب اسی‌فیت خود وارد شوید' })}</p>
         </div>
 
-        <div className="bg-surface border border-border rounded-2xl p-6 md:p-8">
+        <Card className="rounded-2xl">
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
               <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm">
                 <AlertCircle className="w-4 h-4 shrink-0" /> {error}
               </div>
             )}
-            <div>
-              <label className="block text-sm font-medium text-fg-muted mb-1">{t({ en: 'Email', fa: 'ایمیل' })}</label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-subtle" />
-                <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder={t({ en: 'you@example.com', fa: 'nama@example.ir' })}
-                  className="w-full pl-10 pr-4 py-2.5 bg-elevated border border-strong rounded-lg text-fg focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none" disabled={loading} />
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-fg-muted mb-1">{t({ en: 'Password', fa: 'رمز عبور' })}</label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-subtle" />
-                <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••"
-                  className="w-full pl-10 pr-4 py-2.5 bg-elevated border border-strong rounded-lg text-fg focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none" disabled={loading} />
-              </div>
-            </div>
-            <button type="submit" className="w-full py-3 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50" disabled={loading}>
+            <InputField
+              label={t({ en: 'Email', fa: 'ایمیل' })}
+              type="email"
+              icon={<Mail />}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={t({ en: 'you@example.com', fa: 'nama@example.ir' })}
+              disabled={loading}
+            />
+            <InputField
+              label={t({ en: 'Password', fa: 'رمز عبور' })}
+              type="password"
+              icon={<Lock />}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              disabled={loading}
+            />
+            <Button type="submit" fullWidth size="lg" disabled={loading}>
               {loading ? t({ en: 'Signing in...', fa: 'در حال ورود...' }) : t({ en: 'Sign In', fa: 'ورود' })}
-            </button>
+            </Button>
           </form>
 
           <div className="mt-4 text-center text-sm text-fg-subtle">
@@ -218,7 +212,7 @@ export function Login() {
             setError={setError}
             onSuccess={() => navigate('/dashboard')}
           />
-        </div>
+        </Card>
 
         <p className="text-center text-sm text-fg-subtle mt-6">
           {t({ en: "Don't have an account?", fa: 'حساب کاربری ندارید؟' })}{' '}
@@ -274,66 +268,62 @@ export function Register() {
           <p className="text-fg-subtle text-sm mt-1">{t({ en: 'Start your fitness journey with EsiFit', fa: 'سفر تناسب اندام خود را با اسی‌فیت آغاز کنید' })}</p>
         </div>
 
-        <div className="bg-surface border border-border rounded-2xl p-6 md:p-8">
+        <Card className="rounded-2xl">
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
               <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm">
                 <AlertCircle className="w-4 h-4 shrink-0" /> {error}
               </div>
             )}
-            <div>
-              <label className="block text-sm font-medium text-fg-muted mb-1">{t({ en: 'Full Name', fa: 'نام کامل' })}</label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-subtle" />
-                <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder={t({ en: 'Ali Rezaei', fa: 'علی رضایی' })}
-                  className="w-full pl-10 pr-4 py-2.5 bg-elevated border border-strong rounded-lg text-fg focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none" disabled={loading} />
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-fg-muted mb-1">{t({ en: 'Email', fa: 'ایمیل' })}</label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-subtle" />
-                <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder={t({ en: 'you@example.com', fa: 'nama@example.ir' })}
-                  className="w-full pl-10 pr-4 py-2.5 bg-elevated border border-strong rounded-lg text-fg focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none" disabled={loading} />
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-fg-muted mb-1">{t({ en: 'Password', fa: 'رمز عبور' })}</label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-subtle" />
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  placeholder={t({ en: 'Min. 6 characters', fa: 'حداقل ۶ کاراکتر' })}
-                  className="w-full pl-10 pr-10 py-2.5 bg-elevated border border-strong rounded-lg text-fg focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none"
-                  disabled={loading}
-                />
+            <InputField
+              label={t({ en: 'Full Name', fa: 'نام کامل' })}
+              type="text"
+              icon={<User />}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder={t({ en: 'Ali Rezaei', fa: 'علی رضایی' })}
+              disabled={loading}
+            />
+            <InputField
+              label={t({ en: 'Email', fa: 'ایمیل' })}
+              type="email"
+              icon={<Mail />}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={t({ en: 'you@example.com', fa: 'nama@example.ir' })}
+              disabled={loading}
+            />
+            <InputField
+              label={t({ en: 'Password', fa: 'رمز عبور' })}
+              type={showPassword ? 'text' : 'password'}
+              icon={<Lock />}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder={t({ en: 'Min. 6 characters', fa: 'حداقل ۶ کاراکتر' })}
+              disabled={loading}
+              trailing={(
                 <button
                   type="button"
                   onClick={() => setShowPassword((visible) => !visible)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-fg-subtle hover:text-fg-muted"
+                  className="text-fg-subtle hover:text-fg-muted"
                   aria-label={showPassword ? t({ en: 'Hide password', fa: 'مخفی کردن رمز' }) : t({ en: 'Show password', fa: 'نمایش رمز' })}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
-              </div>
-              {password.length > 0 && (
-                <p
-                  className={`text-xs mt-1 ${password.length < 6 ? 'text-red-400' : password.length < 10 ? 'text-yellow-400' : 'text-green-400'}`}
-                  aria-live="polite"
-                >
+              )}
+              hint={password.length > 0 ? (
+                <span className={password.length < 6 ? 'text-red-400' : password.length < 10 ? 'text-yellow-400' : 'text-green-400'}>
                   {password.length < 6
                     ? t({ en: 'Too short (min. 6 characters)', fa: 'کوتاه است (حداقل ۶ کاراکتر)' })
                     : password.length < 10
                       ? t({ en: 'Fair strength', fa: 'قدرت متوسط' })
                       : t({ en: 'Strong password', fa: 'رمز قوی' })}
-                </p>
-              )}
-            </div>
-            <button type="submit" className="w-full py-3 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50" disabled={loading}>
+                </span>
+              ) : undefined}
+            />
+            <Button type="submit" fullWidth size="lg" disabled={loading}>
               {loading ? t({ en: 'Creating account...', fa: 'در حال ایجاد حساب...' }) : t({ en: 'Create Account', fa: 'ایجاد حساب' })}
-            </button>
+            </Button>
           </form>
 
           <PhoneOtpSection
@@ -343,7 +333,7 @@ export function Register() {
             setError={setError}
             onSuccess={() => navigate('/dashboard')}
           />
-        </div>
+        </Card>
 
         <p className="text-center text-sm text-fg-subtle mt-6">
           {t({ en: 'Already have an account?', fa: 'قبلاً حساب دارید؟' })}{' '}
@@ -386,7 +376,7 @@ export function ForgotPassword() {
           <h1 className="text-2xl font-black">{t({ en: 'Reset Password', fa: 'بازیابی رمز عبور' })}</h1>
           <p className="text-fg-subtle text-sm mt-1">{t({ en: 'Enter your email to receive a reset link', fa: 'ایمیل خود را برای دریافت لینک بازیابی وارد کنید' })}</p>
         </div>
-        <div className="bg-surface border border-border rounded-2xl p-6 md:p-8">
+        <Card className="rounded-2xl">
           {sent ? (
             <div className="text-center py-4">
               <div className="text-4xl mb-4">📧</div>
@@ -400,20 +390,23 @@ export function ForgotPassword() {
                   <AlertCircle className="w-4 h-4 shrink-0" /> {error}
                 </div>
               )}
-              <div>
-                <label className="block text-sm font-medium text-fg-muted mb-1">{t({ en: 'Email', fa: 'ایمیل' })}</label>
-                <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder={t({ en: 'you@example.com', fa: 'nama@example.ir' })}
-                  className="w-full px-4 py-2.5 bg-elevated border border-strong rounded-lg text-fg focus:border-orange-500 outline-none" disabled={loading} />
-              </div>
-              <button type="submit" disabled={loading} className="w-full py-3 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50">
+              <InputField
+                label={t({ en: 'Email', fa: 'ایمیل' })}
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder={t({ en: 'you@example.com', fa: 'nama@example.ir' })}
+                disabled={loading}
+              />
+              <Button type="submit" fullWidth size="lg" disabled={loading}>
                 {loading ? t({ en: 'Sending...', fa: 'در حال ارسال...' }) : t({ en: 'Send Reset Link', fa: 'ارسال لینک بازیابی' })}
-              </button>
+              </Button>
             </form>
           )}
           <div className="mt-4 text-center">
             <Link to="/login" className="text-sm text-fg-subtle hover:text-fg">{t({ en: '← Back to sign in', fa: '← بازگشت به ورود' })}</Link>
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   );
@@ -461,12 +454,12 @@ export function ResetPassword() {
         <div className="text-center mb-8">
           <h1 className="text-2xl font-black">{t({ en: 'Set New Password', fa: 'رمز عبور جدید' })}</h1>
         </div>
-        <div className="bg-surface border border-border rounded-2xl p-6 md:p-8">
+        <Card className="rounded-2xl">
           {done ? (
             <div className="text-center py-4 space-y-4">
               <p className="text-fg-muted">{t({ en: 'Your password has been updated.', fa: 'رمز عبور شما به‌روزرسانی شد.' })}</p>
-              <Link to="/login" className="inline-block py-2 px-4 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600">
-                {t({ en: 'Sign In', fa: 'ورود' })}
+              <Link to="/login">
+                <Button>{t({ en: 'Sign In', fa: 'ورود' })}</Button>
               </Link>
             </div>
           ) : (
@@ -476,22 +469,26 @@ export function ResetPassword() {
                   <AlertCircle className="w-4 h-4 shrink-0" /> {error}
                 </div>
               )}
-              <div>
-                <label className="block text-sm font-medium text-fg-muted mb-1">{t({ en: 'New password', fa: 'رمز عبور جدید' })}</label>
-                <input type="password" value={password} onChange={e => setPassword(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-elevated border border-strong rounded-lg text-fg focus:border-orange-500 outline-none" disabled={loading} />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-fg-muted mb-1">{t({ en: 'Confirm password', fa: 'تأیید رمز عبور' })}</label>
-                <input type="password" value={confirm} onChange={e => setConfirm(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-elevated border border-strong rounded-lg text-fg focus:border-orange-500 outline-none" disabled={loading} />
-              </div>
-              <button type="submit" disabled={loading} className="w-full py-3 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50">
+              <InputField
+                label={t({ en: 'New password', fa: 'رمز عبور جدید' })}
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={loading}
+              />
+              <InputField
+                label={t({ en: 'Confirm password', fa: 'تأیید رمز عبور' })}
+                type="password"
+                value={confirm}
+                onChange={(e) => setConfirm(e.target.value)}
+                disabled={loading}
+              />
+              <Button type="submit" fullWidth size="lg" disabled={loading}>
                 {loading ? t({ en: 'Updating...', fa: 'در حال به‌روزرسانی...' }) : t({ en: 'Update Password', fa: 'به‌روزرسانی رمز' })}
-              </button>
+              </Button>
             </form>
           )}
-        </div>
+        </Card>
       </div>
     </div>
   );
