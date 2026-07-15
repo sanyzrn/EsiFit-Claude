@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useId, useMemo } from 'react';
 import { motion } from 'motion/react';
 import { useI18n } from '@/lib/i18n';
 
@@ -21,21 +21,29 @@ export function SliderInput({
 }: {
   label: string; value: number; min: number; max: number; step: number; onChange: (v: number) => void; unit?: string;
 }) {
+  const inputId = useId();
+  const valueText = unit ? `${value} ${unit}` : String(value);
+
   return (
     <div className="mb-4">
       <div className="flex justify-between mb-1">
-        <label className="text-sm font-medium text-gray-300">{label}</label>
-        <span className="text-orange-400 font-bold text-sm">
+        <label htmlFor={inputId} className="text-sm font-medium text-gray-300">{label}</label>
+        <span className="text-orange-400 font-bold text-sm" aria-hidden="true">
           <PersianNumber value={value} /> {unit && <span className="text-xs text-gray-500">{unit}</span>}
         </span>
       </div>
       <input
+        id={inputId}
         type="range"
         min={min}
         max={max}
         step={step}
         value={value}
         onChange={(e) => onChange(parseFloat(e.target.value))}
+        aria-valuenow={value}
+        aria-valuemin={min}
+        aria-valuemax={max}
+        aria-valuetext={valueText}
         className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-orange-500"
       />
     </div>
@@ -69,14 +77,18 @@ export function CircularGauge({
 }: {
   value: number; min: number; max: number; label: string; color?: string;
 }) {
+  const gaugeId = useId();
   const percentage = Math.min(100, Math.max(0, ((value - min) / (max - min)) * 100));
   const radius = 40;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
   return (
-    <div className="relative flex flex-col items-center">
-      <svg width="120" height="120" viewBox="0 0 100 100" className="transform -rotate-90">
+    <div className="relative flex flex-col items-center" role="group" aria-labelledby={`${gaugeId}-label`}>
+      <p id={gaugeId} className="sr-only" aria-live="polite" aria-atomic="true">
+        {label}: {value}
+      </p>
+      <svg width="120" height="120" viewBox="0 0 100 100" className="transform -rotate-90" aria-hidden="true">
         <circle cx="50" cy="50" r={radius} fill="none" stroke="#374151" strokeWidth="8" />
         <motion.circle
           cx="50" cy="50" r={radius} fill="none" stroke={color} strokeWidth="8"
@@ -87,10 +99,10 @@ export function CircularGauge({
           strokeLinecap="round"
         />
       </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
+      <div className="absolute inset-0 flex flex-col items-center justify-center" aria-hidden="true">
         <div className="text-2xl font-black text-white"><PersianNumber value={value} /></div>
       </div>
-      <div className="mt-2 text-sm text-gray-400 font-medium">{label}</div>
+      <div id={`${gaugeId}-label`} className="mt-2 text-sm text-gray-400 font-medium">{label}</div>
     </div>
   );
 }
@@ -144,7 +156,7 @@ export function CalculatorLayout({
       </div>
       <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-6 border border-gray-700 flex flex-col justify-center items-center text-center relative overflow-hidden">
         <div className="absolute inset-0 bg-orange-500/5 blur-[100px] pointer-events-none" />
-        <div className="relative z-10 w-full">
+        <div className="relative z-10 w-full" aria-live="polite" aria-atomic="true">
           {results}
           {onSave && (
             <button onClick={onSave} className="mt-8 px-6 py-2 bg-gray-700 hover:bg-gray-600 text-white text-sm font-bold rounded-lg transition-colors border border-gray-600">

@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Dumbbell, Mail, Lock, User, AlertCircle } from 'lucide-react';
+import { Dumbbell, Mail, Lock, User, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { getState, subscribe, syncUserFromFirebase } from '@/lib/store';
 import { auth, db } from '@/lib/firebase';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
-import { signInWithGoogle, requestPasswordReset } from '@/lib/auth';
+import { signInWithGoogle, requestPasswordReset, getAuthErrorCode, mapAuthError } from '@/lib/auth';
+import { useI18n } from '@/lib/i18n';
 
 export function Login() {
+  const { t } = useI18n();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -30,7 +32,7 @@ export function Login() {
       await syncUserFromFirebase(userCredential.user.uid);
       navigate('/dashboard');
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Invalid credentials');
+      setError(mapAuthError(getAuthErrorCode(err), t));
     } finally {
       setLoading(false);
     }
@@ -43,7 +45,7 @@ export function Login() {
       await signInWithGoogle();
       navigate('/dashboard');
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Failed to sign in with Google');
+      setError(mapAuthError(getAuthErrorCode(err), t));
     } finally {
       setLoading(false);
     }
@@ -109,9 +111,11 @@ export function Login() {
 }
 
 export function Register() {
+  const { t } = useI18n();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -142,7 +146,7 @@ export function Register() {
       await syncUserFromFirebase(userCredential.user.uid);
       navigate('/dashboard');
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Failed to create account');
+      setError(mapAuthError(getAuthErrorCode(err), t));
     } finally {
       setLoading(false);
     }
@@ -155,7 +159,7 @@ export function Register() {
       await signInWithGoogle();
       navigate('/dashboard');
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Failed to sign up with Google');
+      setError(mapAuthError(getAuthErrorCode(err), t));
     } finally {
       setLoading(false);
     }
@@ -199,9 +203,35 @@ export function Register() {
               <label className="block text-sm font-medium text-gray-300 mb-1">Password</label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Min. 6 characters"
-                  className="w-full pl-10 pr-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none" disabled={loading} />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  placeholder="Min. 6 characters"
+                  className="w-full pl-10 pr-10 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none"
+                  disabled={loading}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((visible) => !visible)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-200"
+                  aria-label={showPassword ? t({ en: 'Hide password', fa: 'مخفی کردن رمز' }) : t({ en: 'Show password', fa: 'نمایش رمز' })}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
               </div>
+              {password.length > 0 && (
+                <p
+                  className={`text-xs mt-1 ${password.length < 6 ? 'text-red-400' : password.length < 10 ? 'text-yellow-400' : 'text-green-400'}`}
+                  aria-live="polite"
+                >
+                  {password.length < 6
+                    ? t({ en: 'Too short (min. 6 characters)', fa: 'کوتاه است (حداقل ۶ کاراکتر)' })
+                    : password.length < 10
+                      ? t({ en: 'Fair strength', fa: 'قدرت متوسط' })
+                      : t({ en: 'Strong password', fa: 'رمز قوی' })}
+                </p>
+              )}
             </div>
             <button type="submit" className="w-full py-3 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50" disabled={loading}>
               {loading ? 'Creating account...' : 'Create Account'}
@@ -225,6 +255,7 @@ export function Register() {
 }
 
 export function ForgotPassword() {
+  const { t } = useI18n();
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
@@ -242,7 +273,7 @@ export function ForgotPassword() {
       await requestPasswordReset(email);
       setSent(true);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Failed to send reset email');
+      setError(mapAuthError(getAuthErrorCode(err), t));
     } finally {
       setLoading(false);
     }
