@@ -10,7 +10,7 @@ export default function Home() {
     { icon: Dumbbell, title: t({ en: 'Exercise Library', fa: 'کتابخانه حرکات' }), desc: t({ en: 'Comprehensive database with video guides, muscle targeting, and difficulty levels.', fa: 'راهنمای جامع حرکات همراه با ویدیو، عضلات هدف، و سطوح دشواری.' }), link: '/exercises' },
     { icon: Target, title: t({ en: 'Training Programs', fa: 'برنامه‌های تمرینی' }), desc: t({ en: 'Structured programs from beginner to elite, matched to your specific goals.', fa: 'برنامه‌های ساختاریافته از مبتدی تا حرفه‌ای، متناسب با اهداف شما.' }), link: '/programs' },
     { icon: Apple, title: t({ en: 'Diet Plans', fa: 'برنامه‌های غذایی' }), desc: t({ en: 'Calorie-calculated meal plans with macros broken down per meal.', fa: 'برنامه‌های غذایی با محاسبه دقیق کالری و درشت‌مغذی‌ها در هر وعده.' }), link: '/diet' },
-    { icon: Calculator, title: t({ en: 'Fitness Calculators', fa: 'ماشین‌حساب‌های فیتنس' }), desc: t({ en: '14 free calculators: BMI, TDEE, body fat, macros, 1RM, and more.', fa: '۱۴ ماشین حساب رایگان: BMI، چربی بدن، درشت‌مغذی‌ها و غیره.' }), link: '/calculators' },
+    { icon: Calculator, title: t({ en: 'Fitness Calculators', fa: 'ماشین‌حساب‌های فیتنس' }), desc: t({ en: '13 interactive tools on Home; 14 dedicated calculator pages (BMI, TDEE, body fat, macros, 1RM with % table, and more).', fa: '۱۳ ابزار تعاملی در صفحه اصلی؛ ۱۴ صفحه ماشین‌حساب (BMI، چربی بدن، درشت‌مغذی‌ها، 1RM با جدول درصد، و غیره).' }), link: '/calculators' },
     { icon: BarChart3, title: t({ en: 'Progress Tracking', fa: 'پیگیری پیشرفت' }), desc: t({ en: 'Log workouts and body measurements, visualize your gains with charts.', fa: 'ثبت تمرینات و سایزها، و مشاهده روند پیشرفت با نمودار.' }), link: '/dashboard/progress' },
     { icon: MessageSquare, title: t({ en: 'Coach Chat', fa: 'چت با مربی' }), desc: t({ en: 'Get personalized guidance from certified coaches via in-app messaging.', fa: 'دریافت راهنمایی اختصاصی از مربیان مجرب از طریق پیام‌رسان داخلی.' }), link: '/pricing' },
   ];
@@ -18,7 +18,7 @@ export default function Home() {
   const stats = [
     { value: t({ en: '10+', fa: '+۱۰' }), label: t({ en: 'Exercises', fa: 'حرکت تمرینی' }) },
     { value: t({ en: '3', fa: '۳' }), label: t({ en: 'Programs', fa: 'برنامه تمرینی' }) },
-    { value: t({ en: '14', fa: '۱۴' }), label: t({ en: 'Calculators', fa: 'ماشین حساب' }) },
+    { value: t({ en: '13', fa: '۱۳' }), label: t({ en: 'Home tools', fa: 'ابزار صفحه اصلی' }) },
     { value: t({ en: '24/7', fa: '۲۴/۷' }), label: t({ en: 'Support', fa: 'پشتیبانی' }) },
   ];
 

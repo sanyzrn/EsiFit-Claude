@@ -10,7 +10,7 @@ export function BmiCalculator() {
   const [height, setHeight] = useState(175);
   
   const result = useMemo(() => calcBMI(weight, height), [weight, height]);
-  
+
   return (
     <CalculatorLayout
       title={t({ en: 'BMI Calculator', fa: 'محاسبه‌گر BMI' })}
@@ -23,8 +23,14 @@ export function BmiCalculator() {
       }
       results={
         <div className="flex flex-col items-center">
-          <CircularGauge value={result.bmi} min={10} max={40} label={t({ en: 'BMI', fa: 'شاخص BMI' })} color={result.bmi > 25 ? '#ef4444' : result.bmi < 18.5 ? '#eab308' : '#22c55e'} />
-          <div className="mt-4 text-xl font-bold">{result.category}</div>
+          {result.ok ? (
+            <>
+              <CircularGauge value={result.value.bmi} min={10} max={40} label={t({ en: 'BMI', fa: 'شاخص BMI' })} color={result.value.bmi > 25 ? '#ef4444' : result.value.bmi < 18.5 ? '#eab308' : '#22c55e'} />
+              <div className="mt-4 text-xl font-bold">{result.value.category}</div>
+            </>
+          ) : (
+            <div className="text-red-400 font-medium p-4 bg-red-400/10 rounded-xl border border-red-400/20">{result.error}</div>
+          )}
         </div>
       }
     />
@@ -122,8 +128,14 @@ export function WhrCalculator() {
       }
       results={
         <div className="flex flex-col items-center">
-          <div className="text-5xl font-black text-orange-400 mb-2"><PersianNumber value={result.whr} /></div>
-          <div className="text-xl font-bold">{result.risk}</div>
+          {result.ok ? (
+            <>
+              <div className="text-5xl font-black text-orange-400 mb-2"><PersianNumber value={result.value.whr} /></div>
+              <div className="text-xl font-bold">{result.value.risk}</div>
+            </>
+          ) : (
+            <div className="text-red-400 font-medium p-4 bg-red-400/10 rounded-xl border border-red-400/20">{result.error}</div>
+          )}
         </div>
       }
     />
