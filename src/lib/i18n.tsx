@@ -137,7 +137,9 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     setLangState(newLang);
     try {
       localStorage.setItem('esifit_lang', newLang);
-    } catch {}
+    } catch {
+      // Ignore localStorage quota or privacy errors.
+    }
   };
 
   const isRtl = lang === 'fa';

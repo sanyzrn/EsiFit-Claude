@@ -1,12 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Calculator, ArrowLeft } from 'lucide-react';
-import { getState, subscribe } from '@/lib/store';
+import { subscribe } from '@/lib/store';
 import { useI18n } from '@/lib/i18n';
-import { BmiCalculator, BodyFatCalculator, FfmiCalculator, WhrCalculator, BodyTypeQuiz } from '@/components/calculators/BodyCompositionCalculators';
-import { BmrCalculator, TdeeCalculator, MacrosCalculator, WaterIntakeCalculator } from '@/components/calculators/EnergyNutritionCalculators';
-import { OneRepMaxCalculator, VolumeLoadCalculator } from '@/components/calculators/StrengthTrainingCalculators';
-import { GoalDateCalculator, CaloriesBurnedCalculator } from '@/components/calculators/HealthLifestyleCalculators';
+import { CALC_COMPONENTS } from '@/components/calculators/lazy';
 
 function useCalculators() {
   const { t } = useI18n();
@@ -27,23 +24,6 @@ function useCalculators() {
     { slug: 'rep-max-table', name: t({ en: '% of 1RM Table', fa: 'جدول درصدهای 1RM' }), desc: t({ en: 'Same 1RM estimator with an embedded % rep-max chart (also at /calculators/one-rep-max).', fa: 'همان محاسبه‌گر 1RM با جدول درصدهای تکرار (همچنین در /calculators/one-rep-max).' }) },
   ];
 }
-
-const CALC_COMPONENTS: Record<string, React.FC> = {
-  'bmi': BmiCalculator,
-  'body-fat': BodyFatCalculator,
-  'bmr': BmrCalculator,
-  'tdee': TdeeCalculator,
-  'macros': MacrosCalculator,
-  'one-rep-max': OneRepMaxCalculator,
-  'ffmi': FfmiCalculator,
-  'whr': WhrCalculator,
-  'water-intake': WaterIntakeCalculator,
-  'goal-date': GoalDateCalculator,
-  'calories-burned': CaloriesBurnedCalculator,
-  'body-type-quiz': BodyTypeQuiz,
-  'volume-load': VolumeLoadCalculator,
-  'rep-max-table': OneRepMaxCalculator,
-};
 
 export function CalculatorIndex() {
   const { t } = useI18n();
@@ -112,7 +92,13 @@ export function CalculatorDetail() {
             <p className="text-gray-400 text-sm">{calcInfo.desc}</p>
           </div>
         </div>
-        <CalcComponent />
+        <Suspense fallback={
+          <div className="flex justify-center items-center h-48">
+            <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+          </div>
+        }>
+          <CalcComponent />
+        </Suspense>
       </div>
     </div>
   );

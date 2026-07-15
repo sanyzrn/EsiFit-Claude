@@ -1,47 +1,12 @@
-import React, { useState, Suspense } from 'react';
+import { useState, Suspense } from 'react';
 import { useI18n } from '@/lib/i18n';
 import { motion, AnimatePresence } from 'motion/react';
-
-const BodyCompositionCalculators = React.lazy(() => import('./BodyCompositionCalculators').then(m => ({
-  default: () => (
-    <div className="space-y-8">
-      <m.BmiCalculator />
-      <m.BodyFatCalculator />
-      <m.FfmiCalculator />
-      <m.WhrCalculator />
-      <m.BodyTypeQuiz />
-    </div>
-  )
-})));
-
-const EnergyNutritionCalculators = React.lazy(() => import('./EnergyNutritionCalculators').then(m => ({
-  default: () => (
-    <div className="space-y-8">
-      <m.BmrCalculator />
-      <m.TdeeCalculator />
-      <m.MacrosCalculator />
-      <m.WaterIntakeCalculator />
-    </div>
-  )
-})));
-
-const StrengthTrainingCalculators = React.lazy(() => import('./StrengthTrainingCalculators').then(m => ({
-  default: () => (
-    <div className="space-y-8">
-      <m.OneRepMaxCalculator />
-      <m.VolumeLoadCalculator />
-    </div>
-  )
-})));
-
-const HealthLifestyleCalculators = React.lazy(() => import('./HealthLifestyleCalculators').then(m => ({
-  default: () => (
-    <div className="space-y-8">
-      <m.GoalDateCalculator />
-      <m.CaloriesBurnedCalculator />
-    </div>
-  )
-})));
+import {
+  BodyCompositionTab,
+  EnergyNutritionTab,
+  StrengthTrainingTab,
+  HealthLifestyleTab,
+} from '@/components/calculators/lazy';
 
 export default function HomeSmartTools() {
   const { t } = useI18n();
@@ -69,7 +34,6 @@ export default function HomeSmartTools() {
           </p>
         </div>
 
-        {/* Custom Tabbed Navigation */}
         <div className="flex flex-wrap justify-center gap-2 mb-12">
           {tabs.map((tab) => (
             <button
@@ -92,7 +56,6 @@ export default function HomeSmartTools() {
           ))}
         </div>
 
-        {/* Tab Content with Suspense and AnimatePresence */}
         <div className="min-h-[600px]">
           <AnimatePresence mode="wait">
             <motion.div
@@ -107,10 +70,10 @@ export default function HomeSmartTools() {
                   <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
                 </div>
               }>
-                {activeTab === 'body' && <BodyCompositionCalculators />}
-                {activeTab === 'energy' && <EnergyNutritionCalculators />}
-                {activeTab === 'strength' && <StrengthTrainingCalculators />}
-                {activeTab === 'health' && <HealthLifestyleCalculators />}
+                {activeTab === 'body' && <BodyCompositionTab />}
+                {activeTab === 'energy' && <EnergyNutritionTab />}
+                {activeTab === 'strength' && <StrengthTrainingTab />}
+                {activeTab === 'health' && <HealthLifestyleTab />}
               </Suspense>
             </motion.div>
           </AnimatePresence>

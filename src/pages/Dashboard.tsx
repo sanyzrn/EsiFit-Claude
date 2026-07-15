@@ -306,7 +306,7 @@ export function DashboardProgress() {
         return new Intl.DateTimeFormat('fa-IR', { month: 'short', day: 'numeric' }).format(date);
       }
       return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(date);
-    } catch (e) {
+    } catch {
       return dateStr;
     }
   };

@@ -14,11 +14,11 @@ export function calcBMI(weightKg: number, heightCm: number): Result<{ bmi: numbe
   if (!Number.isFinite(bmi)) {
     return { ok: false, error: 'Invalid BMI — check height and weight inputs' };
   }
-  let category = 'Normal weight';
-  if (bmi < 18.5) category = 'Underweight';
-  else if (bmi < 25) category = 'Normal weight';
-  else if (bmi < 30) category = 'Overweight';
-  else category = 'Obese';
+  const category =
+    bmi < 18.5 ? 'Underweight' :
+    bmi < 25 ? 'Normal weight' :
+    bmi < 30 ? 'Overweight' :
+    'Obese';
   return { ok: true, value: { bmi: Math.round(bmi * 10) / 10, category } };
 }
 
@@ -47,20 +47,17 @@ export function calcBodyFat(
     bf = 495 / (1.29579 - 0.35004 * Math.log10(waistCm + hip - neckCm) + 0.22100 * Math.log10(heightCm)) - 450;
   }
   bf = Math.round(bf * 10) / 10;
-  let category = 'Average';
-  if (gender === 'male') {
-    if (bf < 6) category = 'Essential fat';
-    else if (bf < 14) category = 'Athletic';
-    else if (bf < 18) category = 'Fitness';
-    else if (bf < 25) category = 'Average';
-    else category = 'Obese';
-  } else {
-    if (bf < 14) category = 'Essential fat';
-    else if (bf < 21) category = 'Athletic';
-    else if (bf < 25) category = 'Fitness';
-    else if (bf < 32) category = 'Average';
-    else category = 'Obese';
-  }
+  const category = gender === 'male'
+    ? bf < 6 ? 'Essential fat'
+      : bf < 14 ? 'Athletic'
+      : bf < 18 ? 'Fitness'
+      : bf < 25 ? 'Average'
+      : 'Obese'
+    : bf < 14 ? 'Essential fat'
+      : bf < 21 ? 'Athletic'
+      : bf < 25 ? 'Fitness'
+      : bf < 32 ? 'Average'
+      : 'Obese';
   return { ok: true, value: { bodyFatPct: bf, category } };
 }
 
@@ -156,13 +153,13 @@ export function calcFFMI(weightKg: number, heightCm: number, bodyFatPct: number)
   const leanMass = weightKg * (1 - bodyFatPct / 100);
   const ffmi = leanMass / (heightM * heightM);
   const adjusted = ffmi + 6.1 * (1.8 - heightM);
-  let category = 'Average';
-  if (adjusted < 18) category = 'Below average';
-  else if (adjusted < 20) category = 'Average';
-  else if (adjusted < 22) category = 'Above average';
-  else if (adjusted < 23) category = 'Excellent';
-  else if (adjusted < 26) category = 'Superior';
-  else category = 'Suspicious (may indicate steroid use)';
+  const category =
+    adjusted < 18 ? 'Below average' :
+    adjusted < 20 ? 'Average' :
+    adjusted < 22 ? 'Above average' :
+    adjusted < 23 ? 'Excellent' :
+    adjusted < 26 ? 'Superior' :
+    'Suspicious (may indicate steroid use)';
   return {
     ffmi: Math.round(ffmi * 10) / 10,
     adjusted: Math.round(adjusted * 10) / 10,

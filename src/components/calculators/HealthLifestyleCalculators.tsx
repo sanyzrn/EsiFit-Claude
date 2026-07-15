@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useI18n } from '@/lib/i18n';
 import { calcGoalDate, calcCaloriesBurned, MET_TABLE } from '@/lib/calculators';
 import { SliderInput, CalculatorLayout, PersianNumber } from './SharedCalculatorUI';

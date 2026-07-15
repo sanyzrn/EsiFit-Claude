@@ -29,8 +29,7 @@ interface StoreState {
 
 function stripAuthFieldsFromUser(user: User | null): User | null {
   if (!user) return null;
-  const { role: _role, subscriptionTier: _tier, ...profile } = user;
-  return { ...profile, role: 'USER', subscriptionTier: 'FREE' } as User;
+  return { ...user, role: 'USER', subscriptionTier: 'FREE' };
 }
 
 function loadState(): StoreState {
@@ -46,7 +45,7 @@ function loadState(): StoreState {
   return { currentUser: null, bodyLogs: [], exerciseLogs: [], calculatorResults: [], tickets: [], savedExercises: [] };
 }
 
-let state = loadState();
+const state = loadState();
 
 function saveState() {
   const toPersist = {
@@ -166,13 +165,16 @@ export async function updateProfile(updates: Partial<User>) {
 }
 
 function generateId(prefix: string) {
-  const uuid = typeof crypto !== 'undefined' && crypto.randomUUID
-    ? crypto.randomUUID()
-    : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-      });
-  return prefix + '_' + uuid.split('-')[0];
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return `${prefix}_${crypto.randomUUID().split('-')[0]}`;
+  }
+  if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+    const bytes = new Uint8Array(8);
+    crypto.getRandomValues(bytes);
+    const suffix = Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
+    return `${prefix}_${suffix}`;
+  }
+  return `${prefix}_${Date.now().toString(36)}`;
 }
 
 export function addBodyLog(log: Omit<BodyLog, 'id' | 'userId'>) {
@@ -306,7 +308,7 @@ export function getStreak(): number {
   const yesterdayStr = yesterdayLocal.toISOString().split('T')[0];
 
   let streak = 0;
-  let currentDate = new Date(today);
+  const currentDate = new Date(today);
   
   if (!loggedDates.has(todayStr) && !loggedDates.has(yesterdayStr)) {
     return 0; // No streak active

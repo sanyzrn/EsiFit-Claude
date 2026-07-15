@@ -14,9 +14,16 @@ export default function Layout({ children }: { children: ReactNode }) {
   const [state, setState] = useState(getState());
   const { t, lang, setLang } = useI18n();
   const { role, subscriptionTier } = useEntitlements();
+  const [menusPath, setMenusPath] = useState(location.pathname);
 
   useEffect(() => { const unsub = subscribe(() => setState(getState())); return () => { unsub(); }; }, []);
-  useEffect(() => { setMobileOpen(false); setUserMenuOpen(false); setLangMenuOpen(false); }, [location.pathname]);
+
+  if (menusPath !== location.pathname) {
+    setMenusPath(location.pathname);
+    setMobileOpen(false);
+    setUserMenuOpen(false);
+    setLangMenuOpen(false);
+  }
 
   const user = state.currentUser;
 
