@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Target, Calendar, Clock, CheckCircle2, Lock } from 'lucide-react';
-import { PROGRAMS, getState, addExerciseLog, subscribe } from '@/lib/store';
+import { PROGRAMS, getExerciseSlugById, getState, addExerciseLog, subscribe } from '@/lib/store';
 import TierGate from '@/components/TierGate';
 import { hasTierAccess } from '@/lib/types';
 import { useI18n, faDict } from '@/lib/i18n';
@@ -200,7 +200,7 @@ export function ProgramDetail() {
                     <CheckCircle2 className={`w-6 h-6 transition-colors ${completedExercises.has(pe.id) ? 'text-green-400' : 'text-gray-600'}`} />
                   </button>
                   <div className="flex-1 text-right rtl:text-left">
-                    <Link to={`/exercises/${PROGRAMS.length > 0 ? '' : ''}${pe.exerciseName.toLowerCase().replace(/ /g, '-')}`} className="font-bold hover:text-orange-400 transition-colors">
+                    <Link to={`/exercises/${getExerciseSlugById(pe.exerciseId) ?? ''}`} className="font-bold hover:text-orange-400 transition-colors">
                       {pe.exerciseName}
                     </Link>
                     <div className="text-sm text-gray-400 mt-1">

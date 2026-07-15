@@ -83,10 +83,10 @@ Status legend: `open` · `fixed` · `deferred` · `investigated-not-reproducible
 | CALC-2 | Medium | 5 | fixed | BMI `height=0` → Infinity (no guard) |
 | CALC-3 | Medium | 5 | fixed | WHR `hip=0` → Infinity (no guard) |
 | CALC-4 | Medium | 5 | fixed | Brzycki 1RM `reps≥37` → NaN |
-| BUG-1 | Medium | 7 | open | Program detail exercise links use wrong slug (404) |
-| BUG-2 | Low | 7 | open | Anatomy "Neck" maps to muscle group with zero exercises |
-| BUG-3 | Low | 7 | open | `TierGate` gate copy not i18n-wrapped |
-| BUG-4 | Medium | 7 | open | Auth pages (Login/Register/Forgot) have zero `t()` calls |
+| BUG-1 | Medium | 7 | fixed | Program detail exercise links use wrong slug (404) |
+| BUG-2 | Low | 7 | fixed | Anatomy "Neck" maps to muscle group with zero exercises |
+| BUG-3 | Low | 7 | fixed | `TierGate` gate copy not i18n-wrapped |
+| BUG-4 | Medium | 7 | fixed | Auth pages (Login/Register/Forgot) have zero `t()` calls |
 | BUG-5 | Low | 8 | open | `TierGate` renders gated content in DOM behind blur |
 | BUG-6 | Medium | 8 | open | Tablet 768px horizontal overflow (scrollWidth 830px) |
 | BUG-7 | Low | 8 | open | Hero image `alt=""` empty |
