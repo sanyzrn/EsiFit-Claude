@@ -73,7 +73,7 @@ Status legend: `open` · `fixed` · `deferred` · `investigated-not-reproducible
 |----|----------|-------|--------|-------|
 | SEC-1 | Critical | 1 | fixed | Firestore rules allow users to self-write `role` and `subscriptionTier` |
 | SEC-2 | Critical | 1 | fixed | Tier/role gating reads client-controlled `localStorage` only |
-| SEC-3 | High | 3 | open | Fake payment upgrade (`upgradeTier` local flip only) |
+| SEC-3 | High | 3 | fixed | Fake payment upgrade (`upgradeTier` local flip only) |
 | AUTH-1 | High | 2 | fixed | Register "Sign up with Google" is a no-op |
 | AUTH-2 | High | 2 | fixed | Forgot password never calls `sendPasswordResetEmail` |
 | AUTH-3 | Medium | 2 | fixed | `syncUserFromFirebase` hardcodes fake profile defaults |

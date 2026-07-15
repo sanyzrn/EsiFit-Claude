@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import {
   LayoutDashboard, User, Target, BarChart3, MessageSquare, CreditCard,
   Flame, TrendingUp, Dumbbell, Plus, Calendar, Save, Crown
@@ -7,11 +7,13 @@ import {
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import {
   getState, subscribe, updateProfile, addBodyLog, addExerciseLog,
-  addTicket, addMessageToTicket, getStreak, upgradeTier, PLANS, EXERCISES
+  addTicket, addMessageToTicket, getStreak, PLANS, EXERCISES
 } from '@/lib/store';
 import type { Goal, ActivityLevel } from '@/lib/types';
 import { useI18n, faDict } from '@/lib/i18n';
 import { useEntitlements } from '@/lib/entitlements';
+import { fetchPaymentsEnabled } from '@/lib/payments';
+import PaymentsNotice from '@/components/PaymentsNotice';
 
 function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState(getState());
@@ -631,13 +633,37 @@ export function DashboardChat() {
 
 export function DashboardBilling() {
   const { t } = useI18n();
-  const { subscriptionTier } = useEntitlements();
+  const { subscriptionTier, refresh } = useEntitlements();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [paymentsEnabled, setPaymentsEnabled] = useState<boolean | null>(null);
   const currentPlan = PLANS.find(p => p.tier === subscriptionTier);
+  const checkoutSuccess = searchParams.get('checkout') === 'success';
+
+  useEffect(() => {
+    fetchPaymentsEnabled().then(setPaymentsEnabled);
+  }, []);
+
+  useEffect(() => {
+    if (checkoutSuccess) {
+      void refresh();
+      const next = new URLSearchParams(searchParams);
+      next.delete('checkout');
+      setSearchParams(next, { replace: true });
+    }
+  }, [checkoutSuccess, refresh, searchParams, setSearchParams]);
 
   return (
     <DashboardLayout>
       <div className="animate-fade-in space-y-6">
         <h1 className="text-2xl font-black">{t({ en: 'Billing & Subscription', fa: 'صورتحساب و اشتراک' })}</h1>
+
+        {checkoutSuccess && (
+          <div className="rounded-xl border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-300">
+            {t({ en: 'Payment received! Your plan will update shortly once confirmed.', fa: 'پرداخت دریافت شد! طرح شما پس از تأیید به‌روزرسانی می‌شود.' })}
+          </div>
+        )}
+
+        {paymentsEnabled === false && <PaymentsNotice />}
 
         <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
           <h3 className="text-sm font-medium text-gray-400 mb-4">{t({ en: 'Current Plan', fa: 'طرح فعلی' })}</h3>
@@ -682,18 +708,34 @@ export function DashboardBilling() {
         <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
           <h3 className="text-sm font-medium text-gray-400 mb-4">{t({ en: 'Manage Subscription', fa: 'مدیریت اشتراک' })}</h3>
           <div className="space-y-3">
-            <button className="w-full text-left rtl:text-right p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors text-sm">
+            <button
+              disabled={paymentsEnabled !== true}
+              title={paymentsEnabled === false ? t({ en: 'Coming soon', fa: 'به‌زودی' }) : undefined}
+              className="w-full text-left rtl:text-right p-4 bg-gray-800 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               📧 {t({ en: 'Update payment method', fa: 'به‌روزرسانی روش پرداخت' })}
+              {paymentsEnabled === false && (
+                <span className="block text-xs text-gray-500 mt-1">{t({ en: 'Available when Stripe is configured', fa: 'پس از پیکربندی Stripe' })}</span>
+              )}
             </button>
-            <button className="w-full text-left rtl:text-right p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors text-sm">
+            <button
+              disabled={paymentsEnabled !== true}
+              className="w-full text-left rtl:text-right p-4 bg-gray-800 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               📄 {t({ en: 'View invoices', fa: 'مشاهده فاکتورها' })}
+              {paymentsEnabled === false && (
+                <span className="block text-xs text-gray-500 mt-1">{t({ en: 'Available when Stripe is configured', fa: 'پس از پیکربندی Stripe' })}</span>
+              )}
             </button>
             {subscriptionTier !== 'FREE' && (
               <button
-                onClick={() => { upgradeTier('FREE'); }}
-                className="w-full text-left rtl:text-right p-4 bg-red-500/10 border border-red-500/20 rounded-lg hover:bg-red-500/20 transition-colors text-sm text-red-400"
+                disabled={paymentsEnabled !== true}
+                className="w-full text-left rtl:text-right p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-sm text-red-400 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 ❌ {t({ en: 'Cancel subscription', fa: 'لغو اشتراک' })}
+                {paymentsEnabled === false && (
+                  <span className="block text-xs text-red-300/70 mt-1">{t({ en: 'Contact support to cancel until billing portal is live', fa: 'تا فعال شدن پورتال پرداخت با پشتیبانی تماس بگیرید' })}</span>
+                )}
               </button>
             )}
           </div>
