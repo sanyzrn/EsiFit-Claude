@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { useI18n } from '@/lib/i18n';
+import { useI18n, faDict } from '@/lib/i18n';
 import { calcBMI, calcBodyFat, calcFFMI, calcWHR, calcBodyType, BODY_TYPE_QUESTIONS } from '@/lib/calculators';
 import { SliderInput, SegmentedToggle, CircularGauge, CalculatorLayout, PersianNumber } from './SharedCalculatorUI';
 import { motion } from 'motion/react';
@@ -145,6 +145,29 @@ export function WhrCalculator() {
 export function BodyTypeQuiz() {
   const { t } = useI18n();
   const [answers, setAnswers] = useState<number[]>(Array(BODY_TYPE_QUESTIONS.length).fill(-1));
+
+  const bodyTypeLabels: Record<string, { en: string; fa: string }> = {
+    ectomorph: { en: 'Ectomorph', fa: 'اکتومورف (باریک)' },
+    mesomorph: { en: 'Mesomorph', fa: 'مزومورف (ورزشکار)' },
+    endomorph: { en: 'Endomorph', fa: 'اندومورف (پهن‌اندام)' },
+  };
+
+  const bodyTypeDescriptions: Record<string, { en: string; fa: string }> = {
+    ectomorph: {
+      en: 'You have an ectomorphic body type — naturally lean with a fast metabolism. You may find it harder to gain muscle mass. Focus on calorie-surplus diets, compound lifts, and progressive overload. Programs emphasizing hypertrophy (8-12 rep range) with adequate rest are ideal.',
+      fa: 'تیپ بدنی شما اکتومورف است — لاغراندام با متابولیسم تند. افزایش حجم عضلانی ممکن است سخت‌تر باشد. روی رژیم مازاد کالری، حرکات ترکیبی و افزایش تدریجی بار تمرکز کنید. برنامه‌های هیپرتروفی (۸ تا ۱۲ تکرار) با استراحت کافی مناسب‌اند.',
+    },
+    mesomorph: {
+      en: 'You have a mesomorphic body type — naturally muscular and athletic. You respond well to both strength and endurance training. You can gain muscle and lose fat relatively easily. A balanced program mixing strength training with moderate cardio works best.',
+      fa: 'تیپ بدنی شما مزومورف است — عضلانی و ورزشکار. به تمرین قدرتی و استقامتی خوب پاسخ می‌دهید. افزایش عضله و کاهش چربی نسبتاً آسان است. برنامه متعادل قدرتی همراه با هوازی ملایم بهترین نتیجه را می‌دهد.',
+    },
+    endomorph: {
+      en: 'You have an endomorphic body type — naturally broader with a tendency to store fat. Focus on a combination of resistance training and regular cardio. Diet control is especially important. High-protein diets with moderate carbs work well for your body type.',
+      fa: 'تیپ بدنی شما اندومورف است — پهن‌اندام با تمایل به ذخیره چربی. ترکیب تمرین مقاومتی و هوازی منظم را در اولویت بگذارید. کنترل رژیم غذایی اهمیت زیادی دارد. رژیم پرپروتئین با کربوهیدرات متعادل برای شما مناسب است.',
+    },
+  };
+
+  const translateQuizText = (text: string) => t({ en: text, fa: faDict[text] || text });
   
   const isComplete = answers.every(a => a !== -1);
   const result = useMemo(() => isComplete ? calcBodyType(answers) : null, [answers, isComplete]);
@@ -166,15 +189,15 @@ export function BodyTypeQuiz() {
             if (answers.findIndex(a => a === -1) !== qIdx && answers[qIdx] === -1) return null; // Show one by one or all? Let's show all for simplicity
             return (
               <div key={qIdx} className="bg-gray-800/50 p-4 rounded-xl">
-                <p className="font-medium mb-3">{q.question}</p>
+                <p className="font-medium mb-3">{translateQuizText(q.question)}</p>
                 <div className="space-y-2">
                   {q.options.map((opt, aIdx) => (
                     <button
                       key={aIdx}
                       onClick={() => handleAnswer(qIdx, aIdx)}
-                      className={`w-full text-left p-3 rounded-lg border transition-colors ${answers[qIdx] === aIdx ? 'bg-orange-500/20 border-orange-500 text-orange-400' : 'bg-gray-800 border-gray-700 hover:border-gray-500'}`}
+                      className={`w-full text-left rtl:text-right p-3 rounded-lg border transition-colors ${answers[qIdx] === aIdx ? 'bg-orange-500/20 border-orange-500 text-orange-400' : 'bg-gray-800 border-gray-700 hover:border-gray-500'}`}
                     >
-                      {opt.text}
+                      {translateQuizText(opt.text)}
                     </button>
                   ))}
                 </div>
@@ -184,8 +207,12 @@ export function BodyTypeQuiz() {
         </div>
       ) : (
         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center bg-gray-800 p-8 rounded-2xl border border-gray-700">
-          <div className="text-3xl font-black text-orange-400 uppercase mb-4">{result?.type}</div>
-          <p className="text-gray-300 leading-relaxed mb-6">{result?.description}</p>
+          <div className="text-3xl font-black text-orange-400 uppercase mb-4">
+            {result ? t(bodyTypeLabels[result.type]) : ''}
+          </div>
+          <p className="text-gray-300 leading-relaxed mb-6">
+            {result ? t(bodyTypeDescriptions[result.type]) : ''}
+          </p>
           <button onClick={() => setAnswers(Array(BODY_TYPE_QUESTIONS.length).fill(-1))} className="px-6 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm font-bold">
             {t({ en: 'Retake Quiz', fa: 'تکرار آزمون' })}
           </button>

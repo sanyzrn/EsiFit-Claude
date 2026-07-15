@@ -17,16 +17,22 @@ export const faDict: Record<string, string> = {
   'Video form reviews': 'بررسی فرم حرکات با ویدیو',
   '24/7 dedicated coach': 'تخصیص مربی اختصاصی ۲۴/۷',
   
-  // Body type quiz
+  // Body type quiz — questions
+  'What is your natural body build?': 'هیکل طبیعی شما چگونه است؟',
+  'How easily do you gain weight?': 'چقدر راحت وزن اضافه می‌کنید؟',
+  'What is your wrist circumference?': 'دور مچ دست شما چقدر است؟',
+  'How would you describe your shoulders?': 'شانه‌های شما را چگونه توصیف می‌کنید؟',
+  'What happens when you skip workouts for a week?': 'اگر یک هفته تمرین نکنید چه می‌شود؟',
+  'How is your metabolism?': 'متابولیسم شما چگونه است؟',
   'Thin, narrow shoulders and hips': 'لاغر، شانه‌ها و باسن باریک',
   'Medium build, broad shoulders': 'هیکل متوسط، شانه‌های پهن',
   'Wider build, stores fat easily': 'هیکل پهن، به راحتی چربی ذخیره می‌کند',
   'Very hard to gain weight': 'افزایش وزن بسیار سخت است',
   'Can gain/lose relatively easily': 'نسبتاً راحت وزن کم یا زیاد می‌کند',
   'Gain weight easily, hard to lose': 'به راحتی وزن می‌گیرد، کاهش وزن سخت است',
-  'Small (under 16 cm / 6.3")': 'کوچک (کمتر از ۱۶ سانتی‌متر)',
-  'Medium (16-18 cm / 6.3-7")': 'متوسط (۱۶ تا ۱۸ سانتی‌متر)',
-  'Large (over 18 cm / 7"+)': 'بزرگ (بیش از ۱۸ سانتی‌متر)',
+  'Small (under 16 cm)': 'کوچک (کمتر از ۱۶ سانتی‌متر)',
+  'Medium (16–18 cm)': 'متوسط (۱۶ تا ۱۸ سانتی‌متر)',
+  'Large (over 18 cm)': 'بزرگ (بیش از ۱۸ سانتی‌متر)',
   'Narrower than my hips': 'باریک‌تر از باسن من',
   'Same width or wider than hips': 'هم‌عرض یا پهن‌تر از باسن',
   'Wide but rounded': 'پهن اما گرد',
@@ -127,9 +133,9 @@ const I18nContext = createContext<I18nContextType | null>(null);
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Language>(() => {
     try {
-      return (localStorage.getItem('esifit_lang') as Language) || 'en';
+      return (localStorage.getItem('esifit_lang') as Language) || 'fa';
     } catch {
-      return 'en';
+      return 'fa';
     }
   });
 
@@ -156,7 +162,9 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
   const t = (str: Translatable | null | undefined, ...args: (string | number)[]) => {
     if (!str) return '';
-    let result = typeof str === 'string' ? str : (str[lang] || str.en || '');
+    let result = typeof str === 'string'
+      ? (lang === 'fa' && faDict[str] ? faDict[str] : str)
+      : (str[lang] || str.fa || str.en || '');
     args.forEach((arg, i) => {
       result = result.replace(new RegExp(`\\{${i}\\}`, 'g'), String(arg));
     });
