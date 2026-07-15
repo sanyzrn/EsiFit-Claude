@@ -1,7 +1,15 @@
 import { Router, raw } from 'express';
 import Stripe from 'stripe';
-import { config, paymentsConfigured, type SubscriptionTier, TIERS } from '../config.js';
-import { query } from '../db.js';
+import {
+  config,
+  paymentsConfigured,
+  resolvePaymentProvider,
+  stripeConfigured,
+  type PaymentProvider,
+  type SubscriptionTier,
+  TIERS,
+} from '../config.js';
+import { query, generateId } from '../db.js';
 import { requireAuth, type AuthenticatedRequest } from '../middleware/auth.js';
 
 function stripeClient(): Stripe | null {
@@ -19,10 +27,145 @@ function priceIdForTier(tier: SubscriptionTier): string | undefined {
   return map[tier];
 }
 
+function tomanForTier(tier: SubscriptionTier): number {
+  if (tier === 'FREE') return 0;
+  return config.planPricesTomans[tier];
+}
+
+async function setUserTier(userId: string, tier: SubscriptionTier, extra?: { authority?: string; provider?: string }) {
+  await query(
+    `UPDATE users SET subscription_tier = $2 WHERE id = $1`,
+    [userId, tier]
+  );
+  if (extra?.authority) {
+    console.info(`[payments] tier ${tier} for ${userId} via ${extra.provider} authority=${extra.authority}`);
+  }
+}
+
+// ─── Zarinpal ───────────────────────────────────────────────
+
+const zarinpalBase = () =>
+  config.zarinpal.sandbox
+    ? 'https://sandbox.zarinpal.com/pg/v4/payment'
+    : 'https://api.zarinpal.com/pg/v4/payment';
+
+const zarinpalStartPay = (authority: string) =>
+  config.zarinpal.sandbox
+    ? `https://sandbox.zarinpal.com/pg/StartPay/${authority}`
+    : `https://www.zarinpal.com/pg/StartPay/${authority}`;
+
+async function zarinpalRequest(params: {
+  amountTomans: number;
+  description: string;
+  callbackUrl: string;
+  email?: string;
+  mobile?: string;
+}): Promise<{ authority: string; url: string }> {
+  // Zarinpal API expects Rials (1 Toman = 10 Rials)
+  const amountRials = params.amountTomans * 10;
+  const res = await fetch(`${zarinpalBase()}/request.json`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      merchant_id: config.zarinpal.merchantId,
+      amount: amountRials,
+      description: params.description,
+      callback_url: params.callbackUrl,
+      metadata: {
+        email: params.email,
+        mobile: params.mobile,
+      },
+    }),
+  });
+  const data = await res.json() as {
+    data?: { authority?: string; code?: number };
+    errors?: unknown;
+  };
+  const authority = data.data?.authority;
+  if (!authority || data.data?.code !== 100) {
+    console.error('Zarinpal request failed:', data);
+    throw new Error('ZARINPAL_REQUEST_FAILED');
+  }
+  return { authority, url: zarinpalStartPay(authority) };
+}
+
+async function zarinpalVerify(authority: string, amountTomans: number): Promise<boolean> {
+  const res = await fetch(`${zarinpalBase()}/verify.json`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      merchant_id: config.zarinpal.merchantId,
+      amount: amountTomans * 10,
+      authority,
+    }),
+  });
+  const data = await res.json() as { data?: { code?: number } };
+  const code = data.data?.code;
+  return code === 100 || code === 101;
+}
+
+// ─── IDPay ──────────────────────────────────────────────────
+
+async function idpayRequest(params: {
+  orderId: string;
+  amountTomans: number;
+  callbackUrl: string;
+  name?: string;
+  phone?: string;
+}): Promise<{ id: string; url: string }> {
+  // IDPay expects Rials
+  const res = await fetch('https://api.idpay.ir/v1.1/payment', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-API-KEY': config.idpay.apiKey!,
+      'X-SANDBOX': config.idpay.sandbox ? '1' : '0',
+    },
+    body: JSON.stringify({
+      order_id: params.orderId,
+      amount: params.amountTomans * 10,
+      callback: params.callbackUrl,
+      name: params.name,
+      phone: params.phone,
+    }),
+  });
+  const data = await res.json() as { id?: string; link?: string; error_code?: number };
+  if (!data.id || !data.link) {
+    console.error('IDPay request failed:', data);
+    throw new Error('IDPAY_REQUEST_FAILED');
+  }
+  return { id: data.id, url: data.link };
+}
+
+async function idpayVerify(id: string, orderId: string): Promise<boolean> {
+  const res = await fetch('https://api.idpay.ir/v1.1/payment/verify', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-API-KEY': config.idpay.apiKey!,
+      'X-SANDBOX': config.idpay.sandbox ? '1' : '0',
+    },
+    body: JSON.stringify({ id, order_id: orderId }),
+  });
+  const data = await res.json() as { status?: number; error_code?: number };
+  // status 100 = paid & verified
+  return data.status === 100;
+}
+
+// Pending payment memory (demo; production should use DB table)
+const pendingPayments = new Map<string, {
+  userId: string;
+  tier: SubscriptionTier;
+  amountTomans: number;
+  provider: PaymentProvider;
+  orderId?: string;
+}>();
+
 export const paymentsRouter = Router();
 
 paymentsRouter.get('/status', (_req, res) => {
-  res.json({ enabled: paymentsConfigured() });
+  const provider = resolvePaymentProvider();
+  res.json({ enabled: provider !== 'none', provider });
 });
 
 paymentsRouter.post('/checkout', requireAuth, async (req: AuthenticatedRequest, res) => {
@@ -38,32 +181,128 @@ paymentsRouter.post('/checkout', requireAuth, async (req: AuthenticatedRequest, 
       return;
     }
 
-    const priceId = priceIdForTier(tier as SubscriptionTier);
-    const stripe = stripeClient();
-    if (!priceId || !stripe) {
-      res.status(412).json({ error: 'PAYMENTS_NOT_CONFIGURED' });
+    const provider = resolvePaymentProvider();
+    const userId = req.auth!.sub;
+    const amountTomans = tomanForTier(tier as SubscriptionTier);
+
+    if (provider === 'zarinpal') {
+      try {
+        const apiCallback = process.env.API_PUBLIC_URL
+          ? `${process.env.API_PUBLIC_URL}/api/payments/zarinpal/callback`
+          : `http://localhost:${config.port}/api/payments/zarinpal/callback`;
+
+        const { authority, url } = await zarinpalRequest({
+          amountTomans,
+          description: `EsiFit ${tier} subscription`,
+          callbackUrl: apiCallback,
+          email: req.auth!.email,
+        });
+        pendingPayments.set(authority, { userId, tier: tier as SubscriptionTier, amountTomans, provider: 'zarinpal' });
+        res.json({ url, provider: 'zarinpal' });
+        return;
+      } catch (err) {
+        console.error('Zarinpal checkout failed, trying IDPay:', err);
+        if (!config.idpay.apiKey) throw err;
+      }
+    }
+
+    if (provider === 'idpay' || (provider === 'zarinpal' && config.idpay.apiKey)) {
+      const orderId = generateId('ord');
+      const apiCallback = process.env.API_PUBLIC_URL
+        ? `${process.env.API_PUBLIC_URL}/api/payments/idpay/callback`
+        : `http://localhost:${config.port}/api/payments/idpay/callback`;
+      const { id, url } = await idpayRequest({
+        orderId,
+        amountTomans,
+        callbackUrl: apiCallback,
+        name: req.auth!.email,
+      });
+      pendingPayments.set(id, {
+        userId,
+        tier: tier as SubscriptionTier,
+        amountTomans,
+        provider: 'idpay',
+        orderId,
+      });
+      res.json({ url, provider: 'idpay' });
       return;
     }
 
-    const session = await stripe.checkout.sessions.create({
-      mode: 'subscription',
-      customer_email: req.auth!.email,
-      client_reference_id: req.auth!.sub,
-      metadata: { userId: req.auth!.sub, subscriptionTier: tier },
-      line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${config.appUrl}/dashboard/billing?checkout=success`,
-      cancel_url: `${config.appUrl}/pricing?checkout=cancelled`,
-    });
-
-    if (!session.url) {
-      res.status(500).json({ error: 'CHECKOUT_FAILED' });
+    if (provider === 'stripe' || stripeConfigured()) {
+      const priceId = priceIdForTier(tier as SubscriptionTier);
+      const stripe = stripeClient();
+      if (!priceId || !stripe) {
+        res.status(412).json({ error: 'PAYMENTS_NOT_CONFIGURED' });
+        return;
+      }
+      const session = await stripe.checkout.sessions.create({
+        mode: 'subscription',
+        customer_email: req.auth!.email,
+        client_reference_id: userId,
+        metadata: { userId, subscriptionTier: tier },
+        line_items: [{ price: priceId, quantity: 1 }],
+        success_url: `${config.appUrl}/dashboard/billing?checkout=success`,
+        cancel_url: `${config.appUrl}/pricing?checkout=cancelled`,
+      });
+      if (!session.url) {
+        res.status(500).json({ error: 'CHECKOUT_FAILED' });
+        return;
+      }
+      res.json({ url: session.url, provider: 'stripe' });
       return;
     }
 
-    res.json({ url: session.url });
+    res.status(412).json({ error: 'PAYMENTS_NOT_CONFIGURED' });
   } catch (err) {
     console.error('checkout error:', err);
     res.status(500).json({ error: 'INTERNAL' });
+  }
+});
+
+paymentsRouter.get('/zarinpal/callback', async (req, res) => {
+  try {
+    const authority = String(req.query.Authority ?? '');
+    const status = String(req.query.Status ?? '');
+    const pending = pendingPayments.get(authority);
+
+    if (status === 'OK' && pending) {
+      const ok = await zarinpalVerify(authority, pending.amountTomans);
+      if (ok) {
+        await setUserTier(pending.userId, pending.tier, { authority, provider: 'zarinpal' });
+        pendingPayments.delete(authority);
+        res.redirect(`${config.appUrl}/dashboard/billing?checkout=success`);
+        return;
+      }
+    }
+    pendingPayments.delete(authority);
+    res.redirect(`${config.appUrl}/pricing?checkout=failed`);
+  } catch (err) {
+    console.error('zarinpal callback error:', err);
+    res.redirect(`${config.appUrl}/pricing?checkout=failed`);
+  }
+});
+
+paymentsRouter.post('/idpay/callback', async (req, res) => {
+  try {
+    const id = String(req.body?.id ?? req.query.id ?? '');
+    const orderId = String(req.body?.order_id ?? req.query.order_id ?? '');
+    const status = Number(req.body?.status ?? req.query.status ?? 0);
+    const pending = pendingPayments.get(id);
+
+    if (status === 10 && pending && pending.orderId === orderId) {
+      const ok = await idpayVerify(id, orderId);
+      if (ok) {
+        await setUserTier(pending.userId, pending.tier, { authority: id, provider: 'idpay' });
+        pendingPayments.delete(id);
+        res.redirect(`${config.appUrl}/dashboard/billing?checkout=success`);
+        return;
+      }
+    }
+    pendingPayments.delete(id);
+    res.redirect(`${config.appUrl}/pricing?checkout=failed`);
+  } catch (err) {
+    console.error('idpay callback error:', err);
+    res.redirect(`${config.appUrl}/pricing?checkout=failed`);
   }
 });
 

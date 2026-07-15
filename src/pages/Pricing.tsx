@@ -9,9 +9,11 @@ import { fetchPaymentsEnabled, startCheckout, PaymentsNotConfiguredError } from 
 import PaymentsNotice from '@/components/PaymentsNotice';
 import { IconBadge } from '@/components/ui/IconBadge';
 import { PersianPattern } from '@/components/ui/PersianPattern';
+import { useLocaleFormat } from '@/lib/locale-format-context';
 
 export default function Pricing() {
   const { t } = useI18n();
+  const { formatToman, formatTomanCompact } = useLocaleFormat();
   const [state, setState] = useState(getState());
   const navigate = useNavigate();
   const { subscriptionTier } = useEntitlements();
@@ -144,11 +146,15 @@ export default function Pricing() {
                   <IconBadge icon={tierIconComponents[plan.tier]} variant={tierVariants[plan.tier]} />
                 </div>
                 <h3 className="text-xl font-bold mb-1 font-display">{plan.name}</h3>
-                <div className="flex items-baseline justify-center gap-1 flex-row-reverse">
-                  <span className="text-4xl font-black text-fg">
-                    ${(plan.priceMonthly / 100).toFixed(plan.priceMonthly === 0 ? 0 : 2)}
+                <div className="flex items-baseline justify-center gap-1 flex-wrap">
+                  <span className="text-2xl md:text-3xl font-black text-fg font-display">
+                    {plan.priceMonthly === 0
+                      ? formatTomanCompact(0)
+                      : formatToman(plan.priceMonthly)}
                   </span>
-                  {plan.priceMonthly > 0 && <span className="text-fg-subtle text-sm">/{t({ en: 'mo', fa: 'ماه' })}</span>}
+                  {plan.priceMonthly > 0 && (
+                    <span className="text-fg-subtle text-sm">/{t({ en: 'mo', fa: 'ماه' })}</span>
+                  )}
                 </div>
               </div>
 

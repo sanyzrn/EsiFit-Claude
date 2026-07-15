@@ -3,9 +3,11 @@ import { ArrowLeft, Calendar, Tag } from 'lucide-react';
 import { ARTICLES } from '@/lib/store';
 import { useI18n } from '@/lib/i18n';
 import { localizedArticle } from '@/lib/content-i18n';
+import { useLocaleFormat } from '@/lib/locale-format-context';
 
 export function BlogList() {
   const { t, lang } = useI18n();
+  const { formatDate } = useLocaleFormat();
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-8">
@@ -31,7 +33,7 @@ export function BlogList() {
             </div>
             <div className="p-5">
               <div className="flex items-center gap-3 mb-3 text-xs text-fg-subtle">
-                <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{new Date(article.publishedAt).toLocaleDateString(lang === 'fa' ? 'fa-IR' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{formatDate(article.publishedAt, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                 <span className="flex items-center gap-1"><Tag className="w-3 h-3" />{copy.category}</span>
               </div>
               <h3 className="text-lg font-bold mb-2 group-hover:text-brand transition-colors font-display">{copy.title}</h3>
@@ -47,6 +49,7 @@ export function BlogList() {
 
 export function BlogDetail() {
   const { t, lang } = useI18n();
+  const { formatDate } = useLocaleFormat();
   const { slug } = useParams();
   const navigate = useNavigate();
   const article = ARTICLES.find(a => a.slug === slug);
@@ -94,7 +97,7 @@ export function BlogDetail() {
 
       <article className="bg-surface border border-border rounded-2xl p-6 md:p-10">
         <div className="flex items-center gap-3 mb-4 text-sm text-fg-subtle">
-          <span className="flex items-center gap-1"><Calendar className="w-4 h-4" />{new Date(article.publishedAt).toLocaleDateString(lang === 'fa' ? 'fa-IR' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+          <span className="flex items-center gap-1"><Calendar className="w-4 h-4" />{formatDate(article.publishedAt, { month: 'long', day: 'numeric', year: 'numeric' })}</span>
           <span className="px-2 py-0.5 rounded-full bg-orange-500/10 text-orange-400 text-xs font-medium">{copy.category}</span>
         </div>
         <h1 className="text-3xl md:text-4xl font-black mb-6">{copy.title}</h1>

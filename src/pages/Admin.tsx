@@ -6,12 +6,14 @@ import { useI18n } from '@/lib/i18n';
 import { useEntitlements } from '@/lib/entitlements';
 import { AdminCharts } from '@/components/charts/IranianCharts';
 import { IconBadge } from '@/components/ui/IconBadge';
+import { useLocaleFormat } from '@/lib/locale-format-context';
 
 export default function Admin() {
   const [state, setState] = useState(getState());
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
   const { t } = useI18n();
+  const { formatToman, formatNumber } = useLocaleFormat();
   const { role, loading } = useEntitlements();
   useEffect(() => { const u = subscribe(() => setState(getState())); return () => { u(); }; }, []);
   useEffect(() => {
@@ -42,13 +44,15 @@ export default function Admin() {
   const vipCount = demoUsers.filter(u => u.tier === 'VIP').length;
   const economyCount = demoUsers.filter(u => u.tier === 'ECONOMY').length;
   const eliteCount = demoUsers.filter(u => u.tier === 'ELITE' && u.role === 'USER').length;
-  const mrr = vipCount * 2999 + economyCount * 999 + eliteCount * 7999;
+  const mrr = vipCount * PLANS.find(p => p.tier === 'VIP')!.priceMonthly
+    + economyCount * PLANS.find(p => p.tier === 'ECONOMY')!.priceMonthly
+    + eliteCount * PLANS.find(p => p.tier === 'ELITE')!.priceMonthly;
 
   const revenueByPlan = PLANS.filter(p => p.priceMonthly > 0).map((plan) => {
     const count = demoUsers.filter(u => u.tier === plan.tier && u.role === 'USER').length;
     return {
       name: plan.name,
-      revenue: (plan.priceMonthly * count) / 100,
+      revenue: plan.priceMonthly * count,
       users: count,
     };
   });
@@ -90,19 +94,19 @@ export default function Admin() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="card-iranian p-5">
               <div className="flex items-center gap-2 mb-2"><DollarSign className="w-5 h-5 text-success" /><span className="text-sm text-fg-subtle">{t({ en: 'MRR', fa: 'درآمد ماهانه' })}</span></div>
-              <div className="text-3xl font-black text-success font-display">${(mrr / 100).toFixed(0)}</div>
+              <div className="text-2xl font-black text-success font-display">{formatToman(mrr)}</div>
             </div>
             <div className="card-iranian p-5">
               <div className="flex items-center gap-2 mb-2"><Users className="w-5 h-5 text-accent" /><span className="text-sm text-fg-subtle">{t({ en: 'Total Users', fa: 'کل کاربران' })}</span></div>
-              <div className="text-3xl font-black font-display">{demoUsers.length}</div>
+              <div className="text-3xl font-black font-display">{formatNumber(demoUsers.length)}</div>
             </div>
             <div className="card-iranian p-5">
               <div className="flex items-center gap-2 mb-2"><TrendingUp className="w-5 h-5 text-brand" /><span className="text-sm text-fg-subtle">{t({ en: 'New This Week', fa: 'جدید در این هفته' })}</span></div>
-              <div className="text-3xl font-black font-display">3</div>
+              <div className="text-3xl font-black font-display">{formatNumber(3)}</div>
             </div>
             <div className="card-iranian p-5">
               <div className="flex items-center gap-2 mb-2"><Users className="w-5 h-5 text-terracotta" /><span className="text-sm text-fg-subtle">{t({ en: 'Paid Subscribers', fa: 'مشترکین پولی' })}</span></div>
-              <div className="text-3xl font-black font-display">{vipCount + economyCount + eliteCount}</div>
+              <div className="text-3xl font-black font-display">{formatNumber(vipCount + economyCount + eliteCount)}</div>
             </div>
           </div>
 
@@ -116,7 +120,7 @@ export default function Admin() {
                 return (
                   <div key={plan.id} className="flex justify-between items-center py-2 border-b border-border last:border-0">
                     <span className="text-sm">{plan.name} ({count} {t({ en: 'users', fa: 'کاربران' })})</span>
-                    <span className="text-sm font-bold text-green-400">${((plan.priceMonthly * count) / 100).toFixed(2)}/mo</span>
+                    <span className="text-sm font-bold text-success">{formatToman(plan.priceMonthly * count)}/{t({ en: 'mo', fa: 'ماه' })}</span>
                   </div>
                 );
               })}

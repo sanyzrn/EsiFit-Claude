@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { ResponsiveContainer, BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Area, AreaChart } from 'recharts';
 import { useChartTheme } from '@/lib/theme';
 import { useI18n } from '@/lib/i18n';
+import { useLocaleFormat } from '@/lib/locale-format-context';
 import { PersianPattern } from '@/components/ui/PersianPattern';
 
 type AdminChartsProps = {
@@ -13,6 +14,7 @@ type AdminChartsProps = {
 export function AdminCharts({ revenueByPlan, userGrowth, mrr }: AdminChartsProps) {
   const chart = useChartTheme();
   const { t } = useI18n();
+  const { formatToman, formatNumber } = useLocaleFormat();
 
   return (
     <div className="grid lg:grid-cols-2 gap-6">
@@ -21,17 +23,22 @@ export function AdminCharts({ revenueByPlan, userGrowth, mrr }: AdminChartsProps
         <div className="relative z-10">
           <h3 className="font-bold mb-1 font-display">{t({ en: 'Revenue by Plan', fa: 'درآمد بر اساس طرح' })}</h3>
           <p className="text-xs text-fg-subtle mb-4">
-            {t({ en: `Total MRR: $${(mrr / 100).toFixed(0)}`, fa: `کل درآمد ماهانه: $${(mrr / 100).toFixed(0)}` })}
+            {t({ en: 'Total MRR: ', fa: 'کل درآمد ماهانه: ' })}{formatToman(mrr)}
           </p>
-          <div dir="ltr" className="h-56">
+          <div className="h-56" style={{ direction: 'ltr' }}>
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={revenueByPlan} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+              <BarChart data={revenueByPlan} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke={chart.grid} />
                 <XAxis dataKey="name" stroke={chart.axis} fontSize={11} />
-                <YAxis stroke={chart.axis} fontSize={11} tickFormatter={(v) => `$${v}`} />
+                <YAxis
+                  stroke={chart.axis}
+                  fontSize={11}
+                  width={72}
+                  tickFormatter={(v) => formatNumber(Number(v) / 1000) + 'k'}
+                />
                 <Tooltip
                   contentStyle={chart.tooltipStyle}
-                  formatter={(value) => [`$${Number(value ?? 0).toFixed(2)}`, t({ en: 'Revenue', fa: 'درآمد' })]}
+                  formatter={(value) => [formatToman(Number(value ?? 0)), t({ en: 'Revenue', fa: 'درآمد' })]}
                 />
                 <Bar dataKey="revenue" fill={chart.primary} radius={[6, 6, 0, 0]} name={t({ en: 'Revenue/mo', fa: 'درآمد/ماه' })} />
               </BarChart>
@@ -44,7 +51,7 @@ export function AdminCharts({ revenueByPlan, userGrowth, mrr }: AdminChartsProps
         <PersianPattern opacity={0.3} />
         <div className="relative z-10">
           <h3 className="font-bold mb-4 font-display">{t({ en: 'User Growth', fa: 'رشد کاربران' })}</h3>
-          <div dir="ltr" className="h-56">
+          <div className="h-56" style={{ direction: 'ltr' }}>
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={userGrowth} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
                 <defs>
@@ -55,8 +62,11 @@ export function AdminCharts({ revenueByPlan, userGrowth, mrr }: AdminChartsProps
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke={chart.grid} />
                 <XAxis dataKey="month" stroke={chart.axis} fontSize={11} />
-                <YAxis stroke={chart.axis} fontSize={11} allowDecimals={false} />
-                <Tooltip contentStyle={chart.tooltipStyle} />
+                <YAxis stroke={chart.axis} fontSize={11} allowDecimals={false} tickFormatter={(v) => formatNumber(Number(v))} />
+                <Tooltip
+                  contentStyle={chart.tooltipStyle}
+                  formatter={(value) => [formatNumber(Number(value ?? 0)), '']}
+                />
                 <Legend />
                 <Area type="monotone" dataKey="users" stroke={chart.secondary} fill="url(#usersGrad)" name={t({ en: 'Total users', fa: 'کل کاربران' })} />
                 <Line type="monotone" dataKey="paid" stroke={chart.accent} strokeWidth={2} dot={{ fill: chart.accent }} name={t({ en: 'Paid', fa: 'پولی' })} />
@@ -82,6 +92,7 @@ export function ProgressCharts({
 }) {
   const chart = useChartTheme();
   const { t } = useI18n();
+  const { formatNumber } = useLocaleFormat();
 
   const charts = [
     weightData.length > 0 && {
@@ -91,8 +102,11 @@ export function ProgressCharts({
         <LineChart data={weightData}>
           <CartesianGrid strokeDasharray="3 3" stroke={chart.grid} />
           <XAxis dataKey="date" stroke={chart.axis} fontSize={11} />
-          <YAxis stroke={chart.axis} fontSize={11} />
-          <Tooltip contentStyle={chart.tooltipStyle} />
+          <YAxis stroke={chart.axis} fontSize={11} tickFormatter={(v) => formatNumber(Number(v))} />
+          <Tooltip
+            contentStyle={chart.tooltipStyle}
+            formatter={(value) => [formatNumber(Number(value ?? 0)), t({ en: 'kg', fa: 'کیلوگرم' })]}
+          />
           <Line type="monotone" dataKey="weight" stroke={chart.primary} strokeWidth={2.5} dot={{ fill: chart.primary, r: 4 }} name={t({ en: 'kg', fa: 'کیلوگرم' })} />
         </LineChart>
       ),
@@ -104,8 +118,11 @@ export function ProgressCharts({
         <LineChart data={measurementData}>
           <CartesianGrid strokeDasharray="3 3" stroke={chart.grid} />
           <XAxis dataKey="date" stroke={chart.axis} fontSize={11} />
-          <YAxis stroke={chart.axis} fontSize={11} />
-          <Tooltip contentStyle={chart.tooltipStyle} />
+          <YAxis stroke={chart.axis} fontSize={11} tickFormatter={(v) => formatNumber(Number(v))} />
+          <Tooltip
+            contentStyle={chart.tooltipStyle}
+            formatter={(value) => [formatNumber(Number(value ?? 0)), 'cm']}
+          />
           <Legend />
           <Line type="monotone" dataKey="waist" stroke={chart.accent} strokeWidth={2} dot={false} name={t({ en: 'Waist', fa: 'کمر' })} connectNulls />
           <Line type="monotone" dataKey="chest" stroke={chart.secondary} strokeWidth={2} dot={false} name={t({ en: 'Chest', fa: 'سینه' })} connectNulls />
@@ -120,8 +137,11 @@ export function ProgressCharts({
         <LineChart data={strengthData}>
           <CartesianGrid strokeDasharray="3 3" stroke={chart.grid} />
           <XAxis dataKey="date" stroke={chart.axis} fontSize={11} />
-          <YAxis stroke={chart.axis} fontSize={11} />
-          <Tooltip contentStyle={chart.tooltipStyle} />
+          <YAxis stroke={chart.axis} fontSize={11} tickFormatter={(v) => formatNumber(Number(v))} />
+          <Tooltip
+            contentStyle={chart.tooltipStyle}
+            formatter={(value) => [formatNumber(Number(value ?? 0)), 'kg']}
+          />
           <Line type="monotone" dataKey="estimated1RM" stroke={chart.secondary} strokeWidth={2.5} dot={{ fill: chart.secondary, r: 4 }} />
         </LineChart>
       ),
@@ -133,8 +153,11 @@ export function ProgressCharts({
         <BarChart data={volumeData}>
           <CartesianGrid strokeDasharray="3 3" stroke={chart.grid} />
           <XAxis dataKey="date" stroke={chart.axis} fontSize={11} />
-          <YAxis stroke={chart.axis} fontSize={11} />
-          <Tooltip contentStyle={chart.tooltipStyle} />
+          <YAxis stroke={chart.axis} fontSize={11} tickFormatter={(v) => formatNumber(Number(v))} />
+          <Tooltip
+            contentStyle={chart.tooltipStyle}
+            formatter={(value) => [formatNumber(Number(value ?? 0)), t({ en: 'kg×reps', fa: 'کیلو×تکرار' })]}
+          />
           <Bar dataKey="volume" fill={chart.accent} radius={[6, 6, 0, 0]} name={t({ en: 'kg×reps', fa: 'کیلو×تکرار' })} />
         </BarChart>
       ),
@@ -149,7 +172,7 @@ export function ProgressCharts({
         <div key={c.key} className="card-iranian p-5 relative overflow-hidden">
           <PersianPattern opacity={0.25} />
           <h3 className="relative z-10 font-bold mb-4 font-display">{c.title}</h3>
-          <div className="relative z-10 h-52" dir="ltr">
+          <div className="relative z-10 h-52" style={{ direction: 'ltr' }}>
             <ResponsiveContainer width="100%" height="100%">{c.node}</ResponsiveContainer>
           </div>
         </div>

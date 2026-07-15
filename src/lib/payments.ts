@@ -1,5 +1,11 @@
+/**
+ * Iranian payment providers + optional Stripe.
+ * Plans store priceMonthly as integer Tomans.
+ */
 import { apiFetch } from './api-client';
 import type { SubscriptionTier } from './types';
+
+export type PaymentProvider = 'zarinpal' | 'idpay' | 'stripe' | 'none';
 
 export class PaymentsNotConfiguredError extends Error {
   constructor() {
@@ -8,28 +14,36 @@ export class PaymentsNotConfiguredError extends Error {
   }
 }
 
-let cachedStatus: boolean | null = null;
+let cachedStatus: { enabled: boolean; provider: PaymentProvider } | null = null;
 
-/** Whether Stripe checkout is configured server-side. */
-export async function fetchPaymentsEnabled(): Promise<boolean> {
-  if (cachedStatus !== null) return cachedStatus;
+export async function fetchPaymentsStatus(): Promise<{ enabled: boolean; provider: PaymentProvider }> {
+  if (cachedStatus) return cachedStatus;
   try {
-    const result = await apiFetch<{ enabled: boolean }>('/payments/status');
-    cachedStatus = Boolean(result.enabled);
+    const result = await apiFetch<{ enabled: boolean; provider?: PaymentProvider }>('/payments/status');
+    cachedStatus = {
+      enabled: Boolean(result.enabled),
+      provider: result.provider ?? 'none',
+    };
     return cachedStatus;
   } catch {
-    cachedStatus = false;
-    return false;
+    cachedStatus = { enabled: false, provider: 'none' };
+    return cachedStatus;
   }
 }
 
-/** Redirect to Stripe Checkout for a paid tier. */
+/** @deprecated Prefer fetchPaymentsStatus */
+export async function fetchPaymentsEnabled(): Promise<boolean> {
+  const s = await fetchPaymentsStatus();
+  return s.enabled;
+}
+
+/** Start checkout — redirects to Zarinpal / IDPay / Stripe as configured server-side. */
 export async function startCheckout(tier: SubscriptionTier): Promise<void> {
   if (tier === 'FREE') {
     throw new Error('Cannot checkout FREE tier');
   }
   try {
-    const result = await apiFetch<{ url: string }>('/payments/checkout', {
+    const result = await apiFetch<{ url: string; provider?: PaymentProvider }>('/payments/checkout', {
       method: 'POST',
       body: JSON.stringify({ tier }),
     });
@@ -44,4 +58,8 @@ export async function startCheckout(tier: SubscriptionTier): Promise<void> {
     }
     throw err;
   }
+}
+
+export function clearPaymentsCache(): void {
+  cachedStatus = null;
 }
