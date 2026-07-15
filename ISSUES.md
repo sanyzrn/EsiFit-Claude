@@ -102,8 +102,8 @@ Status legend: `open` · `fixed` · `deferred` · `investigated-not-reproducible
 | TOOL-5 | Medium | 6 | fixed | Main JS bundle 1,597 KB (495 KB gzip), single chunk |
 | TOOL-6 | Low | 6 | fixed | Debug scripts `check.mjs` / `check.cjs` at repo root |
 | TOOL-7 | Low | 6 | fixed | `Math.random()` in `generateId` UUID fallback (`store.ts:91`) |
-| CONTENT-1 | Medium | 9 | open | Seed content (exercises/programs/diet/articles) not translated to Farsi |
-| CONTENT-2 | Medium | 9 | open | Thin catalog: 10 exercises, 3 programs, 2 diets, 3 articles |
+| CONTENT-1 | Medium | 9 | fixed | Seed content (exercises/programs/diet/articles) not translated to Farsi |
+| CONTENT-2 | Medium | 9 | fixed | Thin catalog: 10 exercises, 3 programs, 2 diets, 3 articles |
 | CONTENT-3 | Low | 9 | intentional-demo | Admin/Coach dashboards use hardcoded demo data |
 | CONTENT-4 | Low | 9 | intentional-demo | Coach chat auto-reply via `setTimeout` (demo) |
 | UI-1 | — | 8 | fixed | Design token decision: orange/gray vs pine/bone/ember/brass |

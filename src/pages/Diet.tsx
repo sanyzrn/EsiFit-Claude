@@ -4,10 +4,11 @@ import { DIET_PLANS } from '@/lib/store';
 import { hasTierAccess } from '@/lib/types';
 import TierGate from '@/components/TierGate';
 import { useI18n } from '@/lib/i18n';
+import { localizedDietPlan } from '@/lib/content-i18n';
 import { useEntitlements } from '@/lib/entitlements';
 
 export function DietList() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { subscriptionTier } = useEntitlements();
   const userTier = subscriptionTier;
 
@@ -21,6 +22,7 @@ export function DietList() {
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {DIET_PLANS.map(plan => {
           const locked = !hasTierAccess(userTier, plan.requiredTier);
+          const copy = localizedDietPlan(plan, lang);
           return (
             <Link
               key={plan.id}
@@ -39,8 +41,8 @@ export function DietList() {
                 )}
               </div>
               <div className="p-5">
-                <h3 className="text-lg font-bold mb-2 group-hover:text-orange-400 transition-colors">{plan.title}</h3>
-                <p className="text-gray-400 text-sm mb-4 line-clamp-2">{plan.description}</p>
+                <h3 className="text-lg font-bold mb-2 group-hover:text-orange-400 transition-colors">{copy.title}</h3>
+                <p className="text-gray-400 text-sm mb-4 line-clamp-2">{copy.description}</p>
                 <div className="flex items-center gap-4 text-sm text-gray-400">
                   <span className="text-orange-400 font-bold">{plan.totalCalories} {t({ en: 'kcal', fa: 'کالری' })}</span>
                   <span>{plan.meals.length} {t({ en: 'meals', fa: 'وعده' })}</span>
@@ -55,7 +57,7 @@ export function DietList() {
 }
 
 export function DietDetail() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { slug } = useParams();
   const navigate = useNavigate();
   const { subscriptionTier } = useEntitlements();
@@ -72,6 +74,7 @@ export function DietDetail() {
   }
 
   const hasAccess = hasTierAccess(userTier, plan.requiredTier);
+  const copy = localizedDietPlan(plan, lang);
 
   const totalMacros = plan.meals.reduce((acc, meal) => {
     meal.items.forEach(item => {
@@ -85,7 +88,7 @@ export function DietDetail() {
 
   const mealContent = (
     <div className="space-y-6">
-      {plan.meals.map(meal => {
+      {copy.meals.map(meal => {
         const mealTotals = meal.items.reduce((a, i) => ({
           calories: a.calories + i.calories,
           protein: a.protein + i.protein,
@@ -135,29 +138,29 @@ export function DietDetail() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <button onClick={() => navigate('/diet')} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-6">
-        <ArrowLeft className="w-4 h-4" /> Back to Diet Plans
+        <ArrowLeft className="w-4 h-4 rtl:rotate-180" /> {t({ en: 'Back to Diet Plans', fa: 'بازگشت به برنامه‌های غذایی' })}
       </button>
 
       <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 md:p-8 mb-6">
-        <h1 className="text-3xl font-black mb-4">{plan.title}</h1>
-        <p className="text-gray-400 leading-relaxed mb-6">{plan.description}</p>
+        <h1 className="text-3xl font-black mb-4">{copy.title}</h1>
+        <p className="text-gray-400 leading-relaxed mb-6">{copy.description}</p>
 
         <div className="grid grid-cols-4 gap-3">
           <div className="bg-gray-800 rounded-xl p-4 text-center">
             <div className="text-2xl font-black text-orange-400">{Math.round(totalMacros.calories)}</div>
-            <div className="text-xs text-gray-400">Total Calories</div>
+            <div className="text-xs text-gray-400">{t({ en: 'Total Calories', fa: 'کل کالری' })}</div>
           </div>
           <div className="bg-gray-800 rounded-xl p-4 text-center">
             <div className="text-2xl font-black text-blue-400">{Math.round(totalMacros.protein)}g</div>
-            <div className="text-xs text-gray-400">Protein</div>
+            <div className="text-xs text-gray-400">{t({ en: 'Protein', fa: 'پروتئین' })}</div>
           </div>
           <div className="bg-gray-800 rounded-xl p-4 text-center">
             <div className="text-2xl font-black text-green-400">{Math.round(totalMacros.carbs)}g</div>
-            <div className="text-xs text-gray-400">Carbs</div>
+            <div className="text-xs text-gray-400">{t({ en: 'Carbs', fa: 'کربوهیدرات' })}</div>
           </div>
           <div className="bg-gray-800 rounded-xl p-4 text-center">
             <div className="text-2xl font-black text-yellow-400">{Math.round(totalMacros.fat)}g</div>
-            <div className="text-xs text-gray-400">Fat</div>
+            <div className="text-xs text-gray-400">{t({ en: 'Fat', fa: 'چربی' })}</div>
           </div>
         </div>
       </div>

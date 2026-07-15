@@ -2,18 +2,21 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Calendar, Tag } from 'lucide-react';
 import { ARTICLES } from '@/lib/store';
 import { useI18n } from '@/lib/i18n';
+import { localizedArticle } from '@/lib/content-i18n';
 
 export function BlogList() {
   const { t, lang } = useI18n();
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-8">
-        <h1 className="text-4xl font-black mb-4">Blog</h1>
+        <h1 className="text-4xl font-black mb-4">{t({ en: 'Blog', fa: 'وبلاگ' })}</h1>
         <p className="text-gray-400 text-lg">{t({ en: 'Evidence-based articles on training, nutrition, and recovery.', fa: 'مقاله‌های مبتنی بر شواهد در زمینه تمرین، تغذیه و بازیابی.' })}</p>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {ARTICLES.map(article => (
+        {ARTICLES.map(article => {
+          const copy = localizedArticle(article, lang);
+          return (
           <Link
             key={article.id}
             to={`/blog/${article.slug}`}
@@ -21,7 +24,7 @@ export function BlogList() {
           >
             <div className="h-48 bg-gradient-to-br from-orange-500/5 to-purple-500/5 overflow-hidden">
               {article.coverImage ? (
-                <img src={article.coverImage} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                <img src={article.coverImage} alt={copy.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center"><div className="text-4xl">📝</div></div>
               )}
@@ -29,13 +32,14 @@ export function BlogList() {
             <div className="p-5">
               <div className="flex items-center gap-3 mb-3 text-xs text-gray-400">
                 <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{new Date(article.publishedAt).toLocaleDateString(lang === 'fa' ? 'fa-IR' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                <span className="flex items-center gap-1"><Tag className="w-3 h-3" />{article.category}</span>
+                <span className="flex items-center gap-1"><Tag className="w-3 h-3" />{copy.category}</span>
               </div>
-              <h3 className="text-lg font-bold mb-2 group-hover:text-orange-400 transition-colors">{article.title}</h3>
-              <p className="text-gray-400 text-sm line-clamp-3">{article.excerpt}</p>
+              <h3 className="text-lg font-bold mb-2 group-hover:text-orange-400 transition-colors">{copy.title}</h3>
+              <p className="text-gray-400 text-sm line-clamp-3">{copy.excerpt}</p>
             </div>
           </Link>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
@@ -55,6 +59,8 @@ export function BlogDetail() {
       </div>
     );
   }
+
+  const copy = localizedArticle(article, lang);
 
   // Simple markdown-like rendering
   const renderContent = (content: string) => {
@@ -89,11 +95,11 @@ export function BlogDetail() {
       <article className="bg-gray-900 border border-gray-800 rounded-2xl p-6 md:p-10">
         <div className="flex items-center gap-3 mb-4 text-sm text-gray-400">
           <span className="flex items-center gap-1"><Calendar className="w-4 h-4" />{new Date(article.publishedAt).toLocaleDateString(lang === 'fa' ? 'fa-IR' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
-          <span className="px-2 py-0.5 rounded-full bg-orange-500/10 text-orange-400 text-xs font-medium">{article.category}</span>
+          <span className="px-2 py-0.5 rounded-full bg-orange-500/10 text-orange-400 text-xs font-medium">{copy.category}</span>
         </div>
-        <h1 className="text-3xl md:text-4xl font-black mb-6">{article.title}</h1>
+        <h1 className="text-3xl md:text-4xl font-black mb-6">{copy.title}</h1>
         <div className="prose prose-invert max-w-none">
-          {renderContent(article.content)}
+          {renderContent(copy.content)}
         </div>
       </article>
     </div>
