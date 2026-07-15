@@ -11,12 +11,14 @@ import {
 } from '@/lib/store';
 import type { Goal, ActivityLevel } from '@/lib/types';
 import { useI18n, faDict } from '@/lib/i18n';
+import { useEntitlements } from '@/lib/entitlements';
 
 function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState(getState());
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useI18n();
+  const { subscriptionTier } = useEntitlements();
   useEffect(() => { const u = subscribe(() => setState(getState())); return () => { u(); }; }, []);
   useEffect(() => { if (!state.currentUser) navigate('/login'); }, [state.currentUser, navigate]);
 
@@ -43,7 +45,7 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
               </div>
               <div>
                 <div className="font-bold text-sm">{state.currentUser.name}</div>
-                <div className="text-xs text-orange-400">{state.currentUser.subscriptionTier}</div>
+                <div className="text-xs text-orange-400">{subscriptionTier}</div>
               </div>
             </div>
             <nav className="space-y-1">
@@ -74,6 +76,7 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
 export function DashboardOverview() {
   const { t } = useI18n();
   const [state, setState] = useState(getState());
+  const { subscriptionTier } = useEntitlements();
   useEffect(() => { const u = subscribe(() => setState(getState())); return () => { u(); }; }, []);
   const streak = getStreak();
   const totalWorkouts = state.exerciseLogs.length;
@@ -118,7 +121,7 @@ export function DashboardOverview() {
               <Crown className="w-5 h-5 text-orange-400" />
               <span className="text-sm text-gray-400">{t({ en: 'Plan', fa: 'طرح' })}</span>
             </div>
-            <div className="text-2xl font-black">{state.currentUser?.subscriptionTier}</div>
+            <div className="text-2xl font-black">{subscriptionTier}</div>
             <Link to="/pricing" className="text-xs text-orange-400 hover:text-orange-300">{t({ en: 'Upgrade', fa: 'ارتقا' })}</Link>
           </div>
         </div>
@@ -505,6 +508,8 @@ export function DashboardProgress() {
 export function DashboardChat() {
   const { t } = useI18n();
   const [state, setState] = useState(getState());
+  const { subscriptionTier } = useEntitlements();
+  const isCoachChat = subscriptionTier === 'VIP' || subscriptionTier === 'ELITE';
   useEffect(() => { const u = subscribe(() => setState(getState())); return () => { u(); }; }, []);
   const [newTicketSubject, setNewTicketSubject] = useState('');
   const [newTicketMsg, setNewTicketMsg] = useState('');
@@ -527,7 +532,6 @@ export function DashboardChat() {
     addMessageToTicket(selectedTicket, reply);
     setReply('');
     setTimeout(() => {
-      const isCoachChat = state.currentUser?.subscriptionTier === 'VIP' || state.currentUser?.subscriptionTier === 'ELITE';
       const replyTextEn = isCoachChat 
         ? "Thank you for your message! I'll review this and get back to you shortly. Keep up the great work with your training! 💪"
         : "Thank you for reaching out to EsiFit Support. A representative will review your ticket within 24-48 hours.";
@@ -546,10 +550,10 @@ export function DashboardChat() {
       <div className="animate-fade-in space-y-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <h1 className="text-2xl font-black">
-            {state.currentUser?.subscriptionTier === 'VIP' || state.currentUser?.subscriptionTier === 'ELITE' ? t({ en: 'Coach Chat', fa: 'چت با مربی' }) : t({ en: 'Support Tickets', fa: 'تیکت‌های پشتیبانی' })}
+            {isCoachChat ? t({ en: 'Coach Chat', fa: 'چت با مربی' }) : t({ en: 'Support Tickets', fa: 'تیکت‌های پشتیبانی' })}
           </h1>
           <button onClick={() => setShowNew(!showNew)} className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-white font-bold text-sm rounded-lg hover:bg-orange-600 transition-colors">
-            <Plus className="w-4 h-4" /> {state.currentUser?.subscriptionTier === 'VIP' || state.currentUser?.subscriptionTier === 'ELITE' ? t({ en: 'New Message', fa: 'پیام جدید' }) : t({ en: 'New Ticket', fa: 'تیکت جدید' })}
+            <Plus className="w-4 h-4" /> {isCoachChat ? t({ en: 'New Message', fa: 'پیام جدید' }) : t({ en: 'New Ticket', fa: 'تیکت جدید' })}
           </button>
         </div>
 
@@ -627,10 +631,8 @@ export function DashboardChat() {
 
 export function DashboardBilling() {
   const { t } = useI18n();
-  const [state, setState] = useState(getState());
-  useEffect(() => { const u = subscribe(() => setState(getState())); return () => { u(); }; }, []);
-  const user = state.currentUser;
-  const currentPlan = PLANS.find(p => p.tier === user?.subscriptionTier);
+  const { subscriptionTier } = useEntitlements();
+  const currentPlan = PLANS.find(p => p.tier === subscriptionTier);
 
   return (
     <DashboardLayout>
@@ -653,7 +655,7 @@ export function DashboardBilling() {
               to="/pricing"
               className="px-4 py-2 bg-orange-500 text-white font-bold text-sm rounded-lg hover:bg-orange-600 transition-colors"
             >
-              {user?.subscriptionTier === 'FREE' ? t({ en: 'Upgrade', fa: 'ارتقا' }) : t({ en: 'Change Plan', fa: 'تغییر طرح' })}
+              {subscriptionTier === 'FREE' ? t({ en: 'Upgrade', fa: 'ارتقا' }) : t({ en: 'Change Plan', fa: 'تغییر طرح' })}
             </Link>
           </div>
         </div>
@@ -686,7 +688,7 @@ export function DashboardBilling() {
             <button className="w-full text-left rtl:text-right p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors text-sm">
               📄 {t({ en: 'View invoices', fa: 'مشاهده فاکتورها' })}
             </button>
-            {user?.subscriptionTier !== 'FREE' && (
+            {subscriptionTier !== 'FREE' && (
               <button
                 onClick={() => { upgradeTier('FREE'); }}
                 className="w-full text-left rtl:text-right p-4 bg-red-500/10 border border-red-500/20 rounded-lg hover:bg-red-500/20 transition-colors text-sm text-red-400"

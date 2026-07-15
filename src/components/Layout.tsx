@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, Dumbbell, User, LogOut, ChevronDown, LayoutDashboard, Shield, GraduationCap, Globe } from 'lucide-react';
 import { getState, logout, subscribe } from '@/lib/store';
 import { useI18n } from '@/lib/i18n';
+import { useEntitlements } from '@/lib/entitlements';
 
 export default function Layout({ children }: { children: ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -12,6 +13,7 @@ export default function Layout({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const [state, setState] = useState(getState());
   const { t, lang, setLang } = useI18n();
+  const { role, subscriptionTier } = useEntitlements();
 
   useEffect(() => { const unsub = subscribe(() => setState(getState())); return () => { unsub(); }; }, []);
   useEffect(() => { setMobileOpen(false); setUserMenuOpen(false); setLangMenuOpen(false); }, [location.pathname]);
@@ -94,7 +96,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                     </div>
                     <span className="text-sm font-medium">{user.name}</span>
                     <span className="text-xs px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-400 font-medium">
-                      {user.subscriptionTier}
+                      {subscriptionTier}
                     </span>
                     <ChevronDown className="w-4 h-4 text-gray-400" />
                   </button>
@@ -106,12 +108,12 @@ export default function Layout({ children }: { children: ReactNode }) {
                       <Link to="/dashboard/profile" className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-800 transition-colors">
                         <User className="w-4 h-4" /> {t({ en: 'Profile', fa: 'پروفایل' })}
                       </Link>
-                      {user.role === 'COACH' && (
+                      {role === 'COACH' && (
                         <Link to="/coach" className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-800 transition-colors text-orange-400">
                           <GraduationCap className="w-4 h-4" /> {t({ en: 'Coach Dashboard', fa: 'داشبورد مربی' })}
                         </Link>
                       )}
-                      {user.role === 'ADMIN' && (
+                      {role === 'ADMIN' && (
                         <Link to="/admin" className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-800 transition-colors text-orange-400">
                           <Shield className="w-4 h-4" /> {t({ en: 'Admin Panel', fa: 'پنل مدیریت' })}
                         </Link>

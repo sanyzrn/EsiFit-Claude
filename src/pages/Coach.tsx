@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { GraduationCap, Users, MessageSquare, BarChart3, User, Target } from 'lucide-react';
 import { getState, subscribe } from '@/lib/store';
 import { useI18n } from '@/lib/i18n';
+import { useEntitlements } from '@/lib/entitlements';
 
 export default function Coach() {
   const [state, setState] = useState(getState());
@@ -10,12 +11,13 @@ export default function Coach() {
   const { t } = useI18n();
   const [activeTab, setActiveTab] = useState('clients');
   const [selectedClient, setSelectedClient] = useState<string | null>(null);
+  const { role, loading } = useEntitlements();
   useEffect(() => { const u = subscribe(() => setState(getState())); return () => { u(); }; }, []);
   useEffect(() => {
-    if (!state.currentUser || state.currentUser.role !== 'COACH') navigate('/');
-  }, [state.currentUser, navigate]);
+    if (!loading && (!state.currentUser || role !== 'COACH')) navigate('/');
+  }, [state.currentUser, role, loading, navigate]);
 
-  if (!state.currentUser || state.currentUser.role !== 'COACH') return null;
+  if (loading || !state.currentUser || role !== 'COACH') return null;
 
   const clients = [
     { id: 'c1', name: 'John Smith', goal: 'Muscle Gain', tier: 'VIP', weight: '82 kg', lastActive: '2 hours ago', progress: '+3 kg muscle' },

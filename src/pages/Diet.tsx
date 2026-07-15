@@ -1,16 +1,15 @@
-import { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Apple, Lock, UtensilsCrossed } from 'lucide-react';
-import { DIET_PLANS, getState, subscribe } from '@/lib/store';
+import { DIET_PLANS } from '@/lib/store';
 import { hasTierAccess } from '@/lib/types';
 import TierGate from '@/components/TierGate';
 import { useI18n } from '@/lib/i18n';
+import { useEntitlements } from '@/lib/entitlements';
 
 export function DietList() {
   const { t } = useI18n();
-  const [state, setState] = useState(getState());
-  useEffect(() => { const u = subscribe(() => setState(getState())); return () => { u(); }; }, []);
-  const userTier = state.currentUser?.subscriptionTier || 'FREE';
+  const { subscriptionTier } = useEntitlements();
+  const userTier = subscriptionTier;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -59,8 +58,8 @@ export function DietDetail() {
   const { t } = useI18n();
   const { slug } = useParams();
   const navigate = useNavigate();
-  const [state, setState] = useState(getState());
-  useEffect(() => { const u = subscribe(() => setState(getState())); return () => { u(); }; }, []);
+  const { subscriptionTier } = useEntitlements();
+  const userTier = subscriptionTier;
 
   const plan = DIET_PLANS.find(p => p.slug === slug);
   if (!plan) {
@@ -72,7 +71,6 @@ export function DietDetail() {
     );
   }
 
-  const userTier = state.currentUser?.subscriptionTier || 'FREE';
   const hasAccess = hasTierAccess(userTier, plan.requiredTier);
 
   const totalMacros = plan.meals.reduce((acc, meal) => {

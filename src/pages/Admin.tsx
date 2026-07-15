@@ -3,18 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import { Shield, Users, DollarSign, TrendingUp, BarChart3, FileText, Dumbbell, Apple } from 'lucide-react';
 import { getState, subscribe, PLANS, EXERCISES, PROGRAMS, DIET_PLANS, ARTICLES } from '@/lib/store';
 import { useI18n } from '@/lib/i18n';
+import { useEntitlements } from '@/lib/entitlements';
 
 export default function Admin() {
   const [state, setState] = useState(getState());
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
   const { t } = useI18n();
+  const { role, loading } = useEntitlements();
   useEffect(() => { const u = subscribe(() => setState(getState())); return () => { u(); }; }, []);
   useEffect(() => {
-    if (!state.currentUser || state.currentUser.role !== 'ADMIN') navigate('/');
-  }, [state.currentUser, navigate]);
+    if (!loading && (!state.currentUser || role !== 'ADMIN')) navigate('/');
+  }, [state.currentUser, role, loading, navigate]);
 
-  if (!state.currentUser || state.currentUser.role !== 'ADMIN') return null;
+  if (loading || !state.currentUser || role !== 'ADMIN') return null;
 
   const tabs = [
     { id: 'overview', icon: BarChart3, label: t({ en: 'Overview', fa: 'نمای کلی' }) },

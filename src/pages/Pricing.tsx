@@ -1,25 +1,26 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Check, Crown, Zap, Star } from 'lucide-react';
-import { PLANS, getState, upgradeTier, subscribe } from '@/lib/store';
+import { PLANS, getState, subscribe } from '@/lib/store';
 import type { SubscriptionTier } from '@/lib/types';
 import { useI18n, faDict } from '@/lib/i18n';
+import { useEntitlements } from '@/lib/entitlements';
 
 export default function Pricing() {
   const { t } = useI18n();
   const [state, setState] = useState(getState());
   const navigate = useNavigate();
+  const { subscriptionTier } = useEntitlements();
   useEffect(() => { const u = subscribe(() => setState(getState())); return () => { u(); }; }, []);
 
   const user = state.currentUser;
 
-  const handleSubscribe = (tier: SubscriptionTier) => {
+  const handleSubscribe = (_tier: SubscriptionTier) => {
     if (!user) {
       navigate('/register');
       return;
     }
-    // Simulate Stripe checkout
-    upgradeTier(tier);
+    // Phase 3: real payment flow. Tier changes require server-side entitlement write.
     navigate('/dashboard/billing');
   };
 
@@ -48,7 +49,7 @@ export default function Pricing() {
 
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
         {PLANS.map(plan => {
-          const isCurrent = user?.subscriptionTier === plan.tier;
+          const isCurrent = subscriptionTier === plan.tier;
           const isPopular = plan.tier === 'VIP';
 
           return (
