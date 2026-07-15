@@ -266,9 +266,9 @@ export const BODY_TYPE_QUESTIONS: BodyTypeAnswer[] = [
   {
     question: 'What is your wrist circumference?',
     options: [
-      { text: 'Small (under 16 cm / 6.3")', ecto: 3, meso: 0, endo: 0 },
-      { text: 'Medium (16-18 cm / 6.3-7")', ecto: 0, meso: 3, endo: 0 },
-      { text: 'Large (over 18 cm / 7"+)', ecto: 0, meso: 0, endo: 3 },
+      { text: 'Small (under 16 cm)', ecto: 3, meso: 0, endo: 0 },
+      { text: 'Medium (16–18 cm)', ecto: 0, meso: 3, endo: 0 },
+      { text: 'Large (over 18 cm)', ecto: 0, meso: 0, endo: 3 },
     ],
   },
   {

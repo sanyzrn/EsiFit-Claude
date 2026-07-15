@@ -15,6 +15,9 @@ const exercises = readFileSync('src/pages/Exercises.tsx', 'utf8');
 const tierGate = readFileSync('src/components/TierGate.tsx', 'utf8');
 const auth = readFileSync('src/pages/Auth.tsx', 'utf8');
 const store = readFileSync('src/lib/store.ts', 'utf8');
+const i18n = readFileSync('src/lib/i18n.tsx', 'utf8');
+const bodyQuiz = readFileSync('src/components/calculators/BodyCompositionCalculators.tsx', 'utf8');
+const calculators = readFileSync('src/lib/calculators.ts', 'utf8');
 
 check(
   'BUG-1: Program links resolve exercise slug by ID',
@@ -48,6 +51,26 @@ check(
     auth.includes("t({ en: 'Create Your Account'") &&
     auth.includes("t({ en: 'Reset Password'"),
   'Login, Register, and ForgotPassword copy wrapped with t()'
+);
+
+check(
+  'i18n: Farsi default when no localStorage',
+  i18n.includes("|| 'fa'") && i18n.includes("return 'fa';"),
+  'Default language fallback is fa'
+);
+
+check(
+  'BUG-4: Auth placeholders localized',
+  !auth.includes('placeholder="you@example.com"') && !auth.includes('placeholder="John Doe"'),
+  'Auth email/name placeholders use t()'
+);
+
+check(
+  'Body type quiz wrist options metric-only',
+  calculators.includes("'Small (under 16 cm)'") &&
+    !calculators.includes('6.3"') &&
+    bodyQuiz.includes('translateQuizText'),
+  'Wrist circumference options use cm only; quiz text translated'
 );
 
 const lint = spawnSync('npm', ['run', 'lint'], { encoding: 'utf8', shell: true });
