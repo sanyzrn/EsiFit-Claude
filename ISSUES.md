@@ -67,7 +67,7 @@ App uses orange + gray-950 throughout. Audit brief's pine/bone/ember/brass palet
 
 ## Issue Index
 
-Status legend: `open` · `fixed` · `deferred` · `investigated-not-reproducible` · `intentional-demo`
+Status legend: `open` · `fixed` · `deferred` · `investigated-not-reproducible` · `intentional-demo` · `verified-alt`
 
 | ID | Severity | Phase | Status | Title |
 |----|----------|-------|--------|-------|
@@ -94,7 +94,7 @@ Status legend: `open` · `fixed` · `deferred` · `investigated-not-reproducible
 | BUG-9 | Low | 8 | fixed | Silent upgrade with no toast/confirmation |
 | BUG-10 | Low | 8 | fixed | Register: no password show/hide or strength indicator |
 | BUG-11 | Low | 8 | fixed | Firebase raw `err.message` shown in Auth (not localized) |
-| BUG-12 | Low | 2 | open | `main.tsx` unconditional `testConnection()` boot probe |
+| BUG-12 | Low | 2 | fixed | `main.tsx` unconditional `testConnection()` boot probe |
 | TOOL-1 | Medium | 6 | fixed | `npm run lint` fails — ESLint not installed |
 | TOOL-2 | Low | 6 | fixed | `tsc --noEmit` — 6 TS6133 unused-import errors |
 | TOOL-3 | Medium | 6 | fixed | Static+dynamic import duplication defeats code-splitting |
@@ -107,7 +107,7 @@ Status legend: `open` · `fixed` · `deferred` · `investigated-not-reproducible
 | CONTENT-3 | Low | 9 | intentional-demo | Admin/Coach dashboards use hardcoded demo data |
 | CONTENT-4 | Low | 9 | intentional-demo | Coach chat auto-reply via `setTimeout` (demo) |
 | UI-1 | — | 8 | fixed | Design token decision: orange/gray vs pine/bone/ember/brass |
-| PERF-1 | Low | 6 | deferred | Lighthouse not run (tooling crashed in Report B sandbox) |
+| PERF-1 | Low | 10 | verified-alt | Lighthouse CLI unavailable; build metrics + a11y static checks used |
 
 ---
 
@@ -140,48 +140,62 @@ Status legend: `open` · `fixed` · `deferred` · `investigated-not-reproducible
 ### SEC-3 — Fake payment upgrade (`upgradeTier` local flip only)
 - **Severity:** High
 - **Phase:** 3
-- **Status:** open
-- **Files:** `src/pages/Pricing.tsx:16-24`, `src/lib/store.ts:80-85`
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/pages/Pricing.tsx`, `src/lib/payments.ts`, `functions/src/payments.ts`, `src/lib/store.ts`
 - **Reports:** A (`EsiFit_Full_Audit_2026-07-15.md:82-85`) · B (`(1).md:141, PAY-1 equivalent`)
-- **Note:** Reverts on next `syncUserFromFirebase` unless localStorage tampered.
+- **Before:** `upgradeTier()` patched localStorage only; no payment processor.
+- **After:** `upgradeTier` removed; Pricing uses `startCheckout()` → Stripe Checkout Cloud Function or honest coming-soon notice via `PaymentsNotice`.
+- **Verification:** `phase3-payments-verify.mjs`
 
 ### AUTH-1 — Register "Sign up with Google" is a no-op
 - **Severity:** High
 - **Phase:** 2
-- **Status:** open
-- **Files:** `src/pages/Auth.tsx:213`
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/pages/Auth.tsx`, `src/lib/auth.ts`
 - **Reports:** A (`EsiFit_Full_Audit_2026-07-15.md:48,87-90`) · B (`(1).md:145,222-228`)
-- **Evidence:** `onClick={() => {}}` on Register; Login Google works (`Auth.tsx:38-64`).
+- **Before:** Register Google button had `onClick={() => {}}`.
+- **After:** Register uses `handleGoogleSignUp` → shared `signInWithGoogle()` helper.
+- **Verification:** `phase2-auth-verify.mjs`
 
 ### AUTH-2 — Forgot password never sends email
 - **Severity:** High
 - **Phase:** 2
-- **Status:** open
-- **Files:** `src/pages/Auth.tsx:247-255`
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/pages/Auth.tsx`, `src/lib/auth.ts`
 - **Reports:** A (`EsiFit_Full_Audit_2026-07-15.md:49,92-95`) · B (`(1).md:146,212-218`)
+- **Before:** Forgot password only called `setSent(true)` with no Firebase API.
+- **After:** `requestPasswordReset(email)` calls `sendPasswordResetEmail`; success UI only after await.
+- **Verification:** `phase2-auth-verify.mjs`
 
 ### AUTH-3 — `syncUserFromFirebase` hardcodes fake profile defaults
 - **Severity:** Medium
 - **Phase:** 2
-- **Status:** open
-- **Files:** `src/lib/store.ts:51-56`
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/lib/store.ts`
 - **Reports:** B (`(1).md:108,242-248`) · A mentions hybrid auth (`EsiFit_Full_Audit_2026-07-15.md:35`)
-- **Evidence:** Always sets `age: 28`, `gender: 'male'`, `heightCm: 178`, `weightKg: 80`, `goal: 'MUSCLE_GAIN'`.
+- **Before:** Always set `age: 28`, `gender: 'male'`, etc. on every sync.
+- **After:** `mergeProfileFromFirestore()` preserves Firestore/local profile fields; no hardcoded defaults.
+- **Verification:** `phase2-auth-verify.mjs`
 
 ### DATA-1 — User activity data is localStorage-only
 - **Severity:** Medium
 - **Phase:** 4
-- **Status:** open
-- **Files:** `src/lib/store.ts:97-170`
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/lib/store.ts`, `src/lib/firestore-data.ts`, `firestore.rules`
 - **Reports:** A (`EsiFit_Full_Audit_2026-07-15.md:35`) · B (`(1).md:96-106,102-103`)
-- **Scope:** bodyLogs, exerciseLogs, calculatorResults, tickets, savedExercises.
+- **Before:** bodyLogs, exerciseLogs, calculatorResults, tickets, savedExercises never reached Firestore.
+- **After:** `firestore-data.ts` fetch/persist helpers; store writes on mutation; `loadActivityFromFirestore` on login.
+- **Verification:** `phase4-firestore-verify.mjs`
 
 ### DATA-2 — Profile fields not persisted to Firestore
 - **Severity:** Medium
 - **Phase:** 4
-- **Status:** open
-- **Files:** `src/lib/store.ts:73-77`, `src/pages/Dashboard.tsx` profile form
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/lib/store.ts`, `src/lib/firestore-data.ts`, `src/pages/Dashboard.tsx`
 - **Reports:** B (`(1).md:148`) · A (`EsiFit_Full_Audit_2026-07-15.md:35`)
+- **Before:** Dashboard profile edits stayed in local state only.
+- **After:** `persistUserProfile` + `updateProfile` writes age/gender/goal/etc. to `users/{uid}`.
+- **Verification:** `phase4-firestore-verify.mjs`
 
 ### CALC-1 — Home: 13 widgets vs 14 calculator slugs
 - **Severity:** Low (product consistency, not broken math)
@@ -336,10 +350,12 @@ Status legend: `open` · `fixed` · `deferred` · `investigated-not-reproducible
 ### BUG-12 — `main.tsx` boot probe (downgraded)
 - **Severity:** Low (was High in Report B)
 - **Phase:** 2
-- **Status:** open
-- **Files:** `src/main.tsx:8-18`
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/main.tsx`
 - **Reports:** B High (`(1).md:202-208`) · A sandbox note (`EsiFit_Full_Audit_2026-07-15.md:26,119`)
-- **Phase 0 resolution:** Not reproducible with open network; remove/silence anyway.
+- **Before:** Unconditional `getDocFromServer(doc(db,'test','connection'))` on every boot.
+- **After:** Boot probe removed; `main.tsx` only mounts `<App />`.
+- **Verification:** `phase2-auth-verify.mjs`, `phase10-reaudit-verify.mjs`
 
 ### TOOL-1 — ESLint not installed
 - **Severity:** Medium
@@ -414,16 +430,22 @@ Status legend: `open` · `fixed` · `deferred` · `investigated-not-reproducible
 ### CONTENT-1 — Seed content not in Farsi
 - **Severity:** Medium
 - **Phase:** 9
-- **Status:** open
-- **Files:** `src/lib/store.ts` (EXERCISES, PROGRAMS, DIET_PLANS, ARTICLES)
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/lib/content-i18n.ts`, `src/lib/seed/content-fa*.ts`, content pages
 - **Reports:** A (`EsiFit_Full_Audit_2026-07-15.md:20,57`) · B (`(1).md:156-157`)
+- **Before:** Exercise/program/diet/article copy English-only in Farsi UI.
+- **After:** ID-keyed Farsi locale; `localizedExercise/Program/DietPlan/Article` helpers wired in pages.
+- **Verification:** `phase9-content-verify.mjs`
 
 ### CONTENT-2 — Thin content catalog
 - **Severity:** Medium
 - **Phase:** 9
-- **Status:** open
-- **Files:** `src/lib/store.ts`
+- **Status:** fixed (2026-07-15)
+- **Files:** `src/lib/seed/*.ts`
 - **Reports:** A (`EsiFit_Full_Audit_2026-07-15.md:21`) · B (`(1).md:133-140`)
+- **Before:** 10 exercises, 3 programs, 2 diets, 3 articles.
+- **After:** 20 exercises, 5 programs, 4 diets, 6 articles.
+- **Verification:** `phase9-content-verify.mjs`
 
 ### CONTENT-3 — Admin dashboard demo data
 - **Severity:** Low
@@ -451,10 +473,13 @@ Status legend: `open` · `fixed` · `deferred` · `investigated-not-reproducible
 
 ### PERF-1 — Lighthouse not completed
 - **Severity:** Low
-- **Phase:** 6 (deferred to Phase 10)
-- **Status:** deferred
+- **Phase:** 10
+- **Status:** verified-alt (2026-07-15)
 - **Reports:** A (`EsiFit_Full_Audit_2026-07-15.md:157,188`) · B (`(1).md:462-463`, crash in sandbox)
-- **Note:** Bundle metrics from `vite build` used instead.
+- **Phase 10 attempt:** Lighthouse CLI crashed (headless Chrome tab crash in cloud environment).
+- **Substitute verification:** `vite build` — 40 JS chunks; app index chunk ~72 KB (23.6 KB gzip); Phase 8 static a11y checks pass.
+- **Recommendation:** Run Lighthouse locally against `vite preview` before production launch.
+- **Documented in:** `EsiFit_Fixes_Verified_2026-07-15.md`
 
 ---
 
@@ -474,4 +499,6 @@ Status legend: `open` · `fixed` · `deferred` · `investigated-not-reproducible
 
 | Date | Phase | Change |
 |------|-------|--------|
+| 2026-07-15 | 10 | Full re-audit; `EsiFit_Fixes_Verified_2026-07-15.md`; ISSUES reconciled; `phase10-reaudit-verify.mjs` |
+| 2026-07-15 | 9 | CONTENT-1/2: expanded seed catalog; Farsi translations for exercises, programs, diets, articles |
 | 2026-07-15 | 0 | Initial unified list from Reports A & B; reconciled calculator count, Firebase probe severity, design tokens |
