@@ -27,7 +27,7 @@ export function BmrCalculator() {
       results={
         <div className="flex flex-col items-center">
           <div className="text-5xl font-black text-orange-400 mb-2"><PersianNumber value={result} /></div>
-          <div className="text-gray-400 font-medium">{t({ en: 'kcal / day', fa: 'کالری در روز' })}</div>
+          <div className="text-fg-subtle font-medium">{t({ en: 'kcal / day', fa: 'کالری در روز' })}</div>
         </div>
       }
     />
@@ -56,8 +56,8 @@ export function TdeeCalculator() {
           <SliderInput label={t({ en: 'Height', fa: 'قد' })} value={height} min={140} max={220} step={1} onChange={setHeight} unit="cm" />
           <SliderInput label={t({ en: 'Age', fa: 'سن' })} value={age} min={15} max={80} step={1} onChange={setAge} unit="years" />
           <div className="mt-4">
-            <label className="block text-sm font-medium text-gray-300 mb-2">{t({ en: 'Activity Level', fa: 'سطح فعالیت' })}</label>
-            <select value={activity} onChange={(e) => setActivity(e.target.value as keyof typeof ACTIVITY_FACTORS)} className="w-full bg-gray-700 border-none rounded-lg p-3 text-white">
+            <label className="block text-sm font-medium text-fg-muted mb-2">{t({ en: 'Activity Level', fa: 'سطح فعالیت' })}</label>
+            <select value={activity} onChange={(e) => setActivity(e.target.value as keyof typeof ACTIVITY_FACTORS)} className="w-full bg-elevated-hover border-none rounded-lg p-3 text-fg">
               <option value="sedentary">{t({ en: 'Sedentary (office job)', fa: 'بدون فعالیت (کار اداری)' })}</option>
               <option value="light">{t({ en: 'Light (exercise 1-2 days/wk)', fa: 'سبک (تمرین ۱-۲ روز در هفته)' })}</option>
               <option value="moderate">{t({ en: 'Moderate (exercise 3-5 days/wk)', fa: 'متوسط (تمرین ۳-۵ روز در هفته)' })}</option>
@@ -70,7 +70,7 @@ export function TdeeCalculator() {
       results={
         <div className="flex flex-col items-center">
           <div className="text-5xl font-black text-orange-400 mb-2"><PersianNumber value={result} /></div>
-          <div className="text-gray-400 font-medium">{t({ en: 'kcal / day', fa: 'کالری در روز' })}</div>
+          <div className="text-fg-subtle font-medium">{t({ en: 'kcal / day', fa: 'کالری در روز' })}</div>
         </div>
       }
     />

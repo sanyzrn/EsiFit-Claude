@@ -1,17 +1,66 @@
 @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap');
 @import "tailwindcss";
 
+/* Semantic theme tokens — swap via data-theme on <html> */
+html,
+html[data-theme="dark"] {
+  --theme-app: #030712;
+  --theme-surface: #111827;
+  --theme-elevated: #1f2937;
+  --theme-elevated-hover: #374151;
+  --theme-border: #1f2937;
+  --theme-border-strong: #374151;
+  --theme-fg: #f3f4f6;
+  --theme-fg-muted: #d1d5db;
+  --theme-fg-subtle: #9ca3af;
+  --theme-fg-faint: #6b7280;
+  --theme-chart-grid: #374151;
+  --theme-chart-track: #374151;
+  --theme-chart-tooltip-bg: #1f2937;
+  --theme-chart-tooltip-border: #374151;
+  --theme-scrollbar-track: #111827;
+  --theme-scrollbar-thumb: #374151;
+  --theme-scrollbar-thumb-hover: #4b5563;
+}
+
+html[data-theme="light"] {
+  --theme-app: #f9fafb;
+  --theme-surface: #ffffff;
+  --theme-elevated: #f3f4f6;
+  --theme-elevated-hover: #e5e7eb;
+  --theme-border: #e5e7eb;
+  --theme-border-strong: #d1d5db;
+  --theme-fg: #111827;
+  --theme-fg-muted: #374151;
+  --theme-fg-subtle: #4b5563;
+  --theme-fg-faint: #6b7280;
+  --theme-chart-grid: #d1d5db;
+  --theme-chart-track: #d1d5db;
+  --theme-chart-tooltip-bg: #ffffff;
+  --theme-chart-tooltip-border: #d1d5db;
+  --theme-scrollbar-track: #f3f4f6;
+  --theme-scrollbar-thumb: #d1d5db;
+  --theme-scrollbar-thumb-hover: #9ca3af;
+}
+
 @theme {
-  /* Canonical EsiFit brand (UI-1): orange accent + gray surfaces.
-     Audit brief pine/bone/ember/brass palette was not adopted. */
+  /* Canonical EsiFit brand (UI-1): orange accent + semantic surfaces via CSS variables. */
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-fa: 'Vazirmatn', ui-sans-serif, system-ui, sans-serif;
   --color-brand: #f97316;
   --color-brand-dark: #ea580c;
   --color-brand-light: #fb923c;
-  --color-surface: #111827;
-  --color-surface-light: #1f2937;
-  --color-surface-lighter: #374151;
+
+  --color-app: var(--theme-app);
+  --color-surface: var(--theme-surface);
+  --color-elevated: var(--theme-elevated);
+  --color-elevated-hover: var(--theme-elevated-hover);
+  --color-border: var(--theme-border);
+  --color-border-strong: var(--theme-border-strong);
+  --color-fg: var(--theme-fg);
+  --color-fg-muted: var(--theme-fg-muted);
+  --color-fg-subtle: var(--theme-fg-subtle);
+  --color-fg-faint: var(--theme-fg-faint);
 }
 
 html {
@@ -21,35 +70,35 @@ html {
 body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  background-color: var(--theme-app);
+  color: var(--theme-fg);
 }
 
-html.farsi-font, html.farsi-font body {
+html.farsi-font,
+html.farsi-font body {
   font-family: var(--font-fa);
 }
 
-/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #111827;
+  background: var(--theme-scrollbar-track);
 }
 ::-webkit-scrollbar-thumb {
-  background: #374151;
+  background: var(--theme-scrollbar-thumb);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #4b5563;
+  background: var(--theme-scrollbar-thumb-hover);
 }
 
-/* Blur overlay for gated content */
 .content-locked {
   filter: blur(6px);
   pointer-events: none;
   user-select: none;
 }
 
-/* Animation utilities */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }

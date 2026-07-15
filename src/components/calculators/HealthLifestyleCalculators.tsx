@@ -27,8 +27,8 @@ export function GoalDateCalculator() {
           {result.ok ? (
             <>
               <div className="text-5xl font-black text-orange-400 mb-2"><PersianNumber value={result.value.weeks} /> {t({ en: 'Weeks', fa: 'هفته' })}</div>
-              <div className="text-xl font-bold text-gray-200 mb-4">{result.value.estimatedDate}</div>
-              {result.value.message && <div className="text-xs text-gray-400">{result.value.message}</div>}
+              <div className="text-xl font-bold text-fg-muted mb-4">{result.value.estimatedDate}</div>
+              {result.value.message && <div className="text-xs text-fg-subtle">{result.value.message}</div>}
             </>
           ) : (
             <div className="text-red-400 font-medium p-4 bg-red-400/10 rounded-xl border border-red-400/20">{result.error}</div>
@@ -54,8 +54,8 @@ export function CaloriesBurnedCalculator() {
       inputs={
         <>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-300 mb-2">{t({ en: 'Activity', fa: 'فعالیت' })}</label>
-            <select value={activity} onChange={(e) => setActivity(e.target.value)} className="w-full bg-gray-700 border-none rounded-lg p-3 text-white">
+            <label className="block text-sm font-medium text-fg-muted mb-2">{t({ en: 'Activity', fa: 'فعالیت' })}</label>
+            <select value={activity} onChange={(e) => setActivity(e.target.value)} className="w-full bg-elevated-hover border-none rounded-lg p-3 text-fg">
               {Object.keys(MET_TABLE).map(act => (
                 <option key={act} value={act}>{act}</option>
               ))}
@@ -68,7 +68,7 @@ export function CaloriesBurnedCalculator() {
       results={
         <div className="flex flex-col items-center">
           <div className="text-5xl font-black text-orange-400 mb-2"><PersianNumber value={result} /></div>
-          <div className="text-gray-400 font-medium">{t({ en: 'kcal burned', fa: 'کالری سوزانده شده' })}</div>
+          <div className="text-fg-subtle font-medium">{t({ en: 'kcal burned', fa: 'کالری سوزانده شده' })}</div>
         </div>
       }
     />

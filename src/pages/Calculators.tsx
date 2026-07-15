@@ -32,7 +32,7 @@ export function CalculatorIndex() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-black mb-4">{t({ en: 'Fitness Calculators', fa: 'ماشین‌حساب‌های فیتنس' })}</h1>
-        <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+        <p className="text-fg-subtle text-lg max-w-2xl mx-auto">
           {t({ en: '14 free, science-based calculators to help you understand your body and optimize your training.', fa: '۱۴ ماشین حساب علمی رایگان برای کمک به درک بدن شما و بهینه‌سازی تمرینات.' })}
         </p>
       </div>
@@ -41,13 +41,13 @@ export function CalculatorIndex() {
           <Link
             key={c.slug}
             to={`/calculators/${c.slug}`}
-            className="group bg-gray-900 border border-gray-800 rounded-xl p-5 hover:border-orange-500/50 transition-all"
+            className="group bg-surface border border-border rounded-xl p-5 hover:border-orange-500/50 transition-all"
           >
             <div className="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center mb-3 group-hover:bg-orange-500/20 transition-colors">
               <Calculator className="w-5 h-5 text-orange-400" />
             </div>
             <h3 className="font-bold text-sm mb-1 group-hover:text-orange-400 transition-colors">{c.name}</h3>
-            <p className="text-gray-400 text-xs">{c.desc}</p>
+            <p className="text-fg-subtle text-xs">{c.desc}</p>
           </Link>
         ))}
       </div>
@@ -79,17 +79,17 @@ export function CalculatorDetail() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <button onClick={() => navigate('/calculators')} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-6">
+      <button onClick={() => navigate('/calculators')} className="flex items-center gap-2 text-fg-subtle hover:text-fg transition-colors mb-6">
         <ArrowLeft className="w-4 h-4 rtl:!rotate-180" /> {t({ en: 'All Calculators', fa: 'همه ماشین‌حساب‌ها' })}
       </button>
-      <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 md:p-8">
+      <div className="bg-surface border border-border rounded-2xl p-6 md:p-8">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center">
             <Calculator className="w-6 h-6 text-orange-400" />
           </div>
           <div>
             <h1 className="text-2xl font-black">{calcInfo.name}</h1>
-            <p className="text-gray-400 text-sm">{calcInfo.desc}</p>
+            <p className="text-fg-subtle text-sm">{calcInfo.desc}</p>
           </div>
         </div>
         <Suspense fallback={

@@ -26,7 +26,7 @@ export function ProgramList() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-8">
         <h1 className="text-4xl font-black mb-4">{t({ en: 'Training Programs', fa: 'برنامه‌های تمرینی' })}</h1>
-        <p className="text-gray-400 text-lg">{t({ en: 'Structured programs for every goal and experience level.', fa: 'برنامه‌های ساختاریافته برای هر هدف و سطح تجربه.' })}</p>
+        <p className="text-fg-subtle text-lg">{t({ en: 'Structured programs for every goal and experience level.', fa: 'برنامه‌های ساختاریافته برای هر هدف و سطح تجربه.' })}</p>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -37,12 +37,12 @@ export function ProgramList() {
             <Link
               key={prog.id}
               to={`/programs/${prog.slug}`}
-              className="group bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden hover:border-gray-700 transition-all relative"
+              className="group bg-surface border border-border rounded-2xl overflow-hidden hover:border-strong transition-all relative"
             >
               <div className="h-48 bg-gradient-to-br from-orange-500/10 to-orange-600/5 flex items-center justify-center relative">
                 <Target className="w-16 h-16 text-orange-500/30" />
                 {locked && (
-                  <div className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm flex items-center justify-center">
+                  <div className="absolute inset-0 bg-surface/60 backdrop-blur-sm flex items-center justify-center">
                     <div className="text-center">
                       <Lock className="w-8 h-8 text-orange-400 mx-auto mb-2" />
                       <span className="text-xs font-bold text-orange-400 bg-orange-500/10 px-3 py-1 rounded-full">{prog.requiredTier} {t({ en: 'Required', fa: 'نیاز است' })}</span>
@@ -55,17 +55,17 @@ export function ProgramList() {
                   <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${goalColors[prog.goal]}`}>
                     {goalLabels[prog.goal]}
                   </span>
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-gray-700 text-gray-300">
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-elevated-hover text-fg-muted">
                     {copy.level}
                   </span>
                 </div>
                 <h3 className="text-lg font-bold mb-2 group-hover:text-orange-400 transition-colors">
                   {copy.title}
                 </h3>
-                <p className="text-gray-400 text-sm mb-4 line-clamp-2">
+                <p className="text-fg-subtle text-sm mb-4 line-clamp-2">
                   {copy.description}
                 </p>
-                <div className="flex items-center gap-4 text-sm text-gray-400 flex-row-reverse rtl:flex-row justify-end rtl:justify-start">
+                <div className="flex items-center gap-4 text-sm text-fg-subtle flex-row-reverse rtl:flex-row justify-end rtl:justify-start">
                   <span className="flex items-center gap-1"><Calendar className="w-4 h-4 ml-1 rtl:ml-0 rtl:mr-1" />{prog.daysPerWeek} {t({ en: 'days/week', fa: 'روز در هفته' })}</span>
                   <span className="flex items-center gap-1"><Clock className="w-4 h-4 ml-1 rtl:ml-0 rtl:mr-1" />{prog.days.length} {t({ en: 'days', fa: 'روز' })}</span>
                 </div>
@@ -131,22 +131,22 @@ export function ProgramDetail() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <button onClick={() => navigate('/programs')} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-6 flex-row-reverse rtl:flex-row justify-end rtl:justify-start">
+      <button onClick={() => navigate('/programs')} className="flex items-center gap-2 text-fg-subtle hover:text-fg transition-colors mb-6 flex-row-reverse rtl:flex-row justify-end rtl:justify-start">
         <ArrowLeft className="w-4 h-4 ml-1 rtl:ml-0 rtl:mr-1 rtl:!rotate-180" /> {t({ en: 'Back to Programs', fa: 'بازگشت به برنامه‌ها' })}
       </button>
 
-      <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 md:p-8 mb-6">
+      <div className="bg-surface border border-border rounded-2xl p-6 md:p-8 mb-6">
         <div className="flex items-center gap-2 mb-3">
           <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${goalColors[program.goal]}`}>{goalLabels[program.goal]}</span>
-          <span className="text-xs px-2.5 py-1 rounded-full bg-gray-700 text-gray-300">
+          <span className="text-xs px-2.5 py-1 rounded-full bg-elevated-hover text-fg-muted">
             {copy.level}
           </span>
-          <span className="text-xs px-2.5 py-1 rounded-full bg-gray-700 text-gray-300">{program.daysPerWeek} {t({ en: 'days/week', fa: 'روز در هفته' })}</span>
+          <span className="text-xs px-2.5 py-1 rounded-full bg-elevated-hover text-fg-muted">{program.daysPerWeek} {t({ en: 'days/week', fa: 'روز در هفته' })}</span>
         </div>
         <h1 className="text-3xl font-black mb-4">
           {copy.title}
         </h1>
-        <p className="text-gray-400 leading-relaxed">
+        <p className="text-fg-subtle leading-relaxed">
           {copy.description}
         </p>
       </div>
@@ -160,7 +160,7 @@ export function ProgramDetail() {
                 key={day.id}
                 onClick={() => setActiveDay(i)}
                 className={`px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-colors ${
-                  activeDay === i ? 'bg-orange-500 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                  activeDay === i ? 'bg-orange-500 text-white' : 'bg-elevated text-fg-muted hover:bg-elevated-hover'
                 }`}
               >
                 {t({ en: 'Day', fa: 'روز' })} {day.dayNumber}: {copy.days[i]?.title ?? day.title}
@@ -174,22 +174,22 @@ export function ProgramDetail() {
               {program.days[activeDay].exercises.map(pe => (
                 <div
                   key={pe.id}
-                  className={`flex items-center gap-4 bg-gray-900 border rounded-xl p-4 transition-all flex-row-reverse rtl:flex-row ${
-                    completedExercises.has(pe.id) ? 'border-green-500/30 bg-green-500/5' : 'border-gray-800'
+                  className={`flex items-center gap-4 bg-surface border rounded-xl p-4 transition-all flex-row-reverse rtl:flex-row ${
+                    completedExercises.has(pe.id) ? 'border-green-500/30 bg-green-500/5' : 'border-border'
                   }`}
                 >
                   <button onClick={() => toggleComplete(pe.id, pe.exerciseId)} className="shrink-0">
-                    <CheckCircle2 className={`w-6 h-6 transition-colors ${completedExercises.has(pe.id) ? 'text-green-400' : 'text-gray-600'}`} />
+                    <CheckCircle2 className={`w-6 h-6 transition-colors ${completedExercises.has(pe.id) ? 'text-green-400' : 'text-fg-faint'}`} />
                   </button>
                   <div className="flex-1 text-right rtl:text-left">
                     <Link to={`/exercises/${getExerciseSlugById(pe.exerciseId) ?? ''}`} className="font-bold hover:text-orange-400 transition-colors">
                       {getExerciseNameById(pe.exerciseId, lang)}
                     </Link>
-                    <div className="text-sm text-gray-400 mt-1">
+                    <div className="text-sm text-fg-subtle mt-1">
                       {pe.sets} {t({ en: 'sets', fa: 'ست' })} × {pe.reps} {t({ en: 'reps', fa: 'تکرار' })} · {pe.restSeconds}s {t({ en: 'rest', fa: 'استراحت' })}
                     </div>
                   </div>
-                  <div className="text-left rtl:text-right text-sm text-gray-500">
+                  <div className="text-left rtl:text-right text-sm text-fg-faint">
                     #{pe.order}
                   </div>
                 </div>
@@ -201,11 +201,11 @@ export function ProgramDetail() {
         <TierGate minTier={program.requiredTier}>
           <div className="space-y-3">
             {program.days[0]?.exercises.map(pe => (
-              <div key={pe.id} className="flex items-center gap-4 bg-gray-900 border border-gray-800 rounded-xl p-4 flex-row-reverse rtl:flex-row">
-                <CheckCircle2 className="w-6 h-6 text-gray-600 shrink-0" />
+              <div key={pe.id} className="flex items-center gap-4 bg-surface border border-border rounded-xl p-4 flex-row-reverse rtl:flex-row">
+                <CheckCircle2 className="w-6 h-6 text-fg-faint shrink-0" />
                 <div className="flex-1 text-right rtl:text-left">
                   <div className="font-bold">{getExerciseNameById(pe.exerciseId, lang)}</div>
-                  <div className="text-sm text-gray-400 mt-1">{pe.sets} {t({ en: 'sets', fa: 'ست' })} × {pe.reps} {t({ en: 'reps', fa: 'تکرار' })}</div>
+                  <div className="text-sm text-fg-subtle mt-1">{pe.sets} {t({ en: 'sets', fa: 'ست' })} × {pe.reps} {t({ en: 'reps', fa: 'تکرار' })}</div>
                 </div>
               </div>
             ))}
