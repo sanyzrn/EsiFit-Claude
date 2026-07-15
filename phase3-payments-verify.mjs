@@ -1,5 +1,5 @@
 /**
- * Phase 3 payments verification — static checks
+ * Phase 3 payments verification — static checks (Express API)
  */
 import { readFileSync } from 'node:fs';
 
@@ -13,8 +13,7 @@ const store = readFileSync('src/lib/store.ts', 'utf8');
 const pricing = readFileSync('src/pages/Pricing.tsx', 'utf8');
 const dashboard = readFileSync('src/pages/Dashboard.tsx', 'utf8');
 const paymentsClient = readFileSync('src/lib/payments.ts', 'utf8');
-const paymentsFn = readFileSync('functions/src/payments.ts', 'utf8');
-const functionsIndex = readFileSync('functions/src/index.ts', 'utf8');
+const paymentsApi = readFileSync('backend/src/routes/payments.ts', 'utf8');
 
 check(
   'SEC-3: upgradeTier removed from store',
@@ -35,14 +34,14 @@ check(
 );
 
 check(
-  'Stripe checkout callable exists',
-  paymentsFn.includes('createCheckoutSession') && paymentsFn.includes('stripe.checkout.sessions.create'),
-  'Cloud Function creates Stripe Checkout session'
+  'Stripe checkout API route exists',
+  paymentsApi.includes('/checkout') && paymentsApi.includes('stripe.checkout.sessions.create'),
+  'Express API creates Stripe Checkout session'
 );
 
 check(
   'Stripe webhook with signature verification',
-  paymentsFn.includes('stripeWebhook') && paymentsFn.includes('constructEvent'),
+  paymentsApi.includes('stripeWebhookRouter') && paymentsApi.includes('constructEvent'),
   'Webhook verifies Stripe signature before tier update'
 );
 
@@ -59,9 +58,9 @@ check(
 );
 
 check(
-  'Functions export payment endpoints',
-  functionsIndex.includes('createCheckoutSession') && functionsIndex.includes('stripeWebhook'),
-  'index.ts re-exports payment functions'
+  'No Firebase callable payments',
+  !paymentsClient.includes('httpsCallable') && !paymentsClient.includes('firebase/functions'),
+  'Payments use REST API instead of Firebase Functions'
 );
 
 const allPass = checks.every((c) => c.pass);

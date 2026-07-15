@@ -1,5 +1,5 @@
 /**
- * Phase 2 auth completeness — static verification
+ * Phase 2 auth completeness — static verification (SQL API)
  */
 import { readFileSync } from 'node:fs';
 
@@ -13,23 +13,30 @@ const authTsx = readFileSync('src/pages/Auth.tsx', 'utf8');
 const storeTs = readFileSync('src/lib/store.ts', 'utf8');
 const mainTsx = readFileSync('src/main.tsx', 'utf8');
 const authLib = readFileSync('src/lib/auth.ts', 'utf8');
+const apiClient = readFileSync('src/lib/api-client.ts', 'utf8');
 
 check(
-  'AUTH-1: Register Google button wired',
-  authTsx.includes('handleGoogleSignUp') && !authTsx.includes('onClick={() => {}}'),
-  'Register uses handleGoogleSignUp; no empty onClick stub'
+  'AUTH-1: Google Sign-In removed',
+  !authTsx.includes('Google') && !authTsx.includes('signInWithGoogle'),
+  'No Google OAuth buttons or helpers in Auth UI'
 );
 
 check(
-  'AUTH-1: Shared signInWithGoogle helper',
-  authLib.includes('export async function signInWithGoogle'),
-  'src/lib/auth.ts exports signInWithGoogle'
+  'AUTH-1: Phone OTP flow present',
+  authTsx.includes('requestPhoneOtp') && authTsx.includes('verifyPhoneOtp') && authTsx.includes('PhoneOtpSection'),
+  'Login/register support phone + SMS OTP'
 );
 
 check(
-  'AUTH-2: Forgot password calls sendPasswordResetEmail',
-  authTsx.includes('requestPasswordReset') && authLib.includes('sendPasswordResetEmail'),
-  'ForgotPassword uses requestPasswordReset → sendPasswordResetEmail'
+  'AUTH-2: Forgot password uses API',
+  authTsx.includes('requestPasswordReset') && authLib.includes('requestPasswordReset') && apiClient.includes('/auth/forgot-password'),
+  'ForgotPassword calls backend forgot-password endpoint'
+);
+
+check(
+  'AUTH-2: Reset password page',
+  authTsx.includes('export function ResetPassword') && apiClient.includes('/auth/reset-password'),
+  'Reset password flow with token verification'
 );
 
 check(
@@ -40,8 +47,8 @@ check(
 
 check(
   'AUTH-3: No hardcoded profile defaults in sync',
-  !storeTs.includes('age: 28') && !storeTs.includes("gender: 'male'") && storeTs.includes('mergeProfileFromFirestore'),
-  'syncUserFromFirebase merges Firestore/local profile without fake defaults'
+  !storeTs.includes('age: 28') && !storeTs.includes("gender: 'male'") && storeTs.includes('syncUserFromApi'),
+  'syncUserFromApi uses server profile without fake defaults'
 );
 
 check(

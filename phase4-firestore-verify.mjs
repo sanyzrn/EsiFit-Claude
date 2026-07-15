@@ -1,5 +1,5 @@
 /**
- * Phase 4 Firestore persistence — static verification
+ * Phase 4 API persistence — static verification
  */
 import { readFileSync } from 'node:fs';
 
@@ -10,52 +10,51 @@ function check(name, pass, detail) {
 }
 
 const store = readFileSync('src/lib/store.ts', 'utf8');
-const firestoreData = readFileSync('src/lib/firestore-data.ts', 'utf8');
-const rules = readFileSync('firestore.rules', 'utf8');
+const activityApi = readFileSync('src/lib/activity-api.ts', 'utf8');
 const dashboard = readFileSync('src/pages/Dashboard.tsx', 'utf8');
+const migration = readFileSync('backend/migrations/001_init.sql', 'utf8');
 
 check(
-  'DATA-1: firestore-data fetch layer',
-  firestoreData.includes('fetchUserActivityData') &&
-    firestoreData.includes('persistBodyLog') &&
-    firestoreData.includes('persistExerciseLog') &&
-    firestoreData.includes('persistTicket'),
-  'Activity collections have fetch + persist helpers'
+  'DATA-1: activity-api fetch layer',
+  activityApi.includes('fetchUserActivityData') &&
+    activityApi.includes('persistBodyLog') &&
+    activityApi.includes('persistExerciseLog') &&
+    activityApi.includes('persistTicket'),
+  'Activity collections have fetch + persist helpers via REST API'
 );
 
 check(
-  'DATA-1: store writes through to Firestore',
+  'DATA-1: store writes through to API',
   store.includes('persistBodyLog') &&
     store.includes('persistExerciseLog') &&
     store.includes('persistCalculatorResult') &&
     store.includes('persistTicket') &&
     store.includes('persistSavedExercises') &&
-    store.includes('loadActivityFromFirestore'),
-  'Store mutations and login sync use Firestore'
+    store.includes('loadActivityFromApi'),
+  'Store mutations and login sync use backend API'
 );
 
 check(
-  'DATA-2: profile persisted to Firestore',
+  'DATA-2: profile persisted via API',
   store.includes('persistUserProfile') &&
-    firestoreData.includes('export async function persistUserProfile') &&
+    activityApi.includes('export async function persistUserProfile') &&
     dashboard.includes('await updateProfile'),
-  'Profile save writes to users/{uid}'
+  'Profile save PATCHes /api/users/me'
 );
 
 check(
-  'DATA-1: Firestore rules for activity collections',
-  rules.includes('match /exerciseLogs/') &&
-    rules.includes('match /calculatorResults/') &&
-    rules.includes('match /tickets/'),
-  'Rules cover exerciseLogs, calculatorResults, tickets'
+  'DATA-1: SQL schema for activity collections',
+  migration.includes('body_logs') &&
+    migration.includes('exercise_logs') &&
+    migration.includes('calculator_results') &&
+    migration.includes('tickets'),
+  'PostgreSQL tables cover activity data'
 );
 
 check(
-  'DATA-2: Firestore rules allow profile field updates',
-  rules.includes('savedExercises') &&
-    rules.includes('activityLevel') &&
-    rules.includes('isValidProfileUpdate'),
-  'Users can update profile fields server-side'
+  'DATA-2: saved exercises normalized table',
+  migration.includes('saved_exercises'),
+  'savedExercises stored in saved_exercises join table'
 );
 
 check(

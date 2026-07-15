@@ -9,13 +9,14 @@
     "lint": "eslint . --max-warnings 0",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "api:dev": "npm run dev --prefix backend",
+    "api:build": "npm run build --prefix backend"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",
     "clsx": "2.1.1",
     "date-fns": "^4.4.0",
-    "firebase": "^12.15.0",
     "lucide-react": "^1.21.0",
     "motion": "^12.42.2",
     "react": "^19.2.7",

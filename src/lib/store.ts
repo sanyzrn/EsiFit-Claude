@@ -1,5 +1,5 @@
 import type { User, BodyLog, ExerciseLog, CalculatorResult, Ticket, Plan, Goal, ActivityLevel } from './types';
-import { fetchEntitlements } from './entitlements';
+import { setEntitlementsFromUser, clearEntitlements } from './entitlements';
 import { EXERCISES, PROGRAMS, DIET_PLANS, ARTICLES } from './seed';
 import type { Language } from './i18n';
 import { localizedExercise } from './content-i18n';
@@ -11,9 +11,13 @@ import {
   persistExerciseLog,
   persistCalculatorResult,
   persistTicket,
-} from './firestore-data';
+} from './activity-api';
+import {
+  logoutUser,
+  setAuthToken,
+  type ApiUser,
+} from './api-client';
 
-// Simple reactive store with localStorage persistence
 type Listener = () => void;
 const listeners: Set<Listener> = new Set();
 export function subscribe(fn: Listener): () => void { listeners.add(fn); return () => { listeners.delete(fn); }; }
@@ -40,7 +44,6 @@ function loadState(): StoreState {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw) as StoreState;
-      // Never restore role/tier from localStorage — authorization uses server entitlements.
       parsed.currentUser = stripAuthFieldsFromUser(parsed.currentUser);
       return parsed;
     }
@@ -61,10 +64,6 @@ function saveState() {
   notify();
 }
 
-import { doc, getDoc } from 'firebase/firestore';
-import { signOut } from 'firebase/auth';
-import { auth, db } from './firebase';
-
 function clearActivityData() {
   state.bodyLogs = [];
   state.exerciseLogs = [];
@@ -73,9 +72,28 @@ function clearActivityData() {
   state.savedExercises = [];
 }
 
-async function loadActivityFromFirestore(userId: string) {
+function apiUserToStoreUser(user: ApiUser): User {
+  return {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    role: user.role,
+    subscriptionTier: user.subscriptionTier,
+    age: user.age,
+    gender: user.gender,
+    heightCm: user.heightCm,
+    weightKg: user.weightKg,
+    goal: user.goal as Goal | undefined,
+    activityLevel: user.activityLevel as ActivityLevel | undefined,
+    injuries: user.injuries,
+    assignedCoachId: user.assignedCoachId,
+    createdAt: user.createdAt,
+  };
+}
+
+async function loadActivityFromApi() {
   try {
-    const activity = await fetchUserActivityData(userId);
+    const activity = await fetchUserActivityData();
     state.bodyLogs = activity.bodyLogs;
     state.exerciseLogs = activity.exerciseLogs;
     state.calculatorResults = activity.calculatorResults;
@@ -83,76 +101,50 @@ async function loadActivityFromFirestore(userId: string) {
     state.savedExercises = activity.savedExercises;
     saveState();
   } catch (error) {
-    console.error('Error loading activity data from Firestore:', error);
+    console.error('Error loading activity data from API:', error);
   }
 }
 
-function readOptionalString(value: unknown): string | undefined {
-  return typeof value === 'string' ? value : undefined;
-}
-
-function readOptionalNumber(value: unknown): number | undefined {
-  return typeof value === 'number' && Number.isFinite(value) ? value : undefined;
-}
-
-function readOptionalGoal(value: unknown): Goal | undefined {
-  const goals: Goal[] = ['MUSCLE_GAIN', 'FAT_LOSS', 'GENERAL_FITNESS', 'STRENGTH'];
-  return typeof value === 'string' && goals.includes(value as Goal) ? (value as Goal) : undefined;
-}
-
-function readOptionalActivityLevel(value: unknown): ActivityLevel | undefined {
-  const levels: ActivityLevel[] = ['SEDENTARY', 'LIGHT', 'MODERATE', 'ACTIVE', 'VERY_ACTIVE'];
-  return typeof value === 'string' && levels.includes(value as ActivityLevel)
-    ? (value as ActivityLevel)
-    : undefined;
-}
-
-function mergeProfileFromFirestore(
-  data: Record<string, unknown>,
-  existing: User | null
-): Pick<User, 'age' | 'gender' | 'heightCm' | 'weightKg' | 'goal' | 'activityLevel' | 'injuries'> {
-  return {
-    age: readOptionalNumber(data.age) ?? existing?.age,
-    gender: readOptionalString(data.gender) ?? existing?.gender,
-    heightCm: readOptionalNumber(data.heightCm) ?? existing?.heightCm,
-    weightKg: readOptionalNumber(data.weightKg) ?? existing?.weightKg,
-    goal: readOptionalGoal(data.goal) ?? existing?.goal,
-    activityLevel: readOptionalActivityLevel(data.activityLevel) ?? existing?.activityLevel,
-    injuries: readOptionalString(data.injuries) ?? existing?.injuries,
-  };
-}
-
-export async function syncUserFromFirebase(uid: string) {
+export async function syncUserFromApi(user: ApiUser, token?: string) {
   try {
-    const userDoc = await getDoc(doc(db, 'users', uid));
-    if (userDoc.exists()) {
-      const data = userDoc.data();
-      const entitlements = await fetchEntitlements();
-      const existing = state.currentUser?.id === uid ? state.currentUser : null;
-      const profile = mergeProfileFromFirestore(data, existing);
-      state.currentUser = {
-        id: uid,
-        email: data.email,
-        name: data.name,
-        role: entitlements?.role ?? 'USER',
-        subscriptionTier: entitlements?.subscriptionTier ?? 'FREE',
-        createdAt: data.createdAt,
-        ...profile,
-      };
-      saveState();
-      await loadActivityFromFirestore(uid);
-    }
+    if (token) setAuthToken(token);
+    state.currentUser = apiUserToStoreUser(user);
+    setEntitlementsFromUser(user);
+    saveState();
+    await loadActivityFromApi();
   } catch (error) {
-    console.error("Error syncing user:", error);
+    console.error('Error syncing user:', error);
+  }
+}
+
+export async function bootstrapSession() {
+  const { fetchMe } = await import('./api-client');
+  try {
+    const { user } = await fetchMe();
+    await syncUserFromApi(user);
+    return true;
+  } catch {
+    setAuthToken(null);
+    state.currentUser = null;
+    clearActivityData();
+    clearEntitlements();
+    saveState();
+    return false;
   }
 }
 
 export function getState() { return state; }
 
 export async function logout() {
-  await signOut(auth);
+  try {
+    await logoutUser();
+  } catch {
+    /* ignore network errors on logout */
+  }
+  setAuthToken(null);
   state.currentUser = null;
   clearActivityData();
+  clearEntitlements();
   saveState();
 }
 
@@ -161,9 +153,9 @@ export async function updateProfile(updates: Partial<User>) {
   state.currentUser = { ...state.currentUser, ...updates };
   saveState();
   try {
-    await persistUserProfile(state.currentUser.id, updates);
+    await persistUserProfile(updates);
   } catch (error) {
-    console.error('Error persisting profile to Firestore:', error);
+    console.error('Error persisting profile:', error);
   }
 }
 
@@ -280,9 +272,8 @@ export function toggleSavedExercise(exerciseId: string) {
   if (idx >= 0) state.savedExercises.splice(idx, 1);
   else state.savedExercises.push(exerciseId);
   saveState();
-  const userId = state.currentUser?.id;
-  if (userId) {
-    void persistSavedExercises(userId, [...state.savedExercises]).catch((error) => {
+  if (state.currentUser?.id) {
+    void persistSavedExercises([...state.savedExercises]).catch((error) => {
       console.error('Error persisting saved exercises:', error);
     });
   }
@@ -290,21 +281,19 @@ export function toggleSavedExercise(exerciseId: string) {
 
 export function getStreak(): number {
   if (!state.currentUser) return 0;
-  
-  // Create a Set of date strings in 'YYYY-MM-DD' format using local time to match today's date
+
   const loggedDates = new Set(
     state.exerciseLogs.map(l => {
       const d = new Date(l.date);
-      // Adjust for local timezone offset to get the correct YYYY-MM-DD string
       const localDate = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
       return localDate.toISOString().split('T')[0];
     })
   );
-  
+
   const today = new Date();
   const todayLocal = new Date(today.getTime() - today.getTimezoneOffset() * 60000);
   const todayStr = todayLocal.toISOString().split('T')[0];
-  
+
   const yesterday = new Date(today);
   yesterday.setDate(yesterday.getDate() - 1);
   const yesterdayLocal = new Date(yesterday.getTime() - yesterday.getTimezoneOffset() * 60000);
@@ -312,17 +301,15 @@ export function getStreak(): number {
 
   let streak = 0;
   const currentDate = new Date(today);
-  
+
   if (!loggedDates.has(todayStr) && !loggedDates.has(yesterdayStr)) {
-    return 0; // No streak active
+    return 0;
   }
 
-  // If today is not logged, start checking from yesterday
   if (!loggedDates.has(todayStr)) {
     currentDate.setDate(currentDate.getDate() - 1);
   }
 
-  // Loop backwards day by day to count the streak
   while (true) {
     const dLocal = new Date(currentDate.getTime() - currentDate.getTimezoneOffset() * 60000);
     const ds = dLocal.toISOString().split('T')[0];
@@ -338,7 +325,6 @@ export function getStreak(): number {
 
 export { EXERCISES, PROGRAMS, DIET_PLANS, ARTICLES };
 
-// Seed data
 export const PLANS: Plan[] = [
   { id: 'plan_free', tier: 'FREE', name: 'Free', priceMonthly: 0, features: ['All calculators', 'Exercise library', '1 generic program', 'Community access'] },
   { id: 'plan_eco', tier: 'ECONOMY', name: 'Economy', priceMonthly: 999, features: ['Everything in Free', 'Goal-matched programs', 'Sample diet plans', 'Ticket support', 'Progress tracking'] },
@@ -346,7 +332,6 @@ export const PLANS: Plan[] = [
   { id: 'plan_elite', tier: 'ELITE', name: 'Elite', priceMonthly: 7999, features: ['Everything in VIP', 'Dedicated 1-on-1 coach', 'Weekly program adjustments', 'Priority support', 'Exclusive content'] },
 ];
 
-// All unique muscle groups and equipment for filtering
 export const ALL_MUSCLE_GROUPS = [...new Set(EXERCISES.flatMap(e => e.muscleGroups))].sort();
 export const ALL_EQUIPMENT = [...new Set(EXERCISES.flatMap(e => e.equipment))].sort();
 

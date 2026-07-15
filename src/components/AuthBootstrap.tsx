@@ -1,25 +1,22 @@
 import { useEffect } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
-import { syncUserFromFirebase, getState, logout as storeLogout } from '@/lib/store';
-import { refreshEntitlements, clearEntitlements } from '@/lib/entitlements';
+import { bootstrapSession, getState, logout as storeLogout } from '@/lib/store';
+import { getAuthToken } from '@/lib/api-client';
+import { clearEntitlements } from '@/lib/entitlements';
 
-/** Bootstrap Firebase auth → store sync on app load and auth changes. */
+/** Bootstrap API session → store sync on app load. */
 export function AuthBootstrap() {
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        await syncUserFromFirebase(user.uid);
-        await refreshEntitlements(true);
-      } else {
-        const state = getState();
-        if (state.currentUser) {
-          await storeLogout();
-        }
-        clearEntitlements();
+    const token = getAuthToken();
+    if (!token) {
+      const state = getState();
+      if (state.currentUser) {
+        void storeLogout();
       }
-    });
-    return unsub;
+      clearEntitlements();
+      return;
+    }
+
+    void bootstrapSession();
   }, []);
 
   return null;

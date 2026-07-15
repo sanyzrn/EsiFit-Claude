@@ -20,6 +20,7 @@ const Pricing = lazy(() => import('./pages/Pricing'));
 const Login = lazy(() => import('./pages/Auth').then((m) => ({ default: m.Login })));
 const Register = lazy(() => import('./pages/Auth').then((m) => ({ default: m.Register })));
 const ForgotPassword = lazy(() => import('./pages/Auth').then((m) => ({ default: m.ForgotPassword })));
+const ResetPassword = lazy(() => import('./pages/Auth').then((m) => ({ default: m.ResetPassword })));
 const DashboardOverview = lazy(() => import('./pages/Dashboard').then((m) => ({ default: m.DashboardOverview })));
 const DashboardProfile = lazy(() => import('./pages/Dashboard').then((m) => ({ default: m.DashboardProfile })));
 const DashboardPrograms = lazy(() => import('./pages/Dashboard').then((m) => ({ default: m.DashboardPrograms })));
@@ -71,6 +72,7 @@ export default function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/dashboard" element={<DashboardOverview />} />
                 <Route path="/dashboard/profile" element={<DashboardProfile />} />
                 <Route path="/dashboard/programs" element={<DashboardPrograms />} />

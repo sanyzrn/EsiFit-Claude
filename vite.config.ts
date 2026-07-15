@@ -15,12 +15,19 @@ export default defineConfig({
       '@': path.resolve(__dirname, 'src'),
     },
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+      },
+    },
+  },
   build: {
     rollupOptions: {
       output: {
         manualChunks(id) {
           if (!id.includes('node_modules')) return;
-          if (id.includes('/firebase/')) return 'firebase';
           if (id.includes('/recharts/')) return 'recharts';
           if (id.includes('/react-router')) return 'router';
           if (id.includes('/react-dom/') || id.includes('/react/')) return 'react';
