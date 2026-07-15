@@ -15,6 +15,7 @@ const bodyCalc = readFileSync('src/components/calculators/BodyCompositionCalcula
 const strengthCalc = readFileSync('src/components/calculators/StrengthTrainingCalculators.tsx', 'utf8');
 const home = readFileSync('src/pages/Home.tsx', 'utf8');
 const calculatorsPage = readFileSync('src/pages/Calculators.tsx', 'utf8');
+const lazyCalc = readFileSync('src/components/calculators/lazy.tsx', 'utf8');
 const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
 const testFile = readFileSync('src/lib/calculators.test.ts', 'utf8');
 
@@ -77,8 +78,9 @@ check(
 
 check(
   'CALC-1: rep-max-table slug documented on /calculators',
-  calculatorsPage.includes('rep-max-table') && calculatorsPage.includes('OneRepMaxCalculator'),
-  'rep-max-table maps to shared 1RM component'
+  calculatorsPage.includes('rep-max-table') &&
+    lazyCalc.includes("'rep-max-table': OneRepMaxCalculator"),
+  'rep-max-table maps to shared 1RM component via lazy registry'
 );
 
 check(
