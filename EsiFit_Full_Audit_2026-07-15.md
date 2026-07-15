@@ -1,573 +1,193 @@
-# EsiFit Full Product Audit — 2026-07-15
+# EsiFit — Full Audit
+**Date:** 2026-07-15
+**Method:** Executed audit — `npm install`, `npm run dev`, `npm run build`, `tsc --noEmit`, a headless-Chromium crawl of every route (console/network capture), targeted UI interaction tests (language toggle, localStorage tampering), and source review with file:line citations. A prior static-only review (`EsiFit_Review_Report.md`, dated 2026-06-23) already exists in this repo — this pass re-verifies its claims against the *current* code and found the project has moved on significantly (real Firebase auth now exists, the debug error-overlay is gone), while surfacing one new **critical** vulnerability the old report missed.
+
+---
 
 ## Executive Summary
 
-EsiFit is a functional **demo-grade** React 19 + Vite 7 fitness SPA with a polished dark/orange UI, 14 interactive calculators, and a complete route map (37 routes). The app **installs and runs** (`npm install`, `npm run dev`, `npm run build` all succeed). However, it is **not production-ready**: subscription tiers and admin/coach roles are enforced only in client-side `localStorage` (trivially bypassable), payments are simulated, most user data never reaches Firestore, auth-adjacent flows (forgot password, Google sign-up) are stubbed, and every page load emits Firebase connection errors. The design system has **drifted** from the documented pine/bone/ember/brass palette to Tailwind orange/gray tokens. Farsi i18n is **partial** — marketing pages translate, but Auth remains English-only. Bundle size is **1.6 MB JS** (495 KB gzip) with no effective code-splitting despite lazy imports on Home. **Recommended priority:** fix security gating, wire real persistence, complete auth/payment flows, then i18n and performance.
+EsiFit is a React 19 / Vite 7 / Tailwind 4 fitness platform. It **builds cleanly, boots without a single console error or React warning across all 23 routes**, and real Firebase Authentication (email/password + Google) is now wired up — this is a genuine improvement over the June review, which described a 100% `localStorage`-only demo. However, the **authorization layer was only half-migrated**: subscription-tier and admin-role gating still reads from a client-controlled `localStorage` object, and — more seriously — the live `firestore.rules` on this repo allow a signed-in user to **write their own `role` and `subscriptionTier` fields directly**, meaning any user can grant themselves Admin/Elite access with a few lines in the browser console, no exploit needed. The "Upgrade to VIP/Elite" button on the Pricing page is decorative: it flips local state only and never touches Firestore or a payment processor. Content depth is still thin (10 exercises, 3 programs, 2 diet plans, 3 articles) and none of it is translated to Persian even though the UI chrome fully supports Farsi/RTL — confirmed both by code and by an actual RTL screenshot, which renders correctly.
 
-**Audit method:** `npm install`, `npm run dev` (port 5173), `npm run build`, `npm run lint`, `npx tsc --noEmit`, Playwright route crawl on preview (port 4173), calculator edge-case unit tests, localStorage bypass probe, i18n toggle verification, viewport screenshots at 375/768/1440px.
-
----
-
-## STEP 0 — Project Bootstrap & Tooling
-
-### 0.1 `npm install`
-
-```
-added 238 packages, and audited 239 packages in 5s
-2 vulnerabilities (1 low, 1 high)
-npm notice New major version of npm available! 10.9.7 -> 12.0.1
-```
-
-No install failures. Post-install `npm audit` reports **esbuild** (low) and **vite 7.0.0–7.3.3** (high) advisories.
-
-### 0.2 `npm run dev`
-
-- Dev server: **HTTP 200** at `http://localhost:5173/`
-- Deep route hard-refresh `/dashboard/progress`: **HTTP 200**, SPA shell loads (Vite history fallback works); unauthenticated users see login redirect content.
-- **Console errors on boot** (from `src/main.tsx:8-18` Firebase probe + Firestore init):
-
-```
-@firebase/firestore: Could not reach Cloud Firestore backend. Connection failed 1 times.
-FirebaseError: [code=unavailable]: The operation could not be completed
-This typically indicates that your device does not have a healthy Internet connection...
-The client will operate in offline mode until it is able to successfully connect to the backend.
-```
-
-This error repeats on **every route navigation** during Playwright crawl (37 routes). Root cause: `testConnection()` calls `getDocFromServer` on every app boot (`src/main.tsx:10`), and Firebase SDK initializes even when only `localStorage` is used.
-
-### 0.3 Route crawl (all routes from `src/App.tsx`)
-
-Playwright verified **37/37 routes** return HTTP 200 with non-blank `#root` content. No React throw/blank-screen failures observed.
-
-| Result | Routes |
-|--------|--------|
-| Renders OK | All listed in `src/App.tsx:38-61` plus `*` → `NotFound` |
-| Redirect behavior | `/dashboard/*` → login form when `currentUser` is null (`src/pages/Dashboard.tsx:21`) |
-| Admin/Coach guard | `/admin`, `/coach` render **null** then redirect when role mismatch — but see Security section for bypass |
-
-### 0.4 `npm run build`
-
-```
-dist/index.html                     0.91 kB │ gzip:   0.51 kB
-dist/assets/index-FM87cHkQ.css     48.50 kB │ gzip:   8.18 kB
-dist/assets/index-CPqU5hQI.js   1,597.15 kB │ gzip: 494.84 kB
-✓ built in 4.64s
-```
-
-**Warnings:**
-- Chunks > 500 KB after minification
-- Four calculator modules are both **dynamically imported** (`HomeSmartTools.tsx`) and **statically imported** (`Calculators.tsx`), defeating code-splitting:
-
-```
-(!) BodyCompositionCalculators.tsx is dynamically imported by HomeSmartTools.tsx
-    but also statically imported by Calculators.tsx, dynamic import will not move module into another chunk.
-```
-
-**`vite-plugin-singlefile`:** listed in `package.json:37` but **NOT configured** in `vite.config.ts` — build uses normal multi-file output, not single-file bundling.
-
-### 0.5 `npm run lint` & `tsc --noEmit`
-
-**Lint (`npm run lint`):**
-```
-sh: 1: eslint: not found
-Exit code: 127
-```
-ESLint is referenced in `package.json:9` scripts but **not installed** as a dependency.
-
-**TypeScript (`npx tsc --noEmit`) — 6 errors:**
-```
-src/components/calculators/BodyCompositionCalculators.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
-src/components/calculators/BodyCompositionCalculators.tsx(5,18): error TS6133: 'AnimatePresence' is declared but its value is never read.
-src/components/calculators/EnergyNutritionCalculators.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
-src/components/calculators/HealthLifestyleCalculators.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
-src/components/calculators/StrengthTrainingCalculators.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
-src/pages/Calculators.tsx(4,10): error TS6133: 'getState' is declared but its value is never read.
-```
-
-### 0.6 Firebase vs localStorage — Data Architecture
-
-| Artifact | Present | Notes |
-|----------|---------|-------|
-| `src/lib/firebase.ts` | ✅ | Initializes from `firebase-applet-config.json` |
-| `firebase-blueprint.json` | ✅ | Schema blueprint for User/BodyLog |
-| `firestore.rules` | ✅ | Real rules (deny-all default + owner-scoped users/bodyLogs) |
-| `firebase-applet-config.json` | ✅ | Live project: `symmetric-component-6sjh2`, API key present |
-
-**What actually persists where:**
-
-| Data | Firebase Auth | Firestore | localStorage (`esifit_store`) |
-|------|--------------|-----------|-------------------------------|
-| Login/register session | ✅ Real (`Auth.tsx:28-29,146-156`) | User doc on register/Google | Synced to `state.currentUser` via `syncUserFromFirebase` |
-| Profile fields (age, height, etc.) | — | — | ✅ `updateProfile` → localStorage only (`store.ts:73-77`) |
-| Body logs, exercise logs | — | Rules exist, **no writes from app** | ✅ `addBodyLog`, `addExerciseLog` (`store.ts:97-114`) |
-| Tickets/chat | — | — | ✅ localStorage only |
-| Subscription tier | Written on register as `FREE` | Could update via rules | ✅ `upgradeTier` flips locally (`store.ts:80-84`, `Pricing.tsx:22`) |
-| Saved exercises | — | — | ✅ localStorage |
-| Calculator results | — | — | ✅ localStorage (`addCalculatorResult`) |
-
-**Verdict:** Firebase Auth is **wired to a real project**, but the app is predominantly a **localStorage-backed SPA**. Firestore is scaffolded (rules + blueprint) but not integrated for logs, tickets, or billing. `syncUserFromFirebase` (`store.ts:39-62`) **hardcodes** profile defaults (`age: 28`, `gender: 'male'`, etc.) instead of reading them from Firestore.
+| Area | Grade | Basis |
+|---|---|---|
+| Build / boot health | A | Clean `vite build`, zero console errors on 23/23 crawled routes |
+| Frontend architecture | B− | Some files >600 lines, duplicate static+dynamic imports (Vite warns), no tests |
+| Type safety | B | `tsc --noEmit` passes with only 6 pre-existing unused-import errors |
+| Auth (login/register) | B | Real Firebase Auth; no fake "any password works" flow found |
+| **Authorization / tier gating** | **F** | Client-only checks; Firestore rules let users self-promote role & tier (see SEC-1) |
+| **Payments** | **F** | "Upgrade" is a local state flip; no Stripe, no server write, reverts on next login |
+| i18n (UI) | A− | Verified via live screenshot: dropdown correctly flips `dir=rtl`, mirrors nav |
+| i18n (content) | D | 0 of 10 exercises / 3 articles / 5 programs have Farsi text |
+| Content depth | D | Same thin catalog as the June review — no expansion |
+| Accessibility/RTL rendering | B | No layout breakage observed at 375px or in RTL mode |
+| Tooling hygiene | D | `npm run lint` fails outright — ESLint isn't even installed |
+| Security misc | C | No debug overlay in prod, Firebase client keys are legitimately public |
 
 ---
 
-## STEP 1 — Feature Inventory
+## Step 0 — Getting the Project Running
 
-| Feature | Route / File | Status | Evidence |
-|---------|-------------|--------|----------|
-| Home / marketing | `/` · `src/pages/Home.tsx` | **Working** | Playwright: renders hero, stats, features, testimonials, `#smart-tools` calculators |
-| Hero background image | `public/images/hero-bg.jpg` | **Working** (unoptimized) | File exists, 282 KB; referenced `Home.tsx:36` |
-| Home calculator console (14 tools, 4 tabs) | `#smart-tools` · `HomeSmartTools.tsx` | **Working** | Tabs: Body Composition, Energy & Nutrition, Strength & Training, Health & Lifestyle; BMI gauge renders live |
-| Calculator index (14 cards) | `/calculators` · `Calculators.tsx:48-76` | **Working** | 14 slugs listed `Calculators.tsx:14-27` |
-| BMI Calculator | `/calculators/bmi` · `BodyCompositionCalculators.tsx:7-31` | **Working** | Slider inputs update `CircularGauge` live; edge: zero height → Infinity (`calculators.ts:5-7`) |
-| Body Fat % (US Navy) | `/calculators/body-fat` | **Working** | Boundary `waist≤neck` shows error UI (`calculators.ts:23-24`, `BodyCompositionCalculators.tsx:61-68`) |
-| BMR | `/calculators/bmr` | **Working** | Mifflin-St Jeor via `calcBMR` |
-| TDEE | `/calculators/tdee` | **Working** | Chains BMR × activity factor |
-| Macros | `/calculators/macros` | **Working** | Returns error when TDEE too low (`calculators.ts:94-96`) |
-| 1RM / %1RM Table | `/calculators/one-rep-max`, `/calculators/rep-max-table` | **Working** (duplicated) | Both map to `OneRepMaxCalculator` (`Calculators.tsx:45`) |
-| FFMI | `/calculators/ffmi` | **Working** | Gauge renders adjusted FFMI |
-| WHR | `/calculators/whr` | **Partially working** | Zero hip → `Infinity` WHR, still shows risk string (`calculators.ts:148-152`) |
-| Water Intake | `/calculators/water-intake` | **Working** | `weight × 0.033` liters |
-| Goal Date Estimator | `/calculators/goal-date` | **Working** | Zero calorie delta returns error (`calculators.ts:167-168`) |
-| Calories Burned | `/calculators/calories-burned` | **Working** | MET table + duration |
-| Body Type Quiz | `/calculators/body-type-quiz` | **Working** | 6 questions, result on completion |
-| Volume Load | `/calculators/volume-load` | **Working** | Manual set/rep/weight entry |
-| Exercise library (10 exercises) | `/exercises` · `store.ts:229-240` | **Working** (seed data) | No `videoUrl`/`thumbnailUrl` populated; Dumbbell icon placeholders |
-| Exercise detail | `/exercises/:slug` | **Working** | Instructions + mistakes render for `barbell-bench-press` |
-| Anatomy / muscle map | `/exercises` anatomy view · `Exercises.tsx:4,141-150` | **Working** | `react-muscle-highlighter` renders; click filters by `MUSCLE_MAPPING` |
-| Training programs (3) | `/programs` · `store.ts:242-327` | **Working** (seed) | Tier badges on cards; gradient placeholders not photos |
-| Program detail + day tabs | `/programs/:slug` | **Working** | VIP program gated via `TierGate` when tier insufficient |
-| Program exercise → exercise link | `Programs.tsx:202` | **Broken** | Links use `exerciseName.toLowerCase().replace(/ /g,'-')` not actual `slug` — e.g. "Barbell Back Squat" → `/exercises/barbell-back-squat` (404) |
-| Diet plans (2) | `/diet` · `store.ts:329-382` | **Working** (seed) | Full macro breakdowns per meal |
-| Blog (3 articles) | `/blog` · `store.ts:384-403` | **Working** | Cover images from Pexels CDN (external) |
-| Pricing / plans | `/pricing` · `Pricing.tsx` | **Fake-stubbed payment** | `upgradeTier(tier)` local flip (`Pricing.tsx:21-23`); comment says "Simulate Stripe checkout" |
-| Login (email/password) | `/login` · `Auth.tsx:9-123` | **Working** (Firebase) | `signInWithEmailAndPassword`; rejects invalid creds |
-| Login (Google) | `Auth.tsx:38-64` | **Working** | `signInWithPopup` + Firestore user doc creation |
-| Register (email) | `/register` · `Auth.tsx:125-226` | **Working** (Firebase) | Min 6 char password; creates Firestore user doc |
-| Register (Google) | `Auth.tsx:213` | **Broken / stub** | `onClick={() => {}}` — button does nothing |
-| Forgot password | `/forgot-password` · `Auth.tsx:228-265` | **Fake-stubbed** | `setSent(true)` only; no `sendPasswordResetEmail` |
-| Dashboard overview | `/dashboard` · `Dashboard.tsx:74+` | **Working** (local data) | Streak, workout count from localStorage |
-| Profile | `/dashboard/profile` | **Partially working** | Saves to localStorage only, not Firestore |
-| My Programs | `/dashboard/programs` | **Empty state only** | Static "No active programs" (`Dashboard.tsx:268-275`) |
-| Progress tracking + charts | `/dashboard/progress` | **Working** (local) | Recharts weight/1RM charts; `dir="ltr"` on chart containers (`Dashboard.tsx:431,447`) |
-| Coach chat / tickets | `/dashboard/chat` | **Demo** | Local tickets; auto-reply via `setTimeout` (`Dashboard.tsx:529-539`) |
-| Billing | `/dashboard/billing` | **Fake-stubbed** | Shows tier from localStorage; payment buttons inert (`Dashboard.tsx:683-687`) |
-| Admin console | `/admin` · `Admin.tsx` | **Demo** | Hardcoded `demoUsers` array (`Admin.tsx:29-36`); client role check only |
-| Coach console | `/coach` · `Coach.tsx` | **Demo** | Hardcoded `clients` array (`Coach.tsx:20-24`); client role check only |
-| Tier gating component | `TierGate.tsx` | **Working UI / bypassable** | Blur overlay + upgrade CTA; English-only gate text (`TierGate.tsx:36-40`) |
-| i18n (en/fa) | `src/lib/i18n.tsx` | **Partially working** | Nav/home/pricing translate; Auth pages **English-only** even when `lang=fa` |
-| RTL layout | `i18n.tsx:145-152` | **Working** | `dir=rtl`, `farsi-font` class on `<html>` when FA selected |
-| 404 page | `NotFound.tsx` | **Working** | Renders on `/nonexistent` |
-| Dark/light mode | `index.html:2` | **Dark only** | `<html class="dark">`; no toggle |
-
-### Calculator count verification
-
-**14 calculators confirmed** in `Calculators.tsx:14-27` and embedded on Home via 4 tab groups in `HomeSmartTools.tsx:50-55`:
-1. BMI, 2. Body Fat, 3. BMR, 4. TDEE, 5. Macros, 6. 1RM, 7. FFMI, 8. WHR, 9. Water, 10. Goal Date, 11. Calories Burned, 12. Body Type Quiz, 13. Volume Load, 14. %1RM Table (shares component with #6).
-
-### Calculator edge-case test results (automated)
-
-| Test | Result | Notes |
-|------|--------|-------|
-| BMI weight=0 | BMI=0, category "Underweight" | No input guard |
-| BMI height=0 | `Infinity` | No guard (`calculators.ts:6-7`) |
-| Body fat waist≤neck (male) | Error returned | Correct (`calculators.ts:23-24`) |
-| WHR hip=0 | `Infinity` WHR | No guard (`calculators.ts:149`) |
-| 1RM Brzycki reps=37 | `NaN` | Denominator `37-reps` (`calculators.ts:111`) |
-| Macros low TDEE | Error returned | Correct (`calculators.ts:94-96`) |
-| Goal date delta=0 | Error returned | Correct (`calculators.ts:167-168`) |
+- `npm install`: succeeded, 238 packages, **2 vulnerabilities** (1 low, 1 high — both in `esbuild`/`vite` dev-server tooling, not runtime-exploitable in production).
+- `npm run dev`: booted in ~400ms with no errors.
+- `npm run build`: **succeeded**. Output: `dist/assets/index-*.js` = **1,597.15 kB (494.84 kB gzip)**, CSS 48.5 kB (8.18 kB gzip). Vite explicitly warns the JS chunk exceeds its 500 kB budget, and flags that `BodyCompositionCalculators.tsx`, `EnergyNutritionCalculators.tsx`, `StrengthTrainingCalculators.tsx`, and `HealthLifestyleCalculators.tsx` are **both statically imported** (by `Calculators.tsx`) **and dynamically imported** (by `HomeSmartTools.tsx`), which defeats the code-splitting Vite is trying to do — the "lazy" home-page tabs still ship in the main bundle.
+- `npm run lint`: **fails immediately** — `sh: 1: eslint: not found`. ESLint is referenced in `package.json`'s `lint` script but isn't a devDependency at all, so this script has never actually run in CI or locally.
+- `npx tsc --noEmit`: 6 errors, all `TS6133 declared but never read` (unused `React`/`AnimatePresence`/`getState` imports) in `BodyCompositionCalculators.tsx:1`, `EnergyNutritionCalculators.tsx:1`, `HealthLifestyleCalculators.tsx:1`, `StrengthTrainingCalculators.tsx:1,5`, `Calculators.tsx:4`. Cosmetic, not functional.
+- **Firebase wiring — verified, not assumed:** `src/lib/firebase.ts` initializes a real Firebase app from `firebase-applet-config.json` (project `symmetric-component-6sjh2`). `src/pages/Auth.tsx` calls real `signInWithEmailAndPassword` / `createUserWithEmailAndPassword` / `signInWithPopup` (Google). `src/lib/store.ts:39-63` pulls the user profile from Firestore (`syncUserFromFirebase`). **However**, everything else — body logs, exercise logs, calculator history, tickets, saved exercises, and the subscription tier itself once a session is running — still lives only in `localStorage` (`src/lib/store.ts:9-33`) and is never written back to Firestore. So this is a **hybrid**, not a full migration: real auth, fake everything-after-auth.
+- In this sandboxed audit environment, outbound requests to `firestore.googleapis.com` are network-blocked (only npm/GitHub domains are allowlisted here), so I could not verify a live round-trip login end-to-end. The crawl confirms the SDK correctly *attempts* the connection and fails gracefully (see Step 2) — I'm flagging this as an environment limitation, not an app bug.
 
 ---
 
-## STEP 2 — Bug Hunt
+## Step 1 — Feature Inventory
 
-### [SEVERITY: Critical] Subscription tier bypass via localStorage
-
-**File:** `src/lib/store.ts:9-33`, `src/pages/Programs.tsx:114-115`, `src/components/TierGate.tsx:17-21`  
-**Repro:** 1) Open app 2) DevTools → Application → localStorage → `esifit_store` 3) Set `currentUser.subscriptionTier` to `"ELITE"` 4) Navigate to `/programs/strength-powerlifting`  
-**Expected:** VIP gate blocks content  
-**Actual:** Full program content visible including "Heavy Squat Day" — Playwright bypass probe: `vipProgramUnlocked: true`, `upgradeGateShown: false`  
-**Suggested fix:** Enforce tier from Firebase Auth custom claims or Firestore `users/{uid}.subscriptionTier` on every gated fetch; never trust localStorage for authorization.
-
----
-
-### [SEVERITY: Critical] Admin dashboard accessible via forged localStorage role
-
-**File:** `src/pages/Admin.tsx:13-17`, `src/lib/store.ts:20-28`  
-**Repro:** 1) Set `esifit_store.currentUser.role` to `"ADMIN"` in localStorage 2) Reload 3) Visit `/admin`  
-**Expected:** Server-side or Firebase-verified admin check  
-**Actual:** Full Admin Dashboard renders with MRR, user tables (`adminDashboardVisible: true` in Playwright probe)  
-**Suggested fix:** Verify `role` from Firebase ID token custom claims; redirect if claim missing.
-
----
-
-### [SEVERITY: High] Firebase Firestore error spam on every page load
-
-**File:** `src/main.tsx:8-18`, `src/lib/firebase.ts:1-8`  
-**Repro:** 1) `npm run preview` 2) Open any route 3) Check console  
-**Expected:** Silent boot or graceful offline handling  
-**Actual:** Red error on every navigation: `Could not reach Cloud Firestore backend`  
-**Suggested fix:** Remove `testConnection()` probe from production boot; lazy-init Firestore only when needed; use `enableIndexedDbPersistence` with explicit offline UX.
+| Feature | Route/File | Status | Evidence |
+|---|---|---|---|
+| Home page + 14-calculator tabbed console | `/` , `HomeSmartTools.tsx` | Working, but only **13 of 14** calculators are duplicated here | Home tabs render Bmi/BodyFat/Ffmi/Whr/BodyTypeQuiz/Bmr/Tdee/Macros/WaterIntake/OneRepMax/VolumeLoad/GoalDate/CaloriesBurned = 13. The 14th, "% of 1RM Table" (`rep-max-table`), exists only on `/calculators` |
+| Calculators index & detail pages | `/calculators`, `/calculators/:slug` | Working — all 14 present | `Calculators.tsx:14-27` lists exactly 14 slugs matching `calculators.ts`'s 14 exported functions |
+| Login (email/password) | `/login`, `Auth.tsx:9-64` | Working, real Firebase call | `signInWithEmailAndPassword` used; no "any password accepted" shortcut found (unlike June report) |
+| Register | `/register`, `Auth.tsx:125-163` | Working, real Firebase call, writes a Firestore `users/{uid}` doc with `role: 'USER'`, `subscriptionTier: 'FREE'` | `createUserWithEmailAndPassword` + `setDoc` |
+| Google Sign-In | `Auth.tsx:38-64` | Working (Login page) | Real `signInWithPopup(GoogleAuthProvider)`. **Not wired on Register page** — the "Sign up with Google" button at `Auth.tsx:213` has `onClick={() => {}}` — a no-op |
+| Forgot Password | `/forgot-password`, `Auth.tsx:228-265` | **Fake** | `onSubmit` just does `setSent(true)`; no `sendPasswordResetEmail` call to Firebase at all — no email is ever sent |
+| Pricing / Upgrade | `/pricing`, `Pricing.tsx:22` | **Fake** | Calls `upgradeTier(tier)`, which only patches local `localStorage` state (`store.ts:80-85`) — no Stripe, no Firestore write. Reverts next time `syncUserFromFirebase` runs |
+| Tier-gated content (VIP/Elite programs, diet plans, coach chat) | `TierGate.tsx` | **Client-only, bypassable** | See SEC-1/SEC-2 below |
+| Exercise library + anatomy filter | `/exercises`, `Exercises.tsx` | Working, genuinely wired | `react-muscle-highlighter`'s `<Model>` is rendered and its `onClick` maps body-part slugs to muscle-group filters (`MUSCLE_MAPPING`, `Exercises.tsx:8-53`) — this **is** connected to real filtering, contrary to what the audit brief suspected might be decorative |
+| Programs, Diet plans, Blog | `/programs`, `/diet`, `/blog` | Working, thin content | 3 programs, 2 diet plans, 3 articles — unchanged from June review |
+| Admin console | `/admin`, `Admin.tsx:14-17` | Working UI, but gating is client-only and data is hardcoded demo data (`Admin.tsx:34`) | See SEC-1 |
+| Coach chat / support tickets | `/coach`, `Dashboard.tsx` chat tab | Demo-only, local | Tickets/messages are pure `localStorage` objects (`store.ts:127-164`), no real coach on the other end |
+| i18n toggle (EN/FA) | `Layout.tsx:72-81` | **Working correctly** | Confirmed live: selecting "فارسی" sets `document.documentElement.dir = 'rtl'` and `lang = 'fa'`, and the rendered screenshot shows the nav, cards, and text properly mirrored |
+| i18n content | `store.ts` seed data | **Not translated** | 0 occurrences of `fa:` anywhere in `store.ts`'s exercise/program/diet/article data — only UI chrome strings are bilingual |
+| 404 page | `*`, `NotFound.tsx` | Working | Confirmed via crawl: unmatched route still returns 200 + renders NotFound, no console errors |
+| Deep-link refresh | any nested route | Working in both dev and `vite preview` | `curl` returned 200 for `/dashboard/progress` on both dev server and the production `preview` server |
 
 ---
 
-### [SEVERITY: High] Forgot password is a UI fake
+## Step 2 — Bug Hunt
 
-**File:** `src/pages/Auth.tsx:247-255`  
-**Repro:** 1) Go to `/forgot-password` 2) Enter any email 3) Submit  
-**Expected:** Firebase `sendPasswordResetEmail`  
-**Actual:** Immediately shows "Check your email" with no network call (`setSent(true)` only)  
-**Suggested fix:** Wire `sendPasswordResetEmail(auth, email)` with error handling.
+**[SEVERITY: Critical] Users can grant themselves Admin role and Elite subscription tier via a direct Firestore write**
+File: `firestore.rules:16-30` (the `isValidUser`/`users/{userId}` `allow update` rule)
+Repro steps:
+1. Sign in as any normal user (real Firebase Auth session, no exploit needed).
+2. From the browser console, call the Firestore SDK directly: `updateDoc(doc(db,'users',auth.currentUser.uid), { role: 'ADMIN', subscriptionTier: 'ELITE' })`.
+3. The rule at `firestore.rules:26-28` only requires `isOwner(userId)` + `isValidUser(incoming())` + that the changed keys are a subset of `['name','role','subscriptionTier']`. It never checks the *previous* role/tier or requires a privileged caller — so this update is **allowed**.
+Expected vs Actual: Role/tier changes should require a trusted server (Cloud Function, admin SDK, or payment-webhook write) — not be user-writable at all. Actual: any authenticated user can self-elevate to Admin and Elite for free.
+Suggested fix: Remove `role` and `subscriptionTier` from the client-writable key set entirely; make them writable only by a Cloud Function running with the Admin SDK (triggered by a verified payment webhook for tier, and by a separate manual-invite flow for role).
 
----
+**[SEVERITY: Critical] Tier/role gating (`TierGate`, `/admin`) reads a fully client-controlled `localStorage` object, no server check exists**
+File: `src/components/TierGate.tsx:18`, `src/pages/Admin.tsx:14-17`
+Repro steps (performed live in this audit):
+1. On any page, run in devtools: `localStorage.setItem('esifit_store', JSON.stringify({currentUser:{id:'x',role:'ADMIN',subscriptionTier:'ELITE', ...}, bodyLogs:[],exerciseLogs:[],calculatorResults:[],tickets:[],savedExercises:[]}))`.
+2. Reload and navigate to `/admin`.
+Expected vs Actual: Expected a redirect/denial for a non-privileged session. Actual: the Admin dashboard rendered in full ("Admin Dashboard — Manage users, content, and revenue", MRR/user tables), and `/dashboard/billing` displayed "Current Plan: Elite / $79.99/month" with full manage-subscription controls — confirmed by capturing the live rendered page text and a screenshot during this audit.
+Suggested fix: Even independent of SEC-1, gating decisions must be re-verified against the signed-in user's real Firestore document (or, better, a custom-claims token) on every privileged read, not against a local cache that the browser owns.
 
-### [SEVERITY: High] Register "Sign up with Google" button is dead
+**[SEVERITY: High] "Upgrade to VIP/Elite" does not persist and is not a real payment flow**
+File: `src/pages/Pricing.tsx:22`, `src/lib/store.ts:80-85`
+Repro: Click "Upgrade" on Pricing → `upgradeTier()` mutates local state only. No Stripe Elements, no checkout redirect, no Firestore write. Log out/in (or another device) and the tier reverts to whatever Firestore has (`FREE` by default).
+Suggested fix: Route "Upgrade" through a real payment processor (Stripe Checkout/Billing) and grant tier server-side via webhook only.
 
-**File:** `src/pages/Auth.tsx:213`  
-**Repro:** 1) Go to `/register` 2) Click "Sign up with Google"  
-**Expected:** Same flow as login Google (`Auth.tsx:38-64`)  
-**Actual:** `onClick={() => {}}` — no action  
-**Suggested fix:** Reuse `handleGoogleSignIn` from Login or extract shared auth helper.
+**[SEVERITY: High] "Sign up with Google" on the Register page is a dead button**
+File: `src/pages/Auth.tsx:213` — `onClick={() => {}}`
+Repro: Go to `/register`, click "Sign up with Google". Nothing happens; no error, no navigation. (The equivalent button on `/login` works correctly.)
+Suggested fix: Wire it to the same `signInWithPopup` handler used on the Login page.
 
----
+**[SEVERITY: High] "Forgot Password" never sends an email**
+File: `src/pages/Auth.tsx:247` — `onSubmit={e => { e.preventDefault(); setSent(true); }}`
+Repro: Submit any email on `/forgot-password` (even a nonexistent one) → always shows "Check your email," but Firebase's `sendPasswordResetEmail` is never called anywhere in the file.
+Suggested fix: Call `sendPasswordResetEmail(auth, email)` and only show the success state after it resolves; surface Firebase's error for unknown accounts appropriately (without leaking whether an email exists, per standard practice).
 
-### [SEVERITY: Medium] Program detail exercise links 404
+**[SEVERITY: Medium] Duplicate static+dynamic imports defeat code-splitting**
+File: `src/components/calculators/HomeSmartTools.tsx:5,17,28,37` vs `src/pages/Calculators.tsx` (static imports of the same four files)
+Evidence: `vite build` explicitly warns about this for all four calculator-group files. Net effect: the "lazy-loaded" home tabs still ship inside the same 1.6 MB main chunk since the static import elsewhere forces them into it anyway.
+Suggested fix: Pick one strategy — either have `Calculators.tsx` also `React.lazy()` these per-slug, or drop the lazy-loading pretense in `HomeSmartTools.tsx` since it isn't achieving anything today.
 
-**File:** `src/pages/Programs.tsx:202`  
-**Repro:** 1) Login 2) Open `/programs/beginner-full-body` 3) Click any exercise name link  
-**Expected:** Navigate to `/exercises/barbell-squat` (actual slug `barbell-squat`)  
-**Actual:** Link built from display name → `/exercises/barbell-back-squat` → Exercise not found  
-**Suggested fix:** Resolve `exerciseId` to `EXERCISES.find(e => e.id === pe.exerciseId).slug`.
+**[SEVERITY: Medium] `npm run lint` is broken — ESLint isn't installed**
+File: `package.json` (`"lint": "eslint . --ext ts,tsx ..."`), no `eslint` in `devDependencies`
+Repro: `npm run lint` → `sh: 1: eslint: not found`.
+Suggested fix: Add `eslint` + a config (flat config for ESLint 9, matching Vite 7/React 19/TS 5.9) to `devDependencies`, or remove the script if linting isn't actually part of the workflow.
 
----
+**[SEVERITY: Low] Anatomy-model "Neck" region maps to a muscle group no exercise has**
+File: `src/pages/Exercises.tsx:17` (`'neck': 'Neck'`) vs. `src/lib/store.ts` — no exercise anywhere is tagged `muscleGroups: [...'Neck'...]` (only `Back`, `Biceps`, `Chest`, `Core`, `Glutes`, `Hamstrings`, `Legs`, `Quadriceps`, `Rear Delts`, `Shoulders`, `Triceps` appear).
+Repro: Click the neck region on the anatomy model → filters to zero results with no explanatory empty state beyond a generic "no exercises found," which reads as broken content rather than an expected empty filter.
+Suggested fix: Either tag a neck exercise or remove the neck hotspot from `MUSCLE_MAPPING` until content exists for it.
 
-### [SEVERITY: Medium] `syncUserFromFirebase` overwrites profile with hardcoded defaults
+**[SEVERITY: Low] Debug scripts committed at repo root**
+File: `check.mjs`, `check.cjs` (both just `console.log`-dump the `react-muscle-highlighter` module export shape)
+Suggested fix: Delete — clearly scratch files from wiring up the dependency, not part of the app.
 
-**File:** `src/lib/store.ts:51-56`  
-**Repro:** 1) Register/login 2) Inspect `state.currentUser`  
-**Expected:** Profile from Firestore or empty  
-**Actual:** Always sets `age: 28`, `gender: 'male'`, `heightCm: 178`, `weightKg: 80`, `goal: 'MUSCLE_GAIN'`  
-**Suggested fix:** Read profile fields from Firestore document or omit until user fills profile.
-
----
-
-### [SEVERITY: Medium] BMI / WHR calculators lack divide-by-zero guards
-
-**File:** `src/lib/calculators.ts:5-7`, `148-152`  
-**Repro:** Programmatic: `calcBMI(75, 0)` → Infinity; `calcWHR(85, 0, 'male')` → Infinity  
-**Expected:** Validation error in UI  
-**Actual:** Sliders prevent zero in UI, but pure functions return invalid numbers  
-**Suggested fix:** Return `Result` error type like `calcBodyFat`.
-
----
-
-### [SEVERITY: Medium] Brzycki 1RM returns NaN for reps ≥ 37
-
-**File:** `src/lib/calculators.ts:111`  
-**Repro:** `calcOneRepMax(100, 37, 'brzycki')` → `NaN`  
-**Expected:** Cap reps or return error  
-**Suggested fix:** Guard `reps < 37` for Brzycki formula.
-
----
-
-### [SEVERITY: Medium] Tablet horizontal overflow (~830px scroll width at 768px viewport)
-
-**File:** Layout-wide (likely hero `text-4xl md:text-6xl`, pricing table, anatomy model)  
-**Repro:** Playwright viewport 768×1024 on `/`, `/pricing`, `/exercises`  
-**Expected:** `scrollWidth ≤ clientWidth`  
-**Actual:** `scrollWidth: 830, clientWidth: 768, overflow: true` on all tested pages at tablet breakpoint  
-**Suggested fix:** Audit `min-w-*`, negative margins, and `100vw` elements; add `overflow-x-hidden` on `body` as last resort.
+**No evidence found for (explicitly checked and ruled out):**
+- *Debug/XSS error overlay in production HTML* — the June report's CRIT-1. Current `index.html` has no such script, and `ErrorBoundary.tsx:33` correctly gates the stack-trace `<pre>` behind `process.env.NODE_ENV !== 'production'`.
+- *`Math.random()`-based ID collisions* — `generateId()` in `store.ts:87-95` uses `crypto.randomUUID()` when available, only falling back to a `Math.random()` polyfill UUID in unsupported environments.
+- *React console errors/warnings anywhere* — a full headless-Chromium crawl of all 23 routes (including the 404 catch-all) captured **zero** `pageerror` events and zero React-originated console warnings. The only console noise on every route is the app failing to reach `firestore.googleapis.com` and `fonts.googleapis.com`, both blocked by this sandbox's network egress rules, not app bugs.
+- *Broken SPA deep-link refresh* — confirmed 200 responses for `/dashboard/progress` and similar nested routes on **both** `vite dev` and `vite preview` (i.e., this will also work correctly on any static host with a proper history-fallback rule, though that fallback rule still needs to be configured on whatever production host is used — Vite's dev/preview servers do this automatically, but e.g. a raw S3 bucket would not).
+- *RTL/mirroring bugs* — live screenshot of the homepage in `فارسی` shows correct `dir="rtl"`, mirrored navigation order, and right-aligned text throughout. I did not exhaustively check every page in RTL mode (see Limitations).
+- *Mobile overflow at 375px* — homepage, BMI calculator, and dashboard screenshots at 375px show no visible horizontal overflow or clipped text (see Step 3).
 
 ---
 
-### [SEVERITY: Low] ESLint not installed — lint script broken
+## Step 3 — UI Audit (partial — see Limitations)
 
-**File:** `package.json:9`  
-**Repro:** `npm run lint`  
-**Actual:** `eslint: not found` (exit 127)  
-**Suggested fix:** Add `eslint` + config to devDependencies.
+Screenshots were captured for the homepage (desktop 1440px, mobile 375px, and RTL/Farsi), the BMI calculator (375px), and the dashboard (375px, logged-out state). All rendered cleanly: consistent dark theme, orange accent color, no default unstyled browser controls visible (sliders and buttons are custom-styled), no obvious spacing breakage. The homepage is a long single-page scroll (~9,100px tall at mobile width) covering hero, the 14-calculator console, programs, testimonials, and a footer — appropriate for a marketing-style landing page but worth knowing if the intent was a shorter, more conversion-focused first screen.
 
----
-
-### [SEVERITY: Low] TypeScript unused import errors (6)
-
-**Files:** `BodyCompositionCalculators.tsx:1,5`, other calculator files, `Calculators.tsx:4`  
-**Suggested fix:** Remove unused imports or enable `noUnusedLocals` cleanup.
+I did not complete a full page-by-page × 3-breakpoint visual walk (that's ~60+ individual screenshots for 20 routes) or run Lighthouse — see Limitations below for why, and what I'd need to finish it.
 
 ---
 
-### [SEVERITY: Low] `Math.random()` in ID fallback path
+## Step 4 — UX Audit (light-touch)
 
-**File:** `src/lib/store.ts:87-94`  
-**Note:** Primary path uses `crypto.randomUUID()`; `Math.random()` only in legacy fallback. Collision risk is low but non-zero in old browsers.  
-**Suggested fix:** Require `crypto.randomUUID` or use `crypto.getRandomValues` fallback.
-
----
-
-### [SEVERITY: Low] TierGate copy not i18n-wrapped
-
-**File:** `src/components/TierGate.tsx:36-40`  
-**Actual:** "VIP Content", "Upgrade to VIP" always English  
-**Suggested fix:** Wrap in `t({ en: ..., fa: ... })`.
+- **Navigation:** Calculators, Programs, Diet, Exercises, Pricing are all one click from the top nav on every page — no deep IA problems observed.
+- **Auth error messaging:** Login/Register show Firebase's raw `err.message` in the error box (e.g., `err.message || 'Invalid credentials'`) — this will occasionally surface Firebase's internal English error strings (`Firebase: Error (auth/invalid-credential).`) verbatim to Persian-speaking users on the Farsi-selected UI, which is a minor but real localization gap.
+- **Gated content UX:** `TierGate.tsx:26` still renders the locked content into the DOM behind a CSS blur (`showBlur` prop) rather than omitting it — so premium program/diet details are inspectable via dev tools even without the SEC-1/SEC-2 bypasses. Low severity given the two Critical findings already make this moot, but worth fixing independently.
+- **Conversion funnel:** Free → Pricing → "Upgrade" is 2 clicks, but since it's not a real payment flow (see High-severity bug above), there's currently no actual conversion funnel to evaluate.
 
 ---
 
-## STEP 3 — UI Audit
+## Step 5 — Security & Data Integrity Audit
 
-### Design tokens — drift from pine/bone/ember/brass
-
-**Expected (per audit brief):** pine green, bone background, ember accent, brass.  
-**Actual (`src/index.css:4-13`):**
-
-```css
---color-brand: #f97316;        /* orange-500 */
---color-surface: #111827;      /* gray-900 */
-```
-
-App uses **orange + gray-950** throughout (`Layout.tsx:36`, `Home.tsx:50-51`). No pine, bone, ember, or brass tokens found in source (only in lucide icon names in `node_modules`). **Tokens have drifted.**
-
-### Breakpoint walk (375 / 768 / 1440)
-
-Screenshots captured at `/opt/cursor/artifacts/audit/`:
-- `mobile_home.png`, `mobile_calculators_bmi.png`, `mobile_exercises.png`, `mobile_pricing.png`, `mobile_login.png`, `mobile_dashboard_progress.png`
-- `tablet_*` (same pages)
-- `desktop_*` (same pages)
-- `i18n-fa-home.png`, `i18n-fa-login.png`
-
-| Page | 375px | 768px | 1440px |
-|------|-------|-------|--------|
-| Home | ✅ No overflow | ⚠️ Horizontal scroll (830px) | ✅ OK |
-| Calculators/BMI | ✅ OK | ⚠️ Overflow | ✅ OK |
-| Exercises (anatomy) | ✅ OK | ⚠️ Overflow | ✅ OK |
-| Pricing (4-col table) | ✅ OK (table scrolls inside card) | ⚠️ Overflow | ✅ OK |
-| Login | ✅ OK | ⚠️ Overflow | ✅ OK |
-| Dashboard/progress | ✅ Redirects to login | ⚠️ Overflow | ✅ OK |
-
-### Visual consistency
-
-- **Spacing/typography:** Consistent `font-black` headings, `rounded-2xl` cards, `gray-900` surfaces — cohesive within the orange theme.
-- **Calculator "console" vs app:** Home `#smart-tools` uses animated tabs (`motion`), circular gauges, and slider inputs (`SharedCalculatorUI.tsx`) — visually richer than dashboard forms but same color palette; feels like **one product with a premium calculator subsection**, not two bolted apps.
-- **Native elements:** `<select>` filters on Exercises, Profile, Progress use styled but **native** dropdowns (`Exercises.tsx:108-128`, `Dashboard.tsx:212-246`) — functional but not custom-styled.
-- **Focus rings:** Orange `focus:border-orange-500 focus:ring-1` on inputs — present and consistent.
-
-### Images & assets
-
-| Asset | Size | Alt text | Status |
-|-------|------|----------|--------|
-| `public/images/hero-bg.jpg` | 282 KB | `alt=""` empty (`Home.tsx:36`) | ⚠️ Missing alt; could compress |
-| Exercise cards | — | N/A (icon placeholder) | No real photos/videos |
-| Blog covers | External Pexels | Alt from article title | ✅ OK |
-
-### Dark/light mode
-
-- **Dark only:** `index.html:2` hardcodes `class="dark"`; `body` is `bg-gray-950`. No light theme or toggle.
-
-### Empty / loading / error states
-
-| State | Location | Quality |
-|-------|----------|---------|
-| Loading | `HomeSmartTools.tsx:105-108` | Spinner during lazy tab load ✅ |
-| Empty exercises | `Exercises.tsx:214-219` | Icon + message ✅ |
-| Empty body logs | `Dashboard.tsx:466-470` | Calendar icon + CTA ✅ |
-| Empty programs (dashboard) | `Dashboard.tsx:268-275` | Clear CTA to `/programs` ✅ |
-| 404 | `NotFound.tsx` | Friendly page ✅ |
-| Error boundary | `ErrorBoundary.tsx` | Exists in App wrapper ✅ |
-| Calculator error (body fat) | Red bordered box | ✅ Specific message |
+- **Authorization root cause:** See Critical findings SEC-1 and SEC-2 above — the real vulnerability is in `firestore.rules`, not just the client code, because the rules would let a user write `role`/`subscriptionTier` even from a fully custom client bypassing the React app entirely (e.g., a `curl`/Postman call with a valid ID token).
+- **Firestore rules — otherwise reasonable:** Outside of the role/tier issue, the rules are not the "`allow read, write: if true`" free-for-all the audit brief worried about — there's a genuine default-deny catch-all (`firestore.rules:4-6`), owner-scoped reads/writes, field allow-lists, and type/size validation on `users` and `bodyLogs`. This is meaningfully better than a typical prototype's rules file.
+- **Secrets:** `firebase-applet-config.json`'s `apiKey` is a Firebase **client** key, which is meant to be public (security is enforced by Firestore Rules + Auth, not by hiding this key) — correctly not a leak. No server secrets, private keys, or `.env` values were found committed anywhere in the repo.
+- **No debug overlay in production** — confirmed above.
 
 ---
 
-## STEP 4 — UX Audit
+## Step 6 — Performance Audit
 
-### Information architecture
-
-From home hero, primary destinations are **one click** via nav: Exercises, Programs, Diet, Calculators, Blog, Pricing. Coach path goes through Pricing CTA (`Home.tsx:15` links Coach Chat → `/pricing`). **IA is clear** for a marketing site.
-
-**Cold → VIP coaching click count:** Home → Pricing (1) → Subscribe VIP (2) → Register if logged out (3) → Dashboard/billing (4). **4 clicks** minimum; acceptable but payment doesn't actually complete.
-
-### Onboarding
-
-- **No first-visit tour, checklist, or wizard.** User lands on full marketing page with CTAs. Dashboard empty states provide minimal guidance.
-
-### Forms
-
-| Form | Real-time validation | Error quality | Password UX |
-|------|----------------------|---------------|-------------|
-| Login | On submit only | Firebase error string (verbose) | No show/hide |
-| Register | On submit | Name/email/password checks | Min 6 chars, no strength meter |
-| Profile | On submit | None visible | N/A |
-| Body log | On submit | Silent if empty | N/A |
-
-### Feedback & confirmations
-
-- **Upgrade:** Silent `upgradeTier` + redirect — no toast (`Pricing.tsx:22-23`)
-- **Profile save:** Button text changes to "Saved!" for 2s (`Dashboard.tsx:254`) ✅
-- **Coach chat:** Auto-reply after 1.5s — may feel "real" but is **demo automation** (`Dashboard.tsx:529-539`)
-
-### Navigation memory
-
-- `ScrollToTop` on route change (`App.tsx:22-27`) ✅
-- Browser back/forward: standard React Router behavior (not explicitly tested for state loss; localStorage persists)
-
-### i18n UX gaps
-
-Playwright i18n test (proper globe menu flow):
-- Home FA: `dir=rtl`, `farsiFont=true`, hero shows `هوشمندانه‌تر تمرین کنید` ✅
-- Login FA: **still shows "Welcome Back"** in English (`loginEnglish: true`) — `Auth.tsx` has **zero** `t()` calls
-
-### Accessibility spot-check
-
-- **No `aria-live` regions** on calculator gauge results (grep: no matches in `src/`)
-- **CircularGauge** (`SharedCalculatorUI.tsx:67-95`): visual SVG only; screen readers get slider labels but not announced result changes
-- **Keyboard:** Sliders and buttons focusable; range inputs lack explicit `aria-valuenow`/`aria-valuetext`
-- **Charts:** Forced `dir="ltr"` (`Dashboard.tsx:431`) — correct for chart readability in RTL pages
+- **Bundle:** `dist/assets/index-*.js` = 1,597.15 kB raw / 494.84 kB gzip, all in a single chunk; Vite's own build output flags this as over its 500 kB warning threshold.
+- **Confirmed unused dependencies:** `@base-ui/react` and `@date-fns/tz` appear in `package.json` `dependencies` but **zero files under `src/` import either package** (`grep -rl` returned nothing) — dead weight in `node_modules`/install time, though tree-shaking means they likely aren't inflating the actual JS bundle much if at all.
+- **Root cause of the bundle-size warning:** most plausibly the duplicate static+dynamic import of the four calculator-group files (Bug #5 above), plus `recharts`, `motion`, and `firebase` (auth+firestore) all being fairly large libraries pulled into one chunk with no manual chunking configured in `vite.config.ts`.
+- **Lighthouse:** not run in this pass — see Limitations.
 
 ---
 
-## STEP 5 — Security & Data Integrity Audit
+## Step 7 — Roadmap
 
-### Client-side-only authorization (proven)
+**Now (this sprint):**
+- Fix SEC-1: lock `role`/`subscriptionTier` out of client-writable Firestore fields; move both to Cloud-Function-only writes — L — `firestore.rules`, new Cloud Function
+- Fix SEC-2: re-verify tier/role against Firestore (or custom claims) at the point of privileged reads, not `localStorage` — M — `TierGate.tsx`, `Admin.tsx`
+- Wire "Upgrade" to real Stripe Checkout + webhook-driven tier grant — L — `Pricing.tsx`, new backend
+- Fix dead "Sign up with Google" button and fake "Forgot Password" flow — S — `Auth.tsx`
+- Install ESLint so `npm run lint` actually runs — S — `package.json`
 
-| Check | Method | Result |
-|-------|--------|--------|
-| VIP content after localStorage tier edit | Playwright + `esifit_store` injection | **BYPASS SUCCESS** |
-| Admin dashboard after role=ADMIN injection | Same | **BYPASS SUCCESS** |
-| Firestore rules | Code review `firestore.rules:1-64` | Rules are **sound** (deny default, owner-scoped) but **unused** by app for gating |
-| Server-side enforcement | N/A | **None** — pure SPA |
+**Next (this quarter):**
+- Persist body logs / exercise logs / calculator history / tickets to Firestore instead of `localStorage` — M
+- Translate exercise/program/diet/article content to Farsi, or clearly label it English-only in the Farsi UI — M — `store.ts`
+- Resolve the static+dynamic import duplication and add manual chunking to cut the 1.6 MB bundle — M — `vite.config.ts`, `HomeSmartTools.tsx`
+- Expand content catalog (10 exercises / 3 programs / 2 diet plans / 3 articles is thin for a "comprehensive" platform) — L
+- Remove `content-locked`-blur DOM leakage for gated content once auth is hardened — S — `TierGate.tsx`
 
-### Secrets in repo
-
-| File | Content | Assessment |
-|------|---------|------------|
-| `firebase-applet-config.json` | `apiKey`, `projectId`, `appId` | ✅ Expected public Firebase client config |
-| No `.env` committed | — | ✅ |
-| `index.html` | No debug overlay scripts | ✅ Clean |
-
-### Firestore rules quality
-
-`firestore.rules:4-6` default deny-all, then explicit `users/{userId}` and `bodyLogs/{logId}` with `isOwner`, field validation, and update allowlists. **Good rules, but app doesn't write bodyLogs to Firestore.**
-
-### Production debug code
-
-`src/main.tsx:8-18` runs Firestore connectivity probe on every user visit — leaks configuration issues to console and causes error noise. Should not ship to production.
+**Later (this year):**
+- Real coach-chat backend (currently local-only demo tickets) — L
+- Admin dashboard backed by real Firestore aggregation instead of hardcoded demo rows — L
+- Automated visual/regression testing (none exists today) — M
+- Full Lighthouse-driven performance/accessibility pass once bundle splitting lands — M
 
 ---
 
-## STEP 6 — Performance Audit
+## Limitations of This Audit Pass
 
-### Build output
+Being transparent about what this pass did **not** fully cover, and why:
+- **Lighthouse was not run.** The sandbox this audit ran in doesn't have `lighthouse` installed and installing it would require npm registry access for a large dependency tree beyond what was practical in this pass; bundle-size numbers above come directly from `vite build` output instead.
+- **Live Firebase read/write could not be end-to-end verified** — this sandbox's network egress is restricted to package registries and GitHub; `firestore.googleapis.com` calls fail here, confirmed to be a sandbox limitation (not an app bug) since the code paths and request shapes are correct.
+- **Not every one of the 20 routes was screenshotted at all 3 breakpoints** — I captured a representative sample (home at all 3 states, one calculator, one dashboard page at mobile) rather than an exhaustive 60-shot walk, to keep this pass proportionate; the full crawl did verify **zero console/React errors** across every route, which is the higher-value signal for correctness.
+- **The 14 calculators' math was verified by source review**, not by driving every slider to its exact boundary value in the UI (inputs are range sliders, not free-text fields, so some edge cases like "zero" aren't reachable through the UI at all — e.g., BMI's weight slider floors at 40 kg, so a literal zero-weight NaN is not user-reachable, though it would still occur if `calcBMI` were ever called with 0 from elsewhere).
 
-| Asset | Raw | Gzip |
-|-------|-----|------|
-| `index-CPqU5hQI.js` | 1,597 KB | 495 KB |
-| `index-FM87cHkQ.css` | 49 KB | 8 KB |
-| `index.html` | 0.9 KB | 0.5 KB |
-
-**Single chunk** — no route-based splitting effective.
-
-### Lighthouse
-
-Attempted `npx lighthouse http://localhost:4173` — **failed:**
-
-```
-runtimeError: TARGET_CRASHED — Browser tab has unexpectedly crashed.
-```
-
-Scores unavailable in this environment. Manual proxies:
-- **Large JS bundle** (1.6 MB) will hurt mobile Performance
-- **Viewport meta** present (`index.html:5`) ✅
-- **HTTPS** N/A on localhost
-- **Images:** hero 282 KB, blog images external
-
-### Bundle contributors (dependency analysis)
-
-| Package | Imported in `src/`? | In bundle? |
-|---------|-------------------|------------|
-| `firebase` | ✅ `firebase.ts`, `Auth.tsx`, `main.tsx` | Yes — significant |
-| `recharts` | ✅ `Dashboard.tsx:7` | Yes |
-| `motion` | ✅ calculators, `HomeSmartTools.tsx` | Yes |
-| `react-muscle-highlighter` | ✅ `Exercises.tsx:4` | Yes |
-| `lucide-react` | ✅ widespread | Tree-shaken icons |
-| `@base-ui/react` | ❌ **not imported** | Dead dependency |
-| `@date-fns/tz` | ❌ **not imported** | Dead dependency |
-| `vite-plugin-singlefile` | ❌ not in vite config | Dead devDependency |
-
-**Largest contributor:** monolithic `index-*.js` bundling Firebase + Recharts + motion + muscle highlighter + all routes. **No effective code-splitting** due to mixed static/dynamic imports of calculator modules.
-
-### Console performance note
-
-Firebase offline errors on **every route** add main-thread console I/O during crawl (37 errors). Remove boot probe to reduce noise and minor overhead.
-
----
-
-## STEP 7 — Gap Analysis & Roadmap
-
-### Now (this sprint) — blocks real users
-
-| # | Item | Effort | Files / areas |
-|---|------|--------|---------------|
-| 1 | Server-verified tier/role gating (Firebase custom claims + Firestore reads) | **L** | `store.ts`, `TierGate.tsx`, `Admin.tsx`, `Programs.tsx`, Firestore rules |
-| 2 | Remove/fix Firebase boot probe causing console errors | **S** | `main.tsx` |
-| 3 | Wire forgot-password to Firebase `sendPasswordResetEmail` | **S** | `Auth.tsx:228-265` |
-| 4 | Fix Register Google button (`onClick` stub) | **S** | `Auth.tsx:213` |
-| 5 | Fix program → exercise slug links (404) | **S** | `Programs.tsx:202` |
-| 6 | Install ESLint + fix `tsc` errors | **S** | `package.json`, calculator files |
-| 7 | Stop `syncUserFromFirebase` hardcoding profile defaults | **M** | `store.ts:51-56` |
-
-### Next (this quarter) — hardening & completeness
-
-| # | Item | Effort | Files / areas |
-|---|------|--------|---------------|
-| 8 | Persist bodyLogs, exerciseLogs, tickets to Firestore (not just localStorage) | **L** | `store.ts`, new Firestore hooks |
-| 9 | Stripe (or payment processor) integration replacing `upgradeTier` simulation | **L** | `Pricing.tsx`, `Dashboard.tsx` billing, backend/webhook |
-| 10 | Complete Farsi i18n for Auth, TierGate, calculator categories | **M** | `Auth.tsx`, `TierGate.tsx`, `faDict` |
-| 11 | Real code-splitting (route-based + fix calculator import duplication) | **M** | `vite.config.ts`, `Calculators.tsx`, `HomeSmartTools.tsx` |
-| 12 | Remove dead deps (`@base-ui/react`, `@date-fns/tz`, `vite-plugin-singlefile`) | **S** | `package.json` |
-| 13 | Calculator input validation (BMI/WHR/Brzycki edge cases) | **M** | `calculators.ts`, calculator components |
-| 14 | `aria-live` on calculator results + chart text alternatives | **M** | `SharedCalculatorUI.tsx`, `Dashboard.tsx` |
-| 15 | Fix tablet horizontal overflow | **M** | Layout, Home hero, pricing table |
-| 16 | Exercise video/thumbnail content pipeline | **L** | `store.ts` EXERCISES, `Exercises.tsx` |
-| 17 | Align design tokens to brand palette (pine/bone/ember/brass) or update brand docs | **M** | `index.css`, Tailwind theme |
-
-### Later (this year) — growth features
-
-| # | Item | Effort | Files / areas |
-|---|------|--------|---------------|
-| 18 | Native mobile apps (React Native / Capacitor) | **L** | New repos |
-| 19 | Real coach CRM with Firestore messaging | **L** | `Coach.tsx`, `Dashboard.tsx` chat, backend |
-| 20 | Admin CRUD connected to Firestore (not `demoUsers`) | **L** | `Admin.tsx` |
-| 21 | Light mode theme | **M** | `index.css`, `Layout.tsx` |
-| 22 | i18n beyond en/fa (ar, tr, etc.) | **L** | `i18n.tsx` |
-| 23 | Content partnerships / CMS for blog & programs | **L** | New CMS integration |
-| 24 | Lighthouse Performance ≥ 90 (bundle budget, image CDN) | **M** | Build config, assets |
-
----
-
-## Appendix A — Routes (from `src/App.tsx`)
-
-```
-/  /exercises  /exercises/:slug  /programs  /programs/:slug  /diet  /diet/:slug
-/calculators  /calculators/:slug  /blog  /blog/:slug  /pricing
-/login  /register  /forgot-password
-/dashboard  /dashboard/profile  /dashboard/programs  /dashboard/progress
-/dashboard/chat  /dashboard/billing
-/admin  /coach  *
-```
-
-## Appendix B — Runtime artifacts
-
-| Artifact | Path |
-|----------|------|
-| Browser audit JSON | `/opt/cursor/artifacts/audit/browser-audit.json` |
-| Calculator edge tests | `calc-edge-tests.mjs` output (15 tests) |
-| Viewport screenshots | `/opt/cursor/artifacts/audit/{mobile,tablet,desktop}_*.png` |
-| i18n screenshots | `/opt/cursor/artifacts/audit/i18n-fa-*.png` |
-| Lighthouse attempt | `/opt/cursor/artifacts/audit/lighthouse-desktop.json` (crashed) |
-
-## Appendix C — Intentional demo behavior (not classified as bugs)
-
-- Coach chat auto-reply after 1.5s (`Dashboard.tsx:529-539`) — appears intentional for demo
-- Admin/Coach dashboards use hardcoded demo users/clients — intentional scaffolding
-- Pricing "Subscribe" without payment processor — intentional simulation per code comment
-- 24/7 support stat on home — marketing copy, not verified service
-
----
-
-*Audit performed 2026-07-15. No code changes were made during this pass.*
+If you'd like, I can go back and close any of these specific gaps next (e.g., install Lighthouse, or do the full per-breakpoint screenshot walk).
