@@ -11,7 +11,8 @@ function check(name, pass, detail) {
 }
 
 const tierGate = readFileSync('src/components/TierGate.tsx', 'utf8');
-const layout = readFileSync('src/components/Layout.tsx', 'utf8');
+const layout = readFileSync('src/components/layout/AppShell.tsx', 'utf8');
+const topNav = readFileSync('src/components/layout/TopNav.tsx', 'utf8');
 const home = readFileSync('src/pages/Home.tsx', 'utf8');
 const sharedUi = readFileSync('src/components/calculators/SharedCalculatorUI.tsx', 'utf8');
 const pricing = readFileSync('src/pages/Pricing.tsx', 'utf8');
@@ -30,8 +31,8 @@ check(
 
 check(
   'BUG-6: Layout defers desktop nav to lg breakpoint',
-  layout.includes('overflow-x-hidden') && layout.includes('hidden lg:flex'),
-  'Tablet uses mobile nav; root clips horizontal overflow'
+  layout.includes('overflow-x-hidden') && topNav.includes('hidden lg:flex'),
+  'Tablet uses mobile bottom nav; root clips horizontal overflow'
 );
 
 check(
@@ -84,7 +85,7 @@ check(
 
 check(
   'Theme: toggle + localStorage persistence',
-  themeLib.includes('esifit_theme') && layout.includes('toggleTheme') && layout.includes('Sun'),
+  themeLib.includes('esifit_theme') && topNav.includes('toggleTheme') && topNav.includes('Sun'),
   'Header theme toggle persists user preference'
 );
 

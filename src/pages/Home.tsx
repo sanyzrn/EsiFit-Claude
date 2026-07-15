@@ -37,10 +37,10 @@ export default function Home() {
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-app/80 via-app/60 to-app" />
         <div className="absolute top-20 start-1/4 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 end-1/4 w-72 h-72 bg-orange-600/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 end-1/4 w-72 h-72 bg-accent/15 rounded-full blur-3xl" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
           <div className="text-center max-w-4xl mx-auto animate-slide-up">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-sm font-medium mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/25 text-accent text-sm font-medium mb-6">
               <Zap className="w-4 h-4" />
               {t({ en: 'Your Complete Fitness Platform', fa: 'پلتفرم جامع تناسب اندام شما' })}
             </div>
