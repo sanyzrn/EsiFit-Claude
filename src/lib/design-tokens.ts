@@ -1,15 +1,16 @@
 /**
  * Brand design tokens — mirrors CSS variables in index.css.
- * Light: cream + deep pomegranate | Dark: graphite + Persian turquoise
+ * Dark: Deep charcoal + vibrant emerald + coral accent
+ * Light: Warm ivory + deep teal + terracotta accent
  */
 export const palette = {
-  cream: '#F6F1E8',
-  pomegranate: { DEFAULT: '#8C1D40', hover: '#751836' },
-  graphite: '#1F2328',
-  turquoise: { DEFAULT: '#14B8A6', hover: '#2DD4BF' },
-  charcoal: '#222222',
-  softWhite: '#F5F5F5',
-  white: '#FFFFFF',
+  dark: { bg: '#07080a', surface: '#111317', elevated: '#191b21', elevatedHover: '#22242b' },
+  light: { bg: '#f7f5f0', surface: '#ffffff', elevated: '#eeebe4', elevatedHover: '#e6e1d8' },
+  emerald: { DEFAULT: '#06d6a0', hover: '#05c490', dim: 'rgba(6, 214, 160, 0.12)' },
+  coral: { DEFAULT: '#ff6b35', hover: '#ff8250', dim: 'rgba(255, 107, 53, 0.12)' },
+  blue: { DEFAULT: '#4cc9f0', hover: '#6dd4f5', dim: 'rgba(76, 201, 240, 0.12)' },
+  teal: { DEFAULT: '#1a936f', hover: '#147a5a', dim: 'rgba(26, 147, 106, 0.1)' },
+  terracotta: { DEFAULT: '#e85d3a', hover: '#d44d2a', dim: 'rgba(232, 93, 58, 0.1)' },
 } as const;
 
 export const semantic = {
@@ -42,31 +43,21 @@ export const radius = {
   lg: '16px',
   xl: '20px',
   '2xl': '24px',
+  '3xl': '28px',
+  pill: '999px',
 } as const;
 
 export const motion = {
   fast: '180ms',
-  normal: '220ms',
+  normal: '280ms',
+  slow: '400ms',
 } as const;
 
 export const typeScale = {
-  displayXl: '3.25rem',
-  displayLg: '2.5rem',
-  displayMd: '2rem',
-  displaySm: '1.625rem',
-} as const;
-
-/** @deprecated Use palette.pomegranate / palette.turquoise */
-export const brand = {
-  primary: palette.pomegranate.DEFAULT,
-  primaryDark: palette.pomegranate.hover,
-  primaryLight: palette.turquoise.DEFAULT,
-} as const;
-
-/** @deprecated Use palette.turquoise */
-export const accent = {
-  DEFAULT: palette.turquoise.DEFAULT,
-  dark: '#0f766e',
-  light: palette.turquoise.hover,
-  muted: 'var(--theme-secondary-muted)',
+  display2xl: '4.5rem',
+  displayXl: '3.75rem',
+  displayLg: '3rem',
+  displayMd: '2.25rem',
+  displaySm: '1.75rem',
+  displayXs: '1.375rem',
 } as const;

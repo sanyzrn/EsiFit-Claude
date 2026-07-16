@@ -1,35 +1,17 @@
-import type { HTMLAttributes, ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-/**
- * Canonical page content width — use on every top-level page section
- * so horizontal padding and max-width stay consistent across routes.
- */
-export const PAGE_CONTAINER_CLASS =
-  'max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8';
+export const PAGE_CONTAINER_CLASS = 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8';
 
-type PageContainerProps = HTMLAttributes<HTMLDivElement> & {
+interface PageContainerProps {
   children: ReactNode;
-  /** Vertical padding: default py-8 (dashboard-like) or py-12 (marketing/list) */
+  className?: string;
   padY?: 'sm' | 'md' | 'lg';
-};
+}
 
-const padYClass = {
-  sm: 'py-6',
-  md: 'py-8',
-  lg: 'py-12',
-} as const;
-
-export function PageContainer({
-  children,
-  padY = 'lg',
-  className = '',
-  ...props
-}: PageContainerProps) {
+export function PageContainer({ children, className = '', padY = 'lg' }: PageContainerProps) {
+  const pads = { sm: 'py-8', md: 'py-12', lg: 'py-16 md:py-20' };
   return (
-    <div
-      className={[PAGE_CONTAINER_CLASS, padYClass[padY], className].filter(Boolean).join(' ')}
-      {...props}
-    >
+    <div className={`${PAGE_CONTAINER_CLASS} ${pads[padY]} ${className}`}>
       {children}
     </div>
   );

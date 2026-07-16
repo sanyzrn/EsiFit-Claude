@@ -1,11 +1,18 @@
 import { useState, useEffect, Suspense } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { Calculator } from 'lucide-react';
+import { Calculator, Zap, Activity, Brain, Droplets, Heart, Flame, Weight, Ruler, Target, Dumbbell, Timer, ArrowRight } from 'lucide-react';
 import { subscribe } from '@/lib/store';
 import { useI18n } from '@/lib/i18n';
 import { CALC_COMPONENTS } from '@/components/calculators/lazy';
 import { Breadcrumbs } from '@/components/ui/Breadcrumbs';
 import { PageContainer } from '@/components/ui/PageContainer';
+
+const CALC_ICONS: Record<string, typeof Calculator> = {
+  bmi: Activity, 'body-fat': Droplets, tdee: Flame, macros: Calculator,
+  'one-rep-max': Dumbbell, ffmi: Weight, whr: Ruler, 'water-intake': Droplets,
+  'goal-date': Timer, 'calories-burned': Flame, 'body-type-quiz': Brain,
+  'volume-load': Target, bmr: Heart, 'rep-max-table': Dumbbell,
+};
 
 function useCalculators() {
   const { t } = useI18n();
@@ -23,36 +30,72 @@ function useCalculators() {
     { slug: 'body-type-quiz', name: t({ en: 'Body Type Quiz', fa: 'آزمون تیپ بدنی' }), desc: t({ en: 'Discover your body type: ecto, meso, or endomorph.', fa: 'کشف تیپ بدنی شما: اکتومورف، مزومورف، یا اندومورف.' }) },
     { slug: 'volume-load', name: t({ en: 'Volume Load Calculator', fa: 'ماشین‌حساب حجم تمرین' }), desc: t({ en: 'Calculate your total training volume.', fa: 'محاسبه حجم کلی تمرینات شما.' }) },
     { slug: 'bmr', name: t({ en: 'BMR Calculator', fa: 'ماشین‌حساب BMR' }), desc: t({ en: 'Calculate your Basal Metabolic Rate (Mifflin-St Jeor).', fa: 'محاسبه نرخ متابولیسم پایه (BMR).' }) },
-    { slug: 'rep-max-table', name: t({ en: '% of 1RM Table', fa: 'جدول درصدهای 1RM' }), desc: t({ en: 'Same 1RM estimator with an embedded % rep-max chart (also at /calculators/one-rep-max).', fa: 'همان محاسبه‌گر 1RM با جدول درصدهای تکرار (همچنین در /calculators/one-rep-max).' }) },
+    { slug: 'rep-max-table', name: t({ en: '% of 1RM Table', fa: 'جدول درصدهای 1RM' }), desc: t({ en: 'Same 1RM estimator with an embedded % rep-max chart.', fa: 'همان محاسبه‌گر 1RM با جدول درصدهای تکرار.' }) },
   ];
 }
 
 export function CalculatorIndex() {
   const { t } = useI18n();
   const CALC_LIST = useCalculators();
+
+  const categories = [
+    { label: t({ en: 'Body Composition', fa: 'ترکیب بدن' }), slugs: ['bmi', 'body-fat', 'ffmi', 'whr', 'body-type-quiz'] },
+    { label: t({ en: 'Energy & Nutrition', fa: 'انرژی و تغذیه' }), slugs: ['bmr', 'tdee', 'macros', 'water-intake'] },
+    { label: t({ en: 'Strength Training', fa: 'تمرینات قدرتی' }), slugs: ['one-rep-max', 'rep-max-table', 'volume-load'] },
+    { label: t({ en: 'Health & Lifestyle', fa: 'سلامت و سبک زندگی' }), slugs: ['goal-date', 'calories-burned'] },
+  ];
+
   return (
     <PageContainer>
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-black mb-4">{t({ en: 'Fitness Calculators', fa: 'ماشین‌حساب‌های فیتنس' })}</h1>
-        <p className="text-fg-subtle text-lg max-w-2xl mx-auto">
+      <div className="text-center mb-16">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-4"
+          style={{ backgroundColor: 'var(--theme-primary-dim)', color: 'var(--theme-primary)', border: '1px solid var(--theme-border-accent)' }}>
+          <Zap className="w-3.5 h-3.5" />
+          {t({ en: 'Science-Based Tools', fa: 'ابزارهای علمی' })}
+        </div>
+        <h1 className="text-5xl font-black mb-4 font-display">
+          {t({ en: 'Fitness Calculators', fa: 'ماشین‌حساب‌های فیتنس' })}
+        </h1>
+        <p className="text-lg mx-auto max-w-2xl" style={{ color: 'var(--theme-fg-subtle)' }}>
           {t({ en: '14 free, science-based calculators to help you understand your body and optimize your training.', fa: '۱۴ ماشین حساب علمی رایگان برای کمک به درک بدن شما و بهینه‌سازی تمرینات.' })}
         </p>
       </div>
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {CALC_LIST.map(c => (
-          <Link
-            key={c.slug}
-            to={`/calculators/${c.slug}`}
-            className="group card-iranian p-5 hover:border-brand/50 transition-[border-color] duration-[180ms]"
-          >
-            <div className="w-10 h-10 rounded-[12px] bg-brand-muted flex items-center justify-center mb-3 transition-[background-color] duration-[180ms]">
-              <Calculator className="w-5 h-5 text-brand" />
-            </div>
-            <h3 className="font-bold text-sm mb-1 group-hover:text-brand transition-colors">{c.name}</h3>
-            <p className="text-fg-subtle text-xs">{c.desc}</p>
-          </Link>
-        ))}
-      </div>
+
+      {categories.map((cat, ci) => (
+        <div key={cat.label} className="mb-12">
+          <h2 className="text-xl font-bold mb-5 font-display" style={{ color: 'var(--theme-fg)' }}>
+            {cat.label}
+          </h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {CALC_LIST.filter(c => cat.slugs.includes(c.slug)).map((c, i) => {
+              const Icon = CALC_ICONS[c.slug] || Calculator;
+              return (
+                <Link
+                  key={c.slug}
+                  to={`/calculators/${c.slug}`}
+                  className="group card-premium p-5 hover:border-border-accent transition-all duration-[280ms] animate-slide-up-children"
+                >
+                  <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-[280ms]"
+                    style={{ backgroundColor: 'var(--theme-primary-dim)' }}>
+                    <Icon className="w-5.5 h-5.5" style={{ color: 'var(--theme-primary)' }} />
+                  </div>
+                  <h3 className="font-bold text-sm mb-1.5 group-hover:translate-x-0.5 transition-transform">
+                    {c.name}
+                  </h3>
+                  <p className="text-xs leading-relaxed" style={{ color: 'var(--theme-fg-subtle)' }}>
+                    {c.desc}
+                  </p>
+                  <div className="mt-3 flex items-center gap-1 text-xs font-semibold"
+                    style={{ color: 'var(--theme-primary)' }}>
+                    <span>{t({ en: 'Calculate', fa: 'محاسبه' })}</span>
+                    <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      ))}
     </PageContainer>
   );
 }
@@ -67,16 +110,22 @@ export function CalculatorDetail() {
 
   const calcInfo = CALC_LIST.find(c => c.slug === slug);
   const CalcComponent = slug ? CALC_COMPONENTS[slug] : null;
+  const Icon = (slug && CALC_ICONS[slug]) || Calculator;
 
   if (!calcInfo || !CalcComponent) {
     return (
-      <PageContainer className="text-center">
+      <PageContainer className="text-center py-20">
         <Breadcrumbs items={[
           { label: t({ en: 'Calculators', fa: 'ماشین‌حساب‌ها' }), href: '/calculators' },
           { label: t({ en: 'Not found', fa: 'یافت نشد' }) },
         ]} />
-        <h1 className="text-2xl font-bold mb-4">{t({ en: 'Calculator not found', fa: 'ماشین‌حساب یافت نشد' })}</h1>
-        <button onClick={() => navigate('/calculators')} className="text-brand hover:text-brand">
+        <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
+          style={{ backgroundColor: 'var(--theme-primary-dim)' }}>
+          <Calculator className="w-8 h-8" style={{ color: 'var(--theme-primary)' }} />
+        </div>
+        <h1 className="text-2xl font-bold mb-2">{t({ en: 'Calculator not found', fa: 'ماشین‌حساب یافت نشد' })}</h1>
+        <button onClick={() => navigate('/calculators')} className="text-sm font-semibold"
+          style={{ color: 'var(--theme-primary)' }}>
           {t({ en: '← Back to calculators', fa: 'بازگشت به ماشین‌حساب‌ها' })}
         </button>
       </PageContainer>
@@ -84,30 +133,36 @@ export function CalculatorDetail() {
   }
 
   return (
-    <PageContainer>
-      <div className="max-w-2xl mx-auto">
-      <Breadcrumbs items={[
-        { label: t({ en: 'Calculators', fa: 'ماشین‌حساب‌ها' }), href: '/calculators' },
-        { label: calcInfo.name },
-      ]} />
-      <div className="card-iranian p-6 md:p-8">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-12 h-12 rounded-[12px] bg-brand-muted flex items-center justify-center">
-            <Calculator className="w-6 h-6 text-brand" />
+    <PageContainer padY="md">
+      <div className="max-w-3xl mx-auto">
+        <Breadcrumbs items={[
+          { label: t({ en: 'Calculators', fa: 'ماشین‌حساب‌ها' }), href: '/calculators' },
+          { label: calcInfo.name },
+        ]} />
+        <div className="card-premium overflow-hidden">
+          <div className="px-6 md:px-8 pt-6 md:pt-8 pb-0">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0"
+                style={{ backgroundColor: 'var(--theme-primary-dim)' }}>
+                <Icon className="w-7 h-7" style={{ color: 'var(--theme-primary)' }} />
+              </div>
+              <div>
+                <h1 className="text-2xl md:text-3xl font-black font-display">{calcInfo.name}</h1>
+                <p className="text-sm mt-1" style={{ color: 'var(--theme-fg-subtle)' }}>{calcInfo.desc}</p>
+              </div>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl font-black">{calcInfo.name}</h1>
-            <p className="text-fg-subtle text-sm">{calcInfo.desc}</p>
+          <div className="px-6 md:px-8 pb-6 md:pb-8">
+            <Suspense fallback={
+              <div className="flex justify-center items-center h-64">
+                <div className="w-10 h-10 border-3 rounded-full animate-spin"
+                  style={{ borderColor: 'var(--theme-primary)', borderTopColor: 'transparent' }} />
+              </div>
+            }>
+              <CalcComponent />
+            </Suspense>
           </div>
         </div>
-        <Suspense fallback={
-          <div className="flex justify-center items-center h-48">
-            <div className="w-8 h-8 border-4 border-brand border-t-transparent rounded-full animate-spin" />
-          </div>
-        }>
-          <CalcComponent />
-        </Suspense>
-      </div>
       </div>
     </PageContainer>
   );

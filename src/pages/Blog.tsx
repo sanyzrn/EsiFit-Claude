@@ -1,5 +1,5 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { Calendar, Tag } from 'lucide-react';
+import { Calendar, Tag, BookOpen, ArrowRight } from 'lucide-react';
 import { ARTICLES } from '@/lib/store';
 import { useI18n } from '@/lib/i18n';
 import { localizedArticle } from '@/lib/content-i18n';
@@ -10,38 +10,46 @@ import { PageContainer } from '@/components/ui/PageContainer';
 export function BlogList() {
   const { t, lang } = useI18n();
   const { formatDate } = useLocaleFormat();
+
   return (
     <PageContainer>
-      <div className="mb-8">
-        <h1 className="text-4xl font-black mb-4">{t({ en: 'Blog', fa: 'وبلاگ' })}</h1>
-        <p className="text-fg-subtle text-lg">{t({ en: 'Evidence-based articles on training, nutrition, and recovery.', fa: 'مقاله‌های مبتنی بر شواهد در زمینه تمرین، تغذیه و بازیابی.' })}</p>
+      <div className="mb-12">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-4"
+          style={{ backgroundColor: 'var(--theme-secondary-dim)', color: 'var(--theme-secondary)', border: '1px solid rgba(76,201,240,0.2)' }}>
+          <BookOpen className="w-3.5 h-3.5" />
+          {t({ en: 'Evidence-Based Articles', fa: 'مقالات علمی' })}
+        </div>
+        <h1 className="text-5xl font-black mb-3 font-display">
+          {t({ en: 'Blog', fa: 'وبلاگ' })}
+        </h1>
+        <p className="text-lg" style={{ color: 'var(--theme-fg-subtle)' }}>
+          {t({ en: 'Evidence-based articles on training, nutrition, and recovery.', fa: 'مقاله‌های مبتنی بر شواهد در زمینه تمرین، تغذیه و بازیابی.' })}
+        </p>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {ARTICLES.map(article => {
           const copy = localizedArticle(article, lang);
           return (
-          <Link
-            key={article.id}
-            to={`/blog/${article.slug}`}
-            className="group card-iranian overflow-hidden hover:border-border-strong transition-[border-color] duration-[180ms] p-0"
-          >
-            <div className="h-48 bg-elevated overflow-hidden">
-              {article.coverImage ? (
-                <img src={article.coverImage} alt={copy.title} className="w-full h-full object-cover img-premium transition-[filter] duration-[200ms]" />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center"><div className="text-4xl">📝</div></div>
-              )}
-            </div>
-            <div className="p-5">
-              <div className="flex items-center gap-3 mb-3 text-xs text-fg-subtle">
-                <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{formatDate(article.publishedAt, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                <span className="flex items-center gap-1"><Tag className="w-3 h-3" />{copy.category}</span>
+            <Link key={article.id} to={`/blog/${article.slug}`}
+              className="group card-premium p-0 overflow-hidden transition-all duration-[280ms]">
+              <div className="h-44 flex items-center justify-center"
+                style={{ background: 'linear-gradient(135deg, var(--theme-secondary-dim), var(--theme-primary-dim))' }}>
+                <BookOpen className="w-16 h-16" style={{ color: 'var(--theme-secondary)' }} />
               </div>
-              <h3 className="text-lg font-bold mb-2 group-hover:text-brand transition-colors font-display">{copy.title}</h3>
-              <p className="text-fg-subtle text-sm line-clamp-3">{copy.excerpt}</p>
-            </div>
-          </Link>
+              <div className="p-5">
+                <div className="flex items-center gap-3 text-xs mb-3" style={{ color: 'var(--theme-fg-subtle)' }}>
+                  <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" />{formatDate(article.date)}</span>
+                  <span className="flex items-center gap-1"><Tag className="w-3.5 h-3.5" />{article.tags?.[0] || t({ en: 'Fitness', fa: 'تناسب اندام' })}</span>
+                </div>
+                <h3 className="text-lg font-bold mb-2 font-display group-hover:translate-x-0.5 transition-transform">{copy.title}</h3>
+                <p className="text-sm line-clamp-2" style={{ color: 'var(--theme-fg-subtle)' }}>{copy.summary}</p>
+                <div className="mt-4 flex items-center gap-1 text-xs font-semibold" style={{ color: 'var(--theme-secondary)' }}>
+                  <span>{t({ en: 'Read More', fa: 'ادامه مطلب' })}</span>
+                  <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                </div>
+              </div>
+            </Link>
           );
         })}
       </div>
@@ -51,68 +59,58 @@ export function BlogList() {
 
 export function BlogDetail() {
   const { t, lang } = useI18n();
-  const { formatDate } = useLocaleFormat();
   const { slug } = useParams();
   const navigate = useNavigate();
-  const article = ARTICLES.find(a => a.slug === slug);
+  const { formatDate } = useLocaleFormat();
 
+  const article = ARTICLES.find(a => a.slug === slug);
   if (!article) {
     return (
-      <PageContainer className="text-center">
+      <PageContainer className="text-center py-20">
         <Breadcrumbs items={[
           { label: t({ en: 'Blog', fa: 'وبلاگ' }), href: '/blog' },
           { label: t({ en: 'Not found', fa: 'یافت نشد' }) },
         ]} />
-        <h1 className="text-2xl font-bold mb-4">{t({ en: 'Article not found', fa: 'مقاله یافت نشد' })}</h1>
-        <button onClick={() => navigate('/blog')} className="text-brand">← {t({ en: 'Back to blog', fa: 'بازگشت به وبلاگ' })}</button>
+        <h1 className="text-2xl font-bold mb-2">{t({ en: 'Article not found', fa: 'مقاله یافت نشد' })}</h1>
+        <button onClick={() => navigate('/blog')} className="text-sm font-semibold"
+          style={{ color: 'var(--theme-primary)' }}>
+          {t({ en: '← Back to blog', fa: 'بازگشت به وبلاگ' })}
+        </button>
       </PageContainer>
     );
   }
 
   const copy = localizedArticle(article, lang);
 
-  // Simple markdown-like rendering
-  const renderContent = (content: string) => {
-    return content.split('\n').map((line, i) => {
-      if (line.startsWith('## ')) return <h2 key={i} className="text-2xl font-black mt-8 mb-4">{line.slice(3)}</h2>;
-      if (line.startsWith('### ')) return <h3 key={i} className="text-xl font-bold mt-6 mb-3">{line.slice(4)}</h3>;
-      if (line.startsWith('- **')) {
-        const match = line.match(/- \*\*(.+?)\*\* — (.+)/);
-        if (match) return <li key={i} className="ml-4 mb-2 text-fg-muted"><strong className="text-fg">{match[1]}</strong> — {match[2]}</li>;
-      }
-      if (line.startsWith('- ')) return <li key={i} className="ml-4 mb-1 text-fg-muted">{line.slice(2)}</li>;
-      if (line.startsWith('| ')) {
-        const cells = line.split('|').filter(Boolean).map(c => c.trim());
-        if (cells.every(c => /^-+$/.test(c))) return null;
-        return (
-          <div key={i} className="grid grid-cols-3 gap-2 text-sm py-1 border-b border-border">
-            {cells.map((cell, j) => <span key={j} className="text-fg-muted">{cell}</span>)}
-          </div>
-        );
-      }
-      if (line.trim() === '') return <div key={i} className="h-2" />;
-      return <p key={i} className="text-fg-muted leading-relaxed mb-3">{line}</p>;
-    });
-  };
-
   return (
-    <PageContainer>
+    <PageContainer padY="md">
       <div className="max-w-3xl mx-auto">
-      <Breadcrumbs items={[
-        { label: t({ en: 'Blog', fa: 'وبلاگ' }), href: '/blog' },
-        { label: copy.title },
-      ]} />
+        <Breadcrumbs items={[
+          { label: t({ en: 'Blog', fa: 'وبلاگ' }), href: '/blog' },
+          { label: copy.title },
+        ]} />
 
-      <article className="card-iranian p-6 md:p-10">
-        <div className="flex items-center gap-3 mb-4 text-sm text-fg-subtle">
-          <span className="flex items-center gap-1"><Calendar className="w-4 h-4" />{formatDate(article.publishedAt, { month: 'long', day: 'numeric', year: 'numeric' })}</span>
-          <span className="px-2 py-0.5 rounded-full bg-brand-muted text-brand text-xs font-medium">{copy.category}</span>
+        <div className="card-premium overflow-hidden">
+          <div className="h-56 flex items-center justify-center"
+            style={{ background: 'linear-gradient(135deg, var(--theme-secondary-dim), var(--theme-primary-dim))' }}>
+            <BookOpen className="w-20 h-20" style={{ color: 'var(--theme-secondary)' }} />
+          </div>
+          <div className="p-6 md:p-8">
+            <div className="flex items-center gap-4 text-xs mb-4" style={{ color: 'var(--theme-fg-subtle)' }}>
+              <span className="flex items-center gap-1"><Calendar className="w-4 h-4" />{formatDate(article.date)}</span>
+              {article.tags?.map(tag => (
+                <span key={tag} className="flex items-center gap-1"><Tag className="w-4 h-4" />{tag}</span>
+              ))}
+            </div>
+            <h1 className="text-3xl md:text-4xl font-black mb-6 font-display">{copy.title}</h1>
+            <div className="prose prose-sm max-w-none"
+              style={{ color: 'var(--theme-fg-muted)' }}>
+              {copy.content.split('\n').map((paragraph, i) => (
+                paragraph ? <p key={i} className="mb-4 leading-relaxed">{paragraph}</p> : null
+              ))}
+            </div>
+          </div>
         </div>
-        <h1 className="text-3xl md:text-4xl font-black mb-6">{copy.title}</h1>
-        <div className="prose prose-invert max-w-none">
-          {renderContent(copy.content)}
-        </div>
-      </article>
       </div>
     </PageContainer>
   );

@@ -1,38 +1,17 @@
-import { type HTMLAttributes, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-type CardProps = HTMLAttributes<HTMLDivElement> & {
+interface CardProps {
   children: ReactNode;
-  padding?: 'none' | 'sm' | 'md' | 'lg';
-  elevated?: boolean;
-  /** @deprecated Pattern overlays removed for minimal brand; ignored. */
-  pattern?: boolean;
-};
+  className?: string;
+  hover?: boolean;
+  style?: React.CSSProperties;
+}
 
-const paddingClasses = {
-  none: '',
-  sm: 'p-5',
-  md: 'p-7',
-  lg: 'p-9',
-};
-
-export function Card({
-  children,
-  padding = 'md',
-  elevated = false,
-  pattern: _unusedPattern = false,
-  className = '',
-  ...props
-}: CardProps) {
-  void _unusedPattern;
+export function Card({ children, className = '', hover = false, style }: CardProps) {
   return (
     <div
-      className={[
-        'card-premium relative',
-        elevated ? 'bg-elevated' : 'bg-surface',
-        paddingClasses[padding],
-        className,
-      ].filter(Boolean).join(' ')}
-      {...props}
+      className={hover ? 'card-premium card-premium-active' : 'card-premium'}
+      style={style}
     >
       {children}
     </div>
@@ -40,9 +19,19 @@ export function Card({
 }
 
 export function CardHeader({ children, className = '' }: { children: ReactNode; className?: string }) {
-  return <div className={`mb-5 ${className}`}>{children}</div>;
+  return (
+    <div className={`px-6 py-5 border-b ${className}`} style={{ borderColor: 'var(--theme-border)' }}>
+      {children}
+    </div>
+  );
 }
 
 export function CardTitle({ children, className = '' }: { children: ReactNode; className?: string }) {
-  return <h2 className={`text-lg font-bold text-fg font-display ${className}`}>{children}</h2>;
+  return (
+    <h3 className={`text-lg font-bold ${className}`}>
+      {children}
+    </h3>
+  );
 }
+
+export { Card as default };

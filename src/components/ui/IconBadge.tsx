@@ -1,48 +1,29 @@
-import type { LucideIcon } from 'lucide-react';
-import type { HTMLAttributes } from 'react';
+import { type LucideIcon } from 'lucide-react';
 
-type Variant = 'saffron' | 'firuze' | 'terracotta' | 'neutral' | 'brand' | 'accent';
-
-const variants: Record<Variant, string> = {
-  brand: 'bg-brand-muted text-brand border-brand/20',
-  saffron: 'bg-brand-muted text-brand border-brand/20',
-  firuze: 'bg-accent-muted text-accent border-accent/20',
-  accent: 'bg-accent-muted text-accent border-accent/20',
-  terracotta: 'bg-terracotta/10 text-terracotta border-terracotta/20',
-  neutral: 'bg-elevated text-fg-muted border-border',
-};
-
-type IconBadgeProps = HTMLAttributes<HTMLDivElement> & {
+interface IconBadgeProps {
   icon: LucideIcon;
-  variant?: Variant;
+  variant?: 'firuze' | 'saffron' | 'terracotta' | 'neutral';
   size?: 'sm' | 'md' | 'lg';
-};
+}
 
-const sizes = {
-  sm: { box: 'w-9 h-9 rounded-[12px]', icon: 'w-4 h-4' },
-  md: { box: 'w-12 h-12 rounded-[12px]', icon: 'w-5 h-5' },
-  lg: { box: 'w-14 h-14 rounded-[16px]', icon: 'w-7 h-7' },
-};
+export function IconBadge({ icon: Icon, variant = 'neutral', size = 'md' }: IconBadgeProps) {
+  const colors: Record<string, { bg: string; text: string }> = {
+    firuze: { bg: 'var(--theme-primary-dim)', text: 'var(--theme-primary)' },
+    saffron: { bg: 'color-mix(in srgb, var(--theme-warning) 12%, transparent)', text: 'var(--theme-warning)' },
+    terracotta: { bg: 'var(--theme-accent-dim)', text: 'var(--theme-accent)' },
+    neutral: { bg: 'var(--theme-elevated)', text: 'var(--theme-fg-subtle)' },
+  };
 
-export function IconBadge({
-  icon: Icon,
-  variant = 'brand',
-  size = 'md',
-  className = '',
-  ...props
-}: IconBadgeProps) {
-  const s = sizes[size];
+  const sizes = { sm: 'w-8 h-8', md: 'w-10 h-10', lg: 'w-12 h-12' };
+  const iconSizes = { sm: 'w-4 h-4', md: 'w-5 h-5', lg: 'w-6 h-6' };
+
+  const c = colors[variant];
   return (
     <div
-      className={[
-        'inline-flex items-center justify-center border',
-        s.box,
-        variants[variant],
-        className,
-      ].join(' ')}
-      {...props}
+      className={`${sizes[size]} rounded-xl flex items-center justify-center transition-transform duration-[280ms] group-hover:scale-110`}
+      style={{ backgroundColor: c.bg }}
     >
-      <Icon className={s.icon} strokeWidth={1.75} aria-hidden />
+      <Icon className={iconSizes[size]} style={{ color: c.text }} />
     </div>
   );
 }
