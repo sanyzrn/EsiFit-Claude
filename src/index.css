@@ -293,3 +293,109 @@ html[data-theme="light"] .persian-pattern {
 }
 
 /* Legacy glow utility neutralized — do not reintroduce */
+
+/* ─── Visualization layer (charts + calculators) ───
+ * Richer motion/gradients scoped to .viz-* so marketing chrome stays calm.
+ */
+.viz-card {
+  position: relative;
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  transition: border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+}
+
+.viz-card:hover {
+  border-color: color-mix(in srgb, var(--theme-primary) 35%, var(--theme-border));
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--theme-primary) 12%, transparent),
+    0 12px 40px color-mix(in srgb, var(--theme-primary) 10%, transparent);
+}
+
+.viz-card-hero {
+  background:
+    radial-gradient(ellipse 80% 60% at 70% 20%, color-mix(in srgb, var(--theme-primary) 18%, transparent), transparent 55%),
+    radial-gradient(ellipse 60% 50% at 20% 90%, color-mix(in srgb, var(--theme-secondary) 14%, transparent), transparent 50%),
+    var(--theme-surface);
+}
+
+.viz-glow-ring {
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--theme-primary) 45%, transparent));
+}
+
+.viz-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  border-radius: 999px;
+  outline: none;
+  cursor: pointer;
+}
+
+.viz-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--theme-primary);
+  border: 3px solid var(--theme-surface);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-primary) 35%, transparent),
+    0 0 12px color-mix(in srgb, var(--theme-primary) 40%, transparent);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.viz-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.08);
+}
+
+.viz-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--theme-primary);
+  border: 3px solid var(--theme-surface);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--theme-primary) 40%, transparent);
+}
+
+.viz-bar-fill {
+  background: linear-gradient(90deg, var(--theme-primary), var(--theme-secondary));
+  border-radius: 999px;
+  box-shadow: 0 0 12px color-mix(in srgb, var(--theme-primary) 35%, transparent);
+}
+
+.viz-delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: color-mix(in srgb, var(--theme-success) 16%, transparent);
+  color: var(--theme-success);
+  border: 1px solid color-mix(in srgb, var(--theme-success) 30%, transparent);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--theme-success) 20%, transparent);
+}
+
+@keyframes vizPulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+.viz-live-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--theme-success);
+  box-shadow: 0 0 8px var(--theme-success);
+  animation: vizPulse 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .viz-card:hover { transform: none; }
+  .viz-live-dot { animation: none; }
+  .viz-slider::-webkit-slider-thumb { transition: none; }
+}
+

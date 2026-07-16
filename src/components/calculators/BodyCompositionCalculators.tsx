@@ -1,15 +1,25 @@
 import { useState, useMemo } from 'react';
 import { useI18n, faDict } from '@/lib/i18n';
 import { calcBMI, calcBodyFat, calcFFMI, calcWHR, calcBodyType, BODY_TYPE_QUESTIONS } from '@/lib/calculators';
-import { SliderInput, SegmentedToggle, CircularGauge, CalculatorLayout, PersianNumber } from './SharedCalculatorUI';
+import {
+  SliderInput, SegmentedToggle, CircularGauge, CalculatorLayout,
+  NeedleGauge, CategorySpectrum, BodyFatSpectrum, MuscleFocusArt, AnimatedNumber,
+} from './SharedCalculatorUI';
 import { motion } from 'motion/react';
+import { getThemeCssVar } from '@/lib/theme';
 
 export function BmiCalculator() {
   const { t } = useI18n();
   const [weight, setWeight] = useState(75);
   const [height, setHeight] = useState(175);
-  
+
   const result = useMemo(() => calcBMI(weight, height), [weight, height]);
+  const bands = [
+    { to: 18.5, color: getThemeCssVar('--theme-chart-4') || '#7c9cbf', name: 'under' },
+    { to: 25, color: getThemeCssVar('--theme-success') || '#14b8a6', name: 'ok' },
+    { to: 30, color: getThemeCssVar('--theme-warning') || '#d4a017', name: 'over' },
+    { to: 40, color: getThemeCssVar('--theme-error') || '#c45c5c', name: 'obese' },
+  ];
 
   return (
     <CalculatorLayout
@@ -22,21 +32,50 @@ export function BmiCalculator() {
         </>
       }
       results={
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center w-full">
           {result.ok ? (
             <>
-              <CircularGauge
+              <NeedleGauge
                 value={result.value.bmi}
-                min={10}
+                min={12}
                 max={40}
                 label={t({ en: 'BMI', fa: 'شاخص BMI' })}
-                status={result.value.bmi > 25 ? 'high' : result.value.bmi < 18.5 ? 'low' : 'ok'}
+                bands={bands}
               />
-              <div className="mt-4 text-xl font-bold">{result.value.category}</div>
+              <motion.div
+                key={result.value.category}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-3 px-4 py-1.5 rounded-full text-sm font-bold bg-brand-muted text-brand border border-brand/25"
+              >
+                {result.value.category}
+              </motion.div>
+              <CategorySpectrum
+                value={result.value.bmi}
+                min={12}
+                max={40}
+                markers={[
+                  { at: 18.5, label: t({ en: 'Under', fa: 'کم' }), color: bands[0].color },
+                  { at: 25, label: t({ en: 'Normal', fa: 'نرمال' }), color: bands[1].color },
+                  { at: 30, label: t({ en: 'Over', fa: 'اضافه' }), color: bands[2].color },
+                  { at: 40, label: t({ en: 'Obese', fa: 'چاق' }), color: bands[3].color },
+                ]}
+              />
             </>
           ) : (
             <div className="text-danger font-medium p-4 bg-danger/10 rounded-xl border border-danger/20">{result.error}</div>
           )}
+        </div>
+      }
+      aside={
+        <div className="text-center">
+          <MuscleFocusArt highlight="chest" />
+          <p className="text-xs text-fg-subtle mt-3 leading-relaxed">
+            {t({
+              en: 'BMI is a screening tool — pair it with body fat % and waist measures for a fuller picture.',
+              fa: 'BMI یک ابزار غربالگری است — آن را با درصد چربی و دور کمر ترکیب کنید.',
+            })}
+          </p>
         </div>
       }
     />
@@ -69,11 +108,12 @@ export function BodyFatCalculator() {
         </>
       }
       results={
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center w-full">
           {result.ok ? (
             <>
-              <CircularGauge value={result.value.bodyFatPct} min={0} max={40} label={t({ en: 'Body Fat %', fa: 'درصد چربی' })} status="neutral" />
-              <div className="mt-4 text-xl font-bold">{result.value.category}</div>
+              <CircularGauge value={result.value.bodyFatPct} min={0} max={40} label={t({ en: 'Body Fat %', fa: 'درصد چربی' })} status="neutral" decimals={1} />
+              <div className="mt-3 text-lg font-bold text-fg">{result.value.category}</div>
+              <BodyFatSpectrum level={result.value.bodyFatPct} />
             </>
           ) : (
             <div className="text-danger font-medium p-4 bg-danger/10 rounded-xl border border-danger/20">{result.error}</div>
@@ -105,10 +145,11 @@ export function FfmiCalculator() {
       }
       results={
         <div className="flex flex-col items-center">
-          <CircularGauge value={result.adjusted} min={15} max={30} label={t({ en: 'Adjusted FFMI', fa: 'FFMI تنظیم شده' })} color="#8b5cf6" />
+          <CircularGauge value={result.adjusted} min={15} max={30} label={t({ en: 'Adjusted FFMI', fa: 'FFMI تنظیم شده' })} status="ok" decimals={1} />
           <div className="mt-4 text-xl font-bold">{result.category}</div>
         </div>
       }
+      aside={<MuscleFocusArt highlight="arms" />}
     />
   );
 }
@@ -136,7 +177,9 @@ export function WhrCalculator() {
         <div className="flex flex-col items-center">
           {result.ok ? (
             <>
-              <div className="text-5xl font-black text-brand mb-2"><PersianNumber value={result.value.whr} /></div>
+              <div className="text-5xl font-black text-brand mb-2 font-display tabular-nums">
+                <AnimatedNumber value={result.value.whr} decimals={2} />
+              </div>
               <div className="text-xl font-bold">{result.value.risk}</div>
             </>
           ) : (
@@ -174,7 +217,6 @@ export function BodyTypeQuiz() {
   };
 
   const translateQuizText = (text: string) => t({ en: text, fa: faDict[text] || text });
-  
   const isComplete = answers.every(a => a !== -1);
   const result = useMemo(() => isComplete ? calcBodyType(answers) : null, [answers, isComplete]);
 
@@ -185,41 +227,51 @@ export function BodyTypeQuiz() {
   };
 
   return (
-    <div className="bg-surface rounded-2xl p-6 border border-border">
-      <h3 className="text-xl font-bold mb-2">{t({ en: 'Body Type Quiz', fa: 'آزمون تیپ بدنی' })}</h3>
+    <div className="viz-card p-7">
+      <h3 className="text-xl font-bold mb-2 font-display">{t({ en: 'Body Type Quiz', fa: 'آزمون تیپ بدنی' })}</h3>
       <p className="text-fg-subtle text-sm mb-6">{t({ en: 'Find out your natural body type.', fa: 'تیپ بدنی طبیعی خود را پیدا کنید.' })}</p>
-      
+
       {!isComplete ? (
-        <div className="space-y-6">
-          {BODY_TYPE_QUESTIONS.map((q, qIdx) => {
-            if (answers.findIndex(a => a === -1) !== qIdx && answers[qIdx] === -1) return null; // Show one by one or all? Let's show all for simplicity
-            return (
-              <div key={qIdx} className="bg-elevated/50 p-4 rounded-xl">
-                <p className="font-medium mb-3">{translateQuizText(q.question)}</p>
-                <div className="space-y-2">
-                  {q.options.map((opt, aIdx) => (
-                    <button
-                      key={aIdx}
-                      onClick={() => handleAnswer(qIdx, aIdx)}
-                      className={`w-full text-left rtl:text-right p-3 rounded-lg border transition-colors ${answers[qIdx] === aIdx ? 'bg-brand-muted border-brand text-brand' : 'bg-elevated border-strong hover:border-strong'}`}
-                    >
-                      {translateQuizText(opt.text)}
-                    </button>
-                  ))}
-                </div>
+        <div className="space-y-5">
+          {BODY_TYPE_QUESTIONS.map((q, qIdx) => (
+            <div key={qIdx} className="bg-elevated/50 p-4 rounded-[16px] border border-border">
+              <p className="font-medium mb-3">{translateQuizText(q.question)}</p>
+              <div className="space-y-2">
+                {q.options.map((opt, aIdx) => (
+                  <button
+                    key={aIdx}
+                    type="button"
+                    onClick={() => handleAnswer(qIdx, aIdx)}
+                    className={`w-full text-left rtl:text-right p-3 rounded-[12px] border transition-all duration-200 ${
+                      answers[qIdx] === aIdx
+                        ? 'bg-brand-muted border-brand text-brand shadow-[0_0_16px_color-mix(in_srgb,var(--theme-primary)_20%,transparent)]'
+                        : 'bg-elevated border-border hover:border-brand/40'
+                    }`}
+                  >
+                    {translateQuizText(opt.text)}
+                  </button>
+                ))}
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       ) : (
-        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center bg-elevated p-8 rounded-2xl border border-strong">
-          <div className="text-3xl font-black text-brand uppercase mb-4">
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center viz-card-hero p-8 rounded-[20px] border border-border"
+        >
+          <div className="text-3xl font-black text-brand uppercase mb-4 font-display">
             {result ? t(bodyTypeLabels[result.type]) : ''}
           </div>
           <p className="text-fg-muted leading-relaxed mb-6">
             {result ? t(bodyTypeDescriptions[result.type]) : ''}
           </p>
-          <button onClick={() => setAnswers(Array(BODY_TYPE_QUESTIONS.length).fill(-1))} className="px-6 py-2 bg-elevated-hover hover:bg-elevated-hover rounded-lg text-sm font-bold">
+          <button
+            type="button"
+            onClick={() => setAnswers(Array(BODY_TYPE_QUESTIONS.length).fill(-1))}
+            className="px-6 py-2.5 bg-brand text-brand-fg hover:bg-brand-dark rounded-[12px] text-sm font-bold transition-colors"
+          >
             {t({ en: 'Retake Quiz', fa: 'تکرار آزمون' })}
           </button>
         </motion.div>

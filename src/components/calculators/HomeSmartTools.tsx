@@ -24,6 +24,10 @@ export default function HomeSmartTools() {
     <section className="bg-surface border-y border-border py-20" id="smart-tools">
       <div className={PAGE_CONTAINER_CLASS}>
         <div className="text-center mb-14">
+          <div className="inline-flex items-center gap-2 mb-3 text-xs font-bold uppercase tracking-wider text-brand">
+            <span className="viz-live-dot" aria-hidden />
+            {t({ en: 'Live tools', fa: 'ابزارهای زنده' })}
+          </div>
           <h2 className="text-3xl md:text-4xl font-bold mb-4 font-display">
             {t({ en: '14 Free Fitness Calculators', fa: '۱۴ ماشین حساب رایگان تناسب اندام' })}
           </h2>
