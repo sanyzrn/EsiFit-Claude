@@ -16,8 +16,8 @@ function PlanCard({ plan, isCurrent, isPopular, paymentsEnabled, loadingTier, on
   paymentsEnabled: boolean | null; loadingTier: SubscriptionTier | null;
   onSubscribe: (tier: SubscriptionTier) => void; onNavigate: (path: string) => void;
 }) {
-  const { t, formatToman } = useI18n();
-  const { formatTomanCompact } = useLocaleFormat();
+  const { t } = useI18n();
+  const { formatTomanCompact, formatToman } = useLocaleFormat();
   const isPaid = plan.priceMonthly > 0;
   const checkoutDisabled = isCurrent || (isPaid && paymentsEnabled === false);
 
