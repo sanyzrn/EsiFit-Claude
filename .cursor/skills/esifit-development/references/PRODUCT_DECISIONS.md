@@ -55,3 +55,21 @@ A log of project-level decisions already made, with the reasoning and the accept
 **Decision:** Project documentation is kept to a small, dense set of reference files (`PROJECT_RULES`, `DESIGN_BIBLE`, `COMPONENT_INVENTORY`, `DATA_MODEL`, `CONTENT_STRATEGY`, `FEATURE_FLAGS`, `PRODUCT_DECISIONS`) rather than an exhaustive multi-hundred-page documentation set written entirely upfront.
 **Reason:** These documents have to be practically pasteable into a Claude Code session's context every phase; documentation written far ahead of implementation risks diverging from what actually gets built, creating rework.
 **Tradeoff:** Some specifics (exact component props, precise hex values) are intentionally left as "fill in after implementation" rather than fully speculated in advance.
+
+---
+
+**Decision:** Phase 1 locks Inter Tight / Inter / JetBrains Mono and the graphite–mint–plasma–gold token set in `src/app/globals.css`.
+**Reason:** Need concrete, reusable tokens before Phase 2 dashboard work; values follow `phase-1-foundation.md` examples and `DESIGN_BIBLE.md`.
+**Tradeoff:** Brand fonts are Google Fonts via `next/font` (network on first load) rather than self-hosted files.
+
+---
+
+**Decision:** `esifit-development` is installed as a project skill (`.cursor/skills/`) with an always-apply Cursor rule, plus user-global copies under `~/.cursor/skills` (and Claude/agents compat paths).
+**Reason:** Agents must load the same reading order and Definition of Done without pasting the prompt pack every session.
+**Tradeoff:** Bundled skill `references/` can drift from root living docs — skill instructions prefer root files and ask to sync references when practical.
+
+---
+
+**Decision:** Contextual PWA install prompt is deferred until post-onboarding / first-workout engagement exists (Phase 2–3).
+**Reason:** `PWA_INSTALLABILITY.md` forbids showing it on first landing-page visit; Phase 1 has no signed-in engagement signal yet.
+**Tradeoff:** Manifest/icons ship in Phase 1 (installable via browser UI), but in-app prompt UX waits.
