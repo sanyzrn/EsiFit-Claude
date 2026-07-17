@@ -7,6 +7,7 @@ import { Toaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/overlays";
 import { initAuthCrossTabSync, useAuthStore } from "@/stores/auth-store";
 import { CommandPalette } from "@/components/command-palette/command-palette";
+import { CelebrationHost } from "@/components/celebration/celebration";
 import { ServiceWorkerRegister } from "@/components/pwa/sw-register";
 
 function AuthLifecycle() {
@@ -47,6 +48,7 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
           <AuthLifecycle />
           <ServiceWorkerRegister />
           {children}
+          <CelebrationHost />
           <CommandPalette />
           <Toaster
             theme="system"

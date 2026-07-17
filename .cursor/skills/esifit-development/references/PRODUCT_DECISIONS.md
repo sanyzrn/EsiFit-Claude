@@ -109,3 +109,15 @@ A log of project-level decisions already made, with the reasoning and the accept
 **Decision:** Deploy via Vercel as Framework Preset `nextjs` with `outputDirectory: null` in repo `vercel.json`.
 **Reason:** Project Settings still carried a Vite-era Output Directory of `dist`, which fails after `next build` (Next uses `.next`, not a static `dist` folder). Repo config overrides that and locks the correct framework/build commands.
 **Tradeoff:** Dashboard overrides can still fight `vercel.json` if a Production Override is stuck; clear Output Directory / Framework overrides in Vercel Project Settings if deploys keep looking for `dist`.
+
+---
+
+**Decision:** Weekly Recap / OG share defaults exclude body-fat and other sensitive metrics; users must opt in per field before public share.
+**Reason:** SECURITY_PRIVACY.md requires safer defaults for public-facing share surfaces.
+**Tradeoff:** Share cards are less "complete" by default; growth-loop virality is slightly reduced in favor of privacy.
+
+---
+
+**Decision:** Community UGC renders only as sanitized plain text (React text nodes + `sanitizeUserText`); report actions write to a mock moderation queue.
+**Reason:** Establish the safe render + report pattern before Phase 6 real users.
+**Tradeoff:** No rich-text posts in Phase 4.

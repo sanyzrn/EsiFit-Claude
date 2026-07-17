@@ -12,6 +12,8 @@ import { useSpeechSetLogger } from "@/components/workouts/exercise-library";
 import { enqueueOffline, isOnline } from "@/lib/offline/queue";
 import { toast } from "sonner";
 import { motionPresets } from "@/lib/motion";
+import { useGamificationStore } from "@/stores/gamification-store";
+import { useNotificationStore } from "@/stores/notification-store";
 
 type LoggedSet = { weight: number; reps: number; isPr: boolean };
 
@@ -129,6 +131,9 @@ export function WorkoutSession() {
       setCelebrate(true);
       window.setTimeout(() => setCelebrate(false), 1200);
       toast.success("Personal record!");
+      useGamificationStore.getState().awardXp("pr", undefined, "Personal record");
+      useGamificationStore.getState().bumpBadge("b_pr_3");
+      useGamificationStore.setState({ celebration: { kind: "pr", label: "New PR" } });
     }
     setRestLeft(90);
   }
@@ -137,6 +142,14 @@ export function WorkoutSession() {
     if (index >= draftSets.length - 1) {
       setEndedAt(Date.now());
       setDone(true);
+      useGamificationStore.getState().awardXp("workout_complete", undefined, "Workout complete");
+      useGamificationStore.getState().bumpMission("m_daily_workout");
+      useGamificationStore.getState().bumpMission("m_weekly_sessions");
+      useNotificationStore.getState().push({
+        type: "milestone",
+        title: "Workout logged",
+        message: "Nice session — XP and mission progress updated.",
+      });
     } else goToSet(index + 1);
   }
 
