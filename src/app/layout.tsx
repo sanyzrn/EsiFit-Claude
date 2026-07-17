@@ -1,8 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import { AppProviders } from "@/components/providers/app-providers";
-import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
+import { SiteChrome } from "@/components/layout/site-chrome";
 import { createMetadata, siteConfig } from "@/lib/seo";
 import "./globals.css";
 
@@ -50,9 +49,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en" suppressHydrationWarning>
       <body className={`${heading.variable} ${body.variable} ${data.variable} antialiased`}>
         <AppProviders>
-          <Navbar />
-          <main>{children}</main>
-          <Footer />
+          <SiteChrome>{children}</SiteChrome>
         </AppProviders>
       </body>
     </html>

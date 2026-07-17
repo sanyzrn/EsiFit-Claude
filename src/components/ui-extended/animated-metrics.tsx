@@ -66,6 +66,7 @@ export function RadialProgress({
   const offset = c - (clamped / 100) * c;
   const reduceMotion = useReducedMotion();
   const motionEnabled = useFeatureFlag("MOTION");
+  const gradientId = React.useId().replace(/:/g, "");
 
   return (
     <div className={cn("relative inline-flex items-center justify-center", className)} style={{ width: dims, height: dims }}>
@@ -76,7 +77,7 @@ export function RadialProgress({
           cy={dims / 2}
           r={r}
           fill="none"
-          stroke="url(#esi-gauge)"
+          stroke={`url(#${gradientId})`}
           strokeWidth={stroke}
           strokeLinecap="round"
           strokeDasharray={c}
@@ -85,7 +86,7 @@ export function RadialProgress({
           transition={reduceMotion || !motionEnabled ? { duration: 0 } : motionPresets.smooth}
         />
         <defs>
-          <linearGradient id="esi-gauge" x1="0%" y1="0%" x2="100%" y2="0%">
+          <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="var(--mint)" />
             <stop offset="100%" stopColor="var(--plasma)" />
           </linearGradient>
