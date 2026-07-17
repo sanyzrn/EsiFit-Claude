@@ -1,0 +1,3698 @@
+{
+  "generatedAt": "2026-07-17T08:12:00.723Z",
+  "seed": 42,
+  "days": 45,
+  "weight": [
+    {
+      "date": "2026-06-03",
+      "kg": 78.4
+    },
+    {
+      "date": "2026-06-04",
+      "kg": 78.4
+    },
+    {
+      "date": "2026-06-05",
+      "kg": 78.5
+    },
+    {
+      "date": "2026-06-06",
+      "kg": 78.4
+    },
+    {
+      "date": "2026-06-07",
+      "kg": 78.4
+    },
+    {
+      "date": "2026-06-08",
+      "kg": 78.3
+    },
+    {
+      "date": "2026-06-09",
+      "kg": 78.3
+    },
+    {
+      "date": "2026-06-10",
+      "kg": 78.3
+    },
+    {
+      "date": "2026-06-11",
+      "kg": 78.2
+    },
+    {
+      "date": "2026-06-12",
+      "kg": 78.3
+    },
+    {
+      "date": "2026-06-13",
+      "kg": 78.5
+    },
+    {
+      "date": "2026-06-14",
+      "kg": 78.3
+    },
+    {
+      "date": "2026-06-15",
+      "kg": 78.4
+    },
+    {
+      "date": "2026-06-16",
+      "kg": 78.3
+    },
+    {
+      "date": "2026-06-17",
+      "kg": 78.4
+    },
+    {
+      "date": "2026-06-18",
+      "kg": 78.5
+    },
+    {
+      "date": "2026-06-19",
+      "kg": 78.6
+    },
+    {
+      "date": "2026-06-20",
+      "kg": 78.6
+    },
+    {
+      "date": "2026-06-21",
+      "kg": 78.5
+    },
+    {
+      "date": "2026-06-22",
+      "kg": 78.5
+    },
+    {
+      "date": "2026-06-23",
+      "kg": 78.6
+    },
+    {
+      "date": "2026-06-24",
+      "kg": 78.6
+    },
+    {
+      "date": "2026-06-25",
+      "kg": 78.6
+    },
+    {
+      "date": "2026-06-26",
+      "kg": 78.6
+    },
+    {
+      "date": "2026-06-27",
+      "kg": 78.5
+    },
+    {
+      "date": "2026-06-28",
+      "kg": 78.5
+    },
+    {
+      "date": "2026-06-29",
+      "kg": 78.5
+    },
+    {
+      "date": "2026-06-30",
+      "kg": 78.4
+    },
+    {
+      "date": "2026-07-01",
+      "kg": 78.4
+    },
+    {
+      "date": "2026-07-02",
+      "kg": 78.5
+    },
+    {
+      "date": "2026-07-03",
+      "kg": 78.6
+    },
+    {
+      "date": "2026-07-04",
+      "kg": 78.5
+    },
+    {
+      "date": "2026-07-05",
+      "kg": 78.4
+    },
+    {
+      "date": "2026-07-06",
+      "kg": 78.5
+    },
+    {
+      "date": "2026-07-07",
+      "kg": 78.5
+    },
+    {
+      "date": "2026-07-08",
+      "kg": 78.5
+    },
+    {
+      "date": "2026-07-09",
+      "kg": 78.5
+    },
+    {
+      "date": "2026-07-10",
+      "kg": 78.5
+    },
+    {
+      "date": "2026-07-11",
+      "kg": 78.4
+    },
+    {
+      "date": "2026-07-12",
+      "kg": 78.5
+    },
+    {
+      "date": "2026-07-13",
+      "kg": 78.4
+    },
+    {
+      "date": "2026-07-14",
+      "kg": 78.3
+    },
+    {
+      "date": "2026-07-15",
+      "kg": 78.4
+    },
+    {
+      "date": "2026-07-16",
+      "kg": 78.5
+    },
+    {
+      "date": "2026-07-17",
+      "kg": 78.4
+    }
+  ],
+  "sleep": [
+    {
+      "date": "2026-06-03",
+      "hours": 8.3,
+      "quality": 4
+    },
+    {
+      "date": "2026-06-04",
+      "hours": 6.5,
+      "quality": 5
+    },
+    {
+      "date": "2026-06-05",
+      "hours": 6.3,
+      "quality": 5
+    },
+    {
+      "date": "2026-06-06",
+      "hours": 7,
+      "quality": 4
+    },
+    {
+      "date": "2026-06-07",
+      "hours": 6.5,
+      "quality": 4
+    },
+    {
+      "date": "2026-06-08",
+      "hours": 8.3,
+      "quality": 3
+    },
+    {
+      "date": "2026-06-09",
+      "hours": 7.2,
+      "quality": 4
+    },
+    {
+      "date": "2026-06-10",
+      "hours": 6.7,
+      "quality": 3
+    },
+    {
+      "date": "2026-06-11",
+      "hours": 6.9,
+      "quality": 2
+    },
+    {
+      "date": "2026-06-12",
+      "hours": 6.5,
+      "quality": 5
+    },
+    {
+      "date": "2026-06-13",
+      "hours": 7.7,
+      "quality": 5
+    },
+    {
+      "date": "2026-06-14",
+      "hours": 7.2,
+      "quality": 4
+    },
+    {
+      "date": "2026-06-15",
+      "hours": 7.4,
+      "quality": 2
+    },
+    {
+      "date": "2026-06-16",
+      "hours": 8.1,
+      "quality": 4
+    },
+    {
+      "date": "2026-06-17",
+      "hours": 7.4,
+      "quality": 5
+    },
+    {
+      "date": "2026-06-18",
+      "hours": 7,
+      "quality": 4
+    },
+    {
+      "date": "2026-06-19",
+      "hours": 7.3,
+      "quality": 4
+    },
+    {
+      "date": "2026-06-20",
+      "hours": 7.3,
+      "quality": 3
+    },
+    {
+      "date": "2026-06-21",
+      "hours": 7.4,
+      "quality": 2
+    },
+    {
+      "date": "2026-06-22",
+      "hours": 6.2,
+      "quality": 3
+    },
+    {
+      "date": "2026-06-23",
+      "hours": 6.6,
+      "quality": 4
+    },
+    {
+      "date": "2026-06-24",
+      "hours": 7.3,
+      "quality": 3
+    },
+    {
+      "date": "2026-06-25",
+      "hours": 8.5,
+      "quality": 3
+    },
+    {
+      "date": "2026-06-26",
+      "hours": 8.6,
+      "quality": 5
+    },
+    {
+      "date": "2026-06-27",
+      "hours": 7.7,
+      "quality": 3
+    },
+    {
+      "date": "2026-06-28",
+      "hours": 8.3,
+      "quality": 3
+    },
+    {
+      "date": "2026-06-29",
+      "hours": 7.7,
+      "quality": 5
+    },
+    {
+      "date": "2026-06-30",
+      "hours": 6.2,
+      "quality": 4
+    },
+    {
+      "date": "2026-07-01",
+      "hours": 6.2,
+      "quality": 4
+    },
+    {
+      "date": "2026-07-02",
+      "hours": 6.5,
+      "quality": 3
+    },
+    {
+      "date": "2026-07-03",
+      "hours": 7.5,
+      "quality": 5
+    },
+    {
+      "date": "2026-07-04",
+      "hours": 6.7,
+      "quality": 3
+    },
+    {
+      "date": "2026-07-05",
+      "hours": 7,
+      "quality": 5
+    },
+    {
+      "date": "2026-07-06",
+      "hours": 6.3,
+      "quality": 2
+    },
+    {
+      "date": "2026-07-07",
+      "hours": 7.8,
+      "quality": 5
+    },
+    {
+      "date": "2026-07-08",
+      "hours": 8.7,
+      "quality": 2
+    },
+    {
+      "date": "2026-07-09",
+      "hours": 7.3,
+      "quality": 3
+    },
+    {
+      "date": "2026-07-10",
+      "hours": 7.1,
+      "quality": 2
+    },
+    {
+      "date": "2026-07-11",
+      "hours": 8.6,
+      "quality": 4
+    },
+    {
+      "date": "2026-07-12",
+      "hours": 7.5,
+      "quality": 3
+    },
+    {
+      "date": "2026-07-13",
+      "hours": 6.2,
+      "quality": 5
+    },
+    {
+      "date": "2026-07-14",
+      "hours": 6.6,
+      "quality": 2
+    },
+    {
+      "date": "2026-07-15",
+      "hours": 7.2,
+      "quality": 5
+    },
+    {
+      "date": "2026-07-16",
+      "hours": 8,
+      "quality": 3
+    },
+    {
+      "date": "2026-07-17",
+      "hours": 6.8,
+      "quality": 2
+    }
+  ],
+  "water": [
+    {
+      "date": "2026-06-03",
+      "ml": 1679
+    },
+    {
+      "date": "2026-06-04",
+      "ml": 2180
+    },
+    {
+      "date": "2026-06-05",
+      "ml": 2089
+    },
+    {
+      "date": "2026-06-06",
+      "ml": 1916
+    },
+    {
+      "date": "2026-06-07",
+      "ml": 1937
+    },
+    {
+      "date": "2026-06-08",
+      "ml": 1415
+    },
+    {
+      "date": "2026-06-09",
+      "ml": 2037
+    },
+    {
+      "date": "2026-06-10",
+      "ml": 1878
+    },
+    {
+      "date": "2026-06-11",
+      "ml": 2324
+    },
+    {
+      "date": "2026-06-12",
+      "ml": 2241
+    },
+    {
+      "date": "2026-06-13",
+      "ml": 2764
+    },
+    {
+      "date": "2026-06-14",
+      "ml": 2546
+    },
+    {
+      "date": "2026-06-15",
+      "ml": 2714
+    },
+    {
+      "date": "2026-06-16",
+      "ml": 2674
+    },
+    {
+      "date": "2026-06-17",
+      "ml": 2896
+    },
+    {
+      "date": "2026-06-18",
+      "ml": 2738
+    },
+    {
+      "date": "2026-06-19",
+      "ml": 2547
+    },
+    {
+      "date": "2026-06-20",
+      "ml": 1816
+    },
+    {
+      "date": "2026-06-21",
+      "ml": 1531
+    },
+    {
+      "date": "2026-06-22",
+      "ml": 2539
+    },
+    {
+      "date": "2026-06-23",
+      "ml": 2619
+    },
+    {
+      "date": "2026-06-24",
+      "ml": 2323
+    },
+    {
+      "date": "2026-06-25",
+      "ml": 2388
+    },
+    {
+      "date": "2026-06-26",
+      "ml": 2698
+    },
+    {
+      "date": "2026-06-27",
+      "ml": 2416
+    },
+    {
+      "date": "2026-06-28",
+      "ml": 2342
+    },
+    {
+      "date": "2026-06-29",
+      "ml": 2634
+    },
+    {
+      "date": "2026-06-30",
+      "ml": 2414
+    },
+    {
+      "date": "2026-07-01",
+      "ml": 2343
+    },
+    {
+      "date": "2026-07-02",
+      "ml": 2972
+    },
+    {
+      "date": "2026-07-03",
+      "ml": 2339
+    },
+    {
+      "date": "2026-07-04",
+      "ml": 2393
+    },
+    {
+      "date": "2026-07-05",
+      "ml": 2773
+    },
+    {
+      "date": "2026-07-06",
+      "ml": 2872
+    },
+    {
+      "date": "2026-07-07",
+      "ml": 2810
+    },
+    {
+      "date": "2026-07-08",
+      "ml": 2086
+    },
+    {
+      "date": "2026-07-09",
+      "ml": 2995
+    },
+    {
+      "date": "2026-07-10",
+      "ml": 2012
+    },
+    {
+      "date": "2026-07-11",
+      "ml": 2412
+    },
+    {
+      "date": "2026-07-12",
+      "ml": 1524
+    },
+    {
+      "date": "2026-07-13",
+      "ml": 1939
+    },
+    {
+      "date": "2026-07-14",
+      "ml": 2370
+    },
+    {
+      "date": "2026-07-15",
+      "ml": 2849
+    },
+    {
+      "date": "2026-07-16",
+      "ml": 2931
+    },
+    {
+      "date": "2026-07-17",
+      "ml": 1447
+    }
+  ],
+  "bodyFat": [
+    {
+      "date": "2026-06-03",
+      "percent": 19.2
+    },
+    {
+      "date": "2026-06-04",
+      "percent": 19.2
+    },
+    {
+      "date": "2026-06-05",
+      "percent": 19.2
+    },
+    {
+      "date": "2026-06-06",
+      "percent": 19.2
+    },
+    {
+      "date": "2026-06-07",
+      "percent": 19.2
+    },
+    {
+      "date": "2026-06-08",
+      "percent": 19.2
+    },
+    {
+      "date": "2026-06-09",
+      "percent": 19.2
+    },
+    {
+      "date": "2026-06-10",
+      "percent": 19.2
+    },
+    {
+      "date": "2026-06-11",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-06-12",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-06-13",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-06-14",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-06-15",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-06-16",
+      "percent": 19.2
+    },
+    {
+      "date": "2026-06-17",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-06-18",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-06-19",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-06-20",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-06-21",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-06-22",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-06-23",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-06-24",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-06-25",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-06-26",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-06-27",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-06-28",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-06-29",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-06-30",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-07-01",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-07-02",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-07-03",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-07-04",
+      "percent": 19.2
+    },
+    {
+      "date": "2026-07-05",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-07-06",
+      "percent": 19.2
+    },
+    {
+      "date": "2026-07-07",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-07-08",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-07-09",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-07-10",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-07-11",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-07-12",
+      "percent": 19
+    },
+    {
+      "date": "2026-07-13",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-07-14",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-07-15",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-07-16",
+      "percent": 19.1
+    },
+    {
+      "date": "2026-07-17",
+      "percent": 19.1
+    }
+  ],
+  "workouts": [
+    {
+      "id": "w_2026-06-03_0",
+      "date": "2026-06-03",
+      "name": "Lower Focus",
+      "durationMin": 58,
+      "volumeKg": 2208,
+      "exerciseIds": [
+        "ex_ohp",
+        "ex_lunges"
+      ],
+      "sets": [
+        {
+          "exerciseId": "ex_ohp",
+          "weight": 78,
+          "reps": 6,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_lunges",
+          "weight": 100,
+          "reps": 7,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_ohp",
+          "weight": 80,
+          "reps": 9,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_lunges",
+          "weight": 40,
+          "reps": 8,
+          "isPr": false
+        }
+      ]
+    },
+    {
+      "id": "w_2026-06-04_1",
+      "date": "2026-06-04",
+      "name": "Upper Focus",
+      "durationMin": 43,
+      "volumeKg": 1532,
+      "exerciseIds": [
+        "ex_ohp",
+        "ex_pullup"
+      ],
+      "sets": [
+        {
+          "exerciseId": "ex_ohp",
+          "weight": 44,
+          "reps": 8,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_pullup",
+          "weight": 60,
+          "reps": 9,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_ohp",
+          "weight": 64,
+          "reps": 10,
+          "isPr": false
+        }
+      ]
+    },
+    {
+      "id": "w_2026-06-05_2",
+      "date": "2026-06-05",
+      "name": "Lower Focus",
+      "durationMin": 55,
+      "volumeKg": 1802,
+      "exerciseIds": [
+        "ex_squat"
+      ],
+      "sets": [
+        {
+          "exerciseId": "ex_squat",
+          "weight": 69,
+          "reps": 8,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_squat",
+          "weight": 112,
+          "reps": 5,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_squat",
+          "weight": 115,
+          "reps": 6,
+          "isPr": false
+        }
+      ]
+    },
+    {
+      "id": "w_2026-06-06_3",
+      "date": "2026-06-06",
+      "name": "Lower Focus",
+      "durationMin": 67,
+      "volumeKg": 3221,
+      "exerciseIds": [
+        "ex_ohp",
+        "ex_pullup"
+      ],
+      "sets": [
+        {
+          "exerciseId": "ex_ohp",
+          "weight": 96,
+          "reps": 11,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_pullup",
+          "weight": 75,
+          "reps": 8,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_ohp",
+          "weight": 48,
+          "reps": 9,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_pullup",
+          "weight": 103,
+          "reps": 11,
+          "isPr": false
+        }
+      ]
+    },
+    {
+      "id": "w_2026-06-08_4",
+      "date": "2026-06-08",
+      "name": "Upper Focus",
+      "durationMin": 57,
+      "volumeKg": 1802,
+      "exerciseIds": [
+        "ex_lunges",
+        "ex_plank"
+      ],
+      "sets": [
+        {
+          "exerciseId": "ex_lunges",
+          "weight": 57,
+          "reps": 9,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_plank",
+          "weight": 55,
+          "reps": 5,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_lunges",
+          "weight": 97,
+          "reps": 7,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_plank",
+          "weight": 67,
+          "reps": 5,
+          "isPr": false
+        }
+      ]
+    },
+    {
+      "id": "w_2026-06-12_5",
+      "date": "2026-06-12",
+      "name": "Upper Focus",
+      "durationMin": 37,
+      "volumeKg": 2327,
+      "exerciseIds": [
+        "ex_plank",
+        "ex_pullup"
+      ],
+      "sets": [
+        {
+          "exerciseId": "ex_plank",
+          "weight": 89,
+          "reps": 10,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_pullup",
+          "weight": 71,
+          "reps": 8,
+          "isPr": true
+        },
+        {
+          "exerciseId": "ex_plank",
+          "weight": 79,
+          "reps": 11,
+          "isPr": false
+        }
+      ]
+    },
+    {
+      "id": "w_2026-06-13_6",
+      "date": "2026-06-13",
+      "name": "Upper Focus",
+      "durationMin": 70,
+      "volumeKg": 2075,
+      "exerciseIds": [
+        "ex_row",
+        "ex_pullup"
+      ],
+      "sets": [
+        {
+          "exerciseId": "ex_row",
+          "weight": 94,
+          "reps": 7,
+          "isPr": true
+        },
+        {
+          "exerciseId": "ex_pullup",
+          "weight": 90,
+          "reps": 7,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_row",
+          "weight": 52,
+          "reps": 7,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_pullup",
+          "weight": 47,
+          "reps": 9,
+          "isPr": false
+        }
+      ]
+    },
+    {
+      "id": "w_2026-06-14_7",
+      "date": "2026-06-14",
+      "name": "Upper Focus",
+      "durationMin": 52,
+      "volumeKg": 2065,
+      "exerciseIds": [
+        "ex_triceps",
+        "ex_deadlift"
+      ],
+      "sets": [
+        {
+          "exerciseId": "ex_triceps",
+          "weight": 81,
+          "reps": 8,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_deadlift",
+          "weight": 77,
+          "reps": 7,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_triceps",
+          "weight": 65,
+          "reps": 6,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_deadlift",
+          "weight": 61,
+          "reps": 8,
+          "isPr": false
+        }
+      ]
+    },
+    {
+      "id": "w_2026-06-16_8",
+      "date": "2026-06-16",
+      "name": "Lower Focus",
+      "durationMin": 48,
+      "volumeKg": 1714,
+      "exerciseIds": [
+        "ex_triceps",
+        "ex_rdl"
+      ],
+      "sets": [
+        {
+          "exerciseId": "ex_triceps",
+          "weight": 46,
+          "reps": 5,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_rdl",
+          "weight": 61,
+          "reps": 9,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_triceps",
+          "weight": 85,
+          "reps": 11,
+          "isPr": false
+        }
+      ]
+    },
+    {
+      "id": "w_2026-06-17_9",
+      "date": "2026-06-17",
+      "name": "Lower Focus",
+      "durationMin": 60,
+      "volumeKg": 2847,
+      "exerciseIds": [
+        "ex_rdl",
+        "ex_triceps"
+      ],
+      "sets": [
+        {
+          "exerciseId": "ex_rdl",
+          "weight": 80,
+          "reps": 10,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_triceps",
+          "weight": 95,
+          "reps": 8,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_rdl",
+          "weight": 117,
+          "reps": 11,
+          "isPr": false
+        }
+      ]
+    },
+    {
+      "id": "w_2026-06-18_10",
+      "date": "2026-06-18",
+      "name": "Upper Focus",
+      "durationMin": 71,
+      "volumeKg": 2241,
+      "exerciseIds": [
+        "ex_plank",
+        "ex_curl"
+      ],
+      "sets": [
+        {
+          "exerciseId": "ex_plank",
+          "weight": 63,
+          "reps": 11,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_curl",
+          "weight": 62,
+          "reps": 9,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_plank",
+          "weight": 99,
+          "reps": 10,
+          "isPr": false
+        }
+      ]
+    },
+    {
+      "id": "w_2026-06-19_11",
+      "date": "2026-06-19",
+      "name": "Lower Focus",
+      "durationMin": 69,
+      "volumeKg": 1571,
+      "exerciseIds": [
+        "ex_bench",
+        "ex_deadlift"
+      ],
+      "sets": [
+        {
+          "exerciseId": "ex_bench",
+          "weight": 50,
+          "reps": 7,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_deadlift",
+          "weight": 107,
+          "reps": 9,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_bench",
+          "weight": 43,
+          "reps": 6,
+          "isPr": false
+        }
+      ]
+    },
+    {
+      "id": "w_2026-06-20_12",
+      "date": "2026-06-20",
+      "name": "Upper Focus",
+      "durationMin": 48,
+      "volumeKg": 1994,
+      "exerciseIds": [
+        "ex_rdl",
+        "ex_pullup"
+      ],
+      "sets": [
+        {
+          "exerciseId": "ex_rdl",
+          "weight": 49,
+          "reps": 10,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_pullup",
+          "weight": 113,
+          "reps": 5,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_rdl",
+          "weight": 43,
+          "reps": 7,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_pullup",
+          "weight": 58,
+          "reps": 11,
+          "isPr": false
+        }
+      ]
+    },
+    {
+      "id": "w_2026-06-21_13",
+      "date": "2026-06-21",
+      "name": "Upper Focus",
+      "durationMin": 43,
+      "volumeKg": 2314,
+      "exerciseIds": [
+        "ex_pullup",
+        "ex_plank"
+      ],
+      "sets": [
+        {
+          "exerciseId": "ex_pullup",
+          "weight": 79,
+          "reps": 11,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_plank",
+          "weight": 52,
+          "reps": 8,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_pullup",
+          "weight": 57,
+          "reps": 10,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_plank",
+          "weight": 51,
+          "reps": 9,
+          "isPr": false
+        }
+      ]
+    },
+    {
+      "id": "w_2026-06-22_14",
+      "date": "2026-06-22",
+      "name": "Lower Focus",
+      "durationMin": 55,
+      "volumeKg": 1606,
+      "exerciseIds": [
+        "ex_ohp",
+        "ex_plank"
+      ],
+      "sets": [
+        {
+          "exerciseId": "ex_ohp",
+          "weight": 55,
+          "reps": 9,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_plank",
+          "weight": 55,
+          "reps": 10,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_ohp",
+          "weight": 51,
+          "reps": 11,
+          "isPr": false
+        }
+      ]
+    },
+    {
+      "id": "w_2026-06-23_15",
+      "date": "2026-06-23",
+      "name": "Upper Focus",
+      "durationMin": 65,
+      "volumeKg": 1304,
+      "exerciseIds": [
+        "ex_pullup",
+        "ex_ohp"
+      ],
+      "sets": [
+        {
+          "exerciseId": "ex_pullup",
+          "weight": 43,
+          "reps": 11,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_ohp",
+          "weight": 74,
+          "reps": 6,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_pullup",
+          "weight": 43,
+          "reps": 9,
+          "isPr": false
+        }
+      ]
+    },
+    {
+      "id": "w_2026-06-25_16",
+      "date": "2026-06-25",
+      "name": "Lower Focus",
+      "durationMin": 55,
+      "volumeKg": 2498,
+      "exerciseIds": [
+        "ex_pullup",
+        "ex_bench"
+      ],
+      "sets": [
+        {
+          "exerciseId": "ex_pullup",
+          "weight": 80,
+          "reps": 8,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_bench",
+          "weight": 100,
+          "reps": 5,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_pullup",
+          "weight": 88,
+          "reps": 11,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_bench",
+          "weight": 78,
+          "reps": 5,
+          "isPr": false
+        }
+      ]
+    },
+    {
+      "id": "w_2026-06-26_17",
+      "date": "2026-06-26",
+      "name": "Upper Focus",
+      "durationMin": 61,
+      "volumeKg": 2245,
+      "exerciseIds": [
+        "ex_triceps",
+        "ex_squat"
+      ],
+      "sets": [
+        {
+          "exerciseId": "ex_triceps",
+          "weight": 119,
+          "reps": 5,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_squat",
+          "weight": 110,
+          "reps": 9,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_triceps",
+          "weight": 66,
+          "reps": 10,
+          "isPr": false
+        }
+      ]
+    },
+    {
+      "id": "w_2026-06-27_18",
+      "date": "2026-06-27",
+      "name": "Upper Focus",
+      "durationMin": 74,
+      "volumeKg": 2078,
+      "exerciseIds": [
+        "ex_row",
+        "ex_triceps"
+      ],
+      "sets": [
+        {
+          "exerciseId": "ex_row",
+          "weight": 41,
+          "reps": 9,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_triceps",
+          "weight": 60,
+          "reps": 9,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_row",
+          "weight": 77,
+          "reps": 7,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_triceps",
+          "weight": 90,
+          "reps": 7,
+          "isPr": false
+        }
+      ]
+    },
+    {
+      "id": "w_2026-07-01_19",
+      "date": "2026-07-01",
+      "name": "Upper Focus",
+      "durationMin": 74,
+      "volumeKg": 2475,
+      "exerciseIds": [
+        "ex_rdl",
+        "ex_row"
+      ],
+      "sets": [
+        {
+          "exerciseId": "ex_rdl",
+          "weight": 73,
+          "reps": 9,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_row",
+          "weight": 51,
+          "reps": 9,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_rdl",
+          "weight": 63,
+          "reps": 11,
+          "isPr": true
+        },
+        {
+          "exerciseId": "ex_row",
+          "weight": 74,
+          "reps": 9,
+          "isPr": false
+        }
+      ]
+    },
+    {
+      "id": "w_2026-07-02_20",
+      "date": "2026-07-02",
+      "name": "Upper Focus",
+      "durationMin": 47,
+      "volumeKg": 2589,
+      "exerciseIds": [
+        "ex_calf",
+        "ex_bench"
+      ],
+      "sets": [
+        {
+          "exerciseId": "ex_calf",
+          "weight": 88,
+          "reps": 11,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_bench",
+          "weight": 117,
+          "reps": 6,
+          "isPr": true
+        },
+        {
+          "exerciseId": "ex_calf",
+          "weight": 65,
+          "reps": 8,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_bench",
+          "weight": 57,
+          "reps": 7,
+          "isPr": true
+        }
+      ]
+    },
+    {
+      "id": "w_2026-07-03_21",
+      "date": "2026-07-03",
+      "name": "Lower Focus",
+      "durationMin": 40,
+      "volumeKg": 1900,
+      "exerciseIds": [
+        "ex_pullup",
+        "ex_lunges"
+      ],
+      "sets": [
+        {
+          "exerciseId": "ex_pullup",
+          "weight": 87,
+          "reps": 9,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_lunges",
+          "weight": 73,
+          "reps": 6,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_pullup",
+          "weight": 97,
+          "reps": 7,
+          "isPr": false
+        }
+      ]
+    },
+    {
+      "id": "w_2026-07-05_22",
+      "date": "2026-07-05",
+      "name": "Upper Focus",
+      "durationMin": 55,
+      "volumeKg": 2875,
+      "exerciseIds": [
+        "ex_pullup",
+        "ex_deadlift"
+      ],
+      "sets": [
+        {
+          "exerciseId": "ex_pullup",
+          "weight": 89,
+          "reps": 10,
+          "isPr": true
+        },
+        {
+          "exerciseId": "ex_deadlift",
+          "weight": 72,
+          "reps": 7,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_pullup",
+          "weight": 112,
+          "reps": 9,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_deadlift",
+          "weight": 43,
+          "reps": 11,
+          "isPr": false
+        }
+      ]
+    },
+    {
+      "id": "w_2026-07-09_23",
+      "date": "2026-07-09",
+      "name": "Upper Focus",
+      "durationMin": 70,
+      "volumeKg": 2496,
+      "exerciseIds": [
+        "ex_pullup",
+        "ex_row"
+      ],
+      "sets": [
+        {
+          "exerciseId": "ex_pullup",
+          "weight": 63,
+          "reps": 9,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_row",
+          "weight": 49,
+          "reps": 10,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_pullup",
+          "weight": 49,
+          "reps": 11,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_row",
+          "weight": 100,
+          "reps": 9,
+          "isPr": false
+        }
+      ]
+    },
+    {
+      "id": "w_2026-07-10_24",
+      "date": "2026-07-10",
+      "name": "Upper Focus",
+      "durationMin": 43,
+      "volumeKg": 2821,
+      "exerciseIds": [
+        "ex_row",
+        "ex_bench"
+      ],
+      "sets": [
+        {
+          "exerciseId": "ex_row",
+          "weight": 101,
+          "reps": 6,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_bench",
+          "weight": 55,
+          "reps": 9,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_row",
+          "weight": 118,
+          "reps": 10,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_bench",
+          "weight": 60,
+          "reps": 9,
+          "isPr": false
+        }
+      ]
+    },
+    {
+      "id": "w_2026-07-13_25",
+      "date": "2026-07-13",
+      "name": "Upper Focus",
+      "durationMin": 62,
+      "volumeKg": 1979,
+      "exerciseIds": [
+        "ex_calf",
+        "ex_triceps"
+      ],
+      "sets": [
+        {
+          "exerciseId": "ex_calf",
+          "weight": 69,
+          "reps": 6,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_triceps",
+          "weight": 91,
+          "reps": 8,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_calf",
+          "weight": 93,
+          "reps": 9,
+          "isPr": false
+        }
+      ]
+    },
+    {
+      "id": "w_2026-07-14_26",
+      "date": "2026-07-14",
+      "name": "Lower Focus",
+      "durationMin": 66,
+      "volumeKg": 1970,
+      "exerciseIds": [
+        "ex_rdl",
+        "ex_pullup"
+      ],
+      "sets": [
+        {
+          "exerciseId": "ex_rdl",
+          "weight": 68,
+          "reps": 8,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_pullup",
+          "weight": 46,
+          "reps": 9,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_rdl",
+          "weight": 92,
+          "reps": 11,
+          "isPr": false
+        }
+      ]
+    },
+    {
+      "id": "w_2026-07-17_27",
+      "date": "2026-07-17",
+      "name": "Upper Focus",
+      "durationMin": 69,
+      "volumeKg": 2011,
+      "exerciseIds": [
+        "ex_squat",
+        "ex_ohp"
+      ],
+      "sets": [
+        {
+          "exerciseId": "ex_squat",
+          "weight": 104,
+          "reps": 5,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_ohp",
+          "weight": 84,
+          "reps": 8,
+          "isPr": false
+        },
+        {
+          "exerciseId": "ex_squat",
+          "weight": 91,
+          "reps": 9,
+          "isPr": false
+        }
+      ]
+    }
+  ],
+  "nutritionDays": [
+    {
+      "date": "2026-06-03",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.6800867960555479
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 1.5617813924327493
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.0928445035824552
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_whey",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-06-04",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.6878974911058321
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 1.5746946297585964
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.329929896746762
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_whey",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-06-05",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.6361777720274403
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 2.495638635009527
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.2814001073129475
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_whey",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-06-06",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.8918239249382167
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 1.678394845686853
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.3547148264478892
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_whey",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-06-07",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.7886710167629644
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 2.386878866236657
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.1631889819400385
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_whey",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-06-08",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.649159848690033
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 1.6708340651821345
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.2804820750607178
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_almonds",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-06-09",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.8686924199340864
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 1.8273167491424829
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.247631274163723
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_whey",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-06-10",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.8007887073559686
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 1.720891279168427
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.0846522968495265
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_whey",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-06-11",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.7444602294825017
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 1.8799300773534924
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.3560249231522903
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_whey",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-06-12",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.650790405459702
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 2.0065426025539637
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.338328434736468
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_whey",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-06-13",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.8122432742966339
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 1.645152501994744
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.1365505288122222
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_almonds",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-06-14",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.6011293720453977
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 1.6481773343402892
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.4716201156843454
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_almonds",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-06-15",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.7111835000803693
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 1.7297097032424062
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.3513823193497956
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_whey",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-06-16",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.8499304334633052
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 2.0366733164992183
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.1024830150417984
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_whey",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-06-17",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.8594054681248963
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 1.8868483300320804
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.4389648432843387
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_almonds",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-06-18",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.7413971906527876
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 1.5725110715720803
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.2499533377122134
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_whey",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-06-19",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.8726839343318715
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 2.3881407426670194
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.172539747087285
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_almonds",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-06-20",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.6096244649263098
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 2.2347104486543685
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.3993082561064512
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_almonds",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-06-21",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.7565277970628812
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 2.24511467339471
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.0249245554441586
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_whey",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-06-22",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.7453604293288663
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 2.1742664494086057
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.079179349471815
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_whey",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-06-23",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.8430226936005055
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 1.5537576577626169
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.293336634640582
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_whey",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-06-24",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.8124849898042157
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 1.5037055660504848
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.3455503055592999
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_almonds",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-06-25",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.80456736353226
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 2.0551574919372797
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.3050571919884533
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_whey",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-06-26",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.6468426166567951
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 1.874461657833308
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.3623082337435335
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_almonds",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-06-27",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.7783656043466181
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 1.574566010851413
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.3220499723684043
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_whey",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-06-28",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.8929587095975875
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 1.6812693120446056
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.3397064139135182
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_whey",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-06-29",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.6181201715022325
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 1.5955646629445255
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.4547945361118764
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_almonds",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-06-30",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.7217140914173796
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 2.3259967085905373
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.1728466446511447
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_almonds",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-07-01",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.8079521351493895
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 1.8433548433240503
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.4546078280545771
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_whey",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-07-02",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.7093576338607818
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 1.9459603999275714
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.0881197000853717
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_whey",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-07-03",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.6843373367562889
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 1.5430011302232742
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.2297531319782138
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_whey",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-07-04",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.7049926812993362
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 2.115930713247508
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.2339051550952718
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_whey",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-07-05",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.8928367119049654
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 2.025866514770314
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.3375317580066621
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_whey",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-07-06",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.8109813805203885
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 2.0361891475040466
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.2203255296917632
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_almonds",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-07-07",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.7769251268589868
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 1.9924912615679204
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.258353796089068
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_whey",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-07-08",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.6463677530642599
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 1.5483735394664109
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.0606043712468818
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_almonds",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-07-09",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.8528217346407473
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 1.7195563288405538
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.4860250750789419
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_almonds",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-07-10",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.8524562830338254
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 2.4080839585512877
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.4659723265795037
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_almonds",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-07-11",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.790459924377501
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 2.188041258370504
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.3968223398551345
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_almonds",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-07-12",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.8700504248030483
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 2.491873661521822
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.2783880359493196
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_almonds",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-07-13",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.7252413399517535
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 2.308161514112726
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.1121840659761801
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_almonds",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-07-14",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.737687209714204
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 2.1531490844208747
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.2001558796036988
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_almonds",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-07-15",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.7489785677287727
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 2.365546961547807
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.135448974557221
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_almonds",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-07-16",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.8846296865260228
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 2.240818065125495
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.2299612982897088
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_almonds",
+          "servings": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-07-17",
+      "meals": [
+        {
+          "slot": "breakfast",
+          "foodId": "f_oats",
+          "servings": 0.7998189296806231
+        },
+        {
+          "slot": "breakfast",
+          "foodId": "f_yogurt",
+          "servings": 1.5
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_chicken",
+          "servings": 1.9814592630136758
+        },
+        {
+          "slot": "lunch",
+          "foodId": "f_rice",
+          "servings": 1.5
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_salmon",
+          "servings": 1.183761756052263
+        },
+        {
+          "slot": "dinner",
+          "foodId": "f_broccoli",
+          "servings": 2
+        },
+        {
+          "slot": "snack",
+          "foodId": "f_whey",
+          "servings": 1
+        }
+      ]
+    }
+  ],
+  "xpLogs": [
+    {
+      "date": "2026-06-03",
+      "amount": 41,
+      "source": "workout"
+    },
+    {
+      "date": "2026-06-04",
+      "amount": 57,
+      "source": "workout"
+    },
+    {
+      "date": "2026-06-05",
+      "amount": 89,
+      "source": "workout"
+    },
+    {
+      "date": "2026-06-06",
+      "amount": 47,
+      "source": "workout"
+    },
+    {
+      "date": "2026-06-08",
+      "amount": 99,
+      "source": "workout"
+    },
+    {
+      "date": "2026-06-12",
+      "amount": 44,
+      "source": "workout"
+    },
+    {
+      "date": "2026-06-13",
+      "amount": 67,
+      "source": "workout"
+    },
+    {
+      "date": "2026-06-14",
+      "amount": 48,
+      "source": "workout"
+    },
+    {
+      "date": "2026-06-16",
+      "amount": 57,
+      "source": "workout"
+    },
+    {
+      "date": "2026-06-17",
+      "amount": 80,
+      "source": "workout"
+    },
+    {
+      "date": "2026-06-18",
+      "amount": 72,
+      "source": "workout"
+    },
+    {
+      "date": "2026-06-19",
+      "amount": 77,
+      "source": "workout"
+    },
+    {
+      "date": "2026-06-20",
+      "amount": 78,
+      "source": "workout"
+    },
+    {
+      "date": "2026-06-21",
+      "amount": 95,
+      "source": "workout"
+    },
+    {
+      "date": "2026-06-22",
+      "amount": 77,
+      "source": "workout"
+    },
+    {
+      "date": "2026-06-23",
+      "amount": 79,
+      "source": "workout"
+    },
+    {
+      "date": "2026-06-25",
+      "amount": 69,
+      "source": "workout"
+    },
+    {
+      "date": "2026-06-26",
+      "amount": 55,
+      "source": "workout"
+    },
+    {
+      "date": "2026-06-27",
+      "amount": 50,
+      "source": "workout"
+    },
+    {
+      "date": "2026-07-01",
+      "amount": 93,
+      "source": "workout"
+    },
+    {
+      "date": "2026-07-02",
+      "amount": 70,
+      "source": "workout"
+    },
+    {
+      "date": "2026-07-03",
+      "amount": 78,
+      "source": "workout"
+    },
+    {
+      "date": "2026-07-05",
+      "amount": 75,
+      "source": "workout"
+    },
+    {
+      "date": "2026-07-09",
+      "amount": 51,
+      "source": "workout"
+    },
+    {
+      "date": "2026-07-10",
+      "amount": 40,
+      "source": "workout"
+    },
+    {
+      "date": "2026-07-13",
+      "amount": 77,
+      "source": "workout"
+    },
+    {
+      "date": "2026-07-14",
+      "amount": 48,
+      "source": "workout"
+    },
+    {
+      "date": "2026-07-17",
+      "amount": 84,
+      "source": "workout"
+    }
+  ],
+  "muscleVolume": {
+    "shoulders": 0.37,
+    "quads": 0.18,
+    "glutes": 0.42,
+    "lats": 1,
+    "abs": 0.32,
+    "traps": 0.18,
+    "triceps": 0.4,
+    "hamstrings": 0.24,
+    "lower-back": 0.07,
+    "biceps": 0.07,
+    "chest": 0.29,
+    "calves": 0.14
+  },
+  "weeklyActivity": [
+    0,
+    0,
+    62,
+    66,
+    0,
+    0,
+    69
+  ]
+}

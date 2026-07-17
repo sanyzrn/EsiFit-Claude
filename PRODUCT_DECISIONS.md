@@ -85,3 +85,21 @@ A log of project-level decisions already made, with the reasoning and the accept
 **Decision:** Onboarding profile fields live on `User.profile` (aligned to USER/GOAL), not a separate onboarding DTO.
 **Reason:** Calculators (Phase 3) and AI context (Phase 5) must read one shape; avoids reconciliation debt.
 **Tradeoff:** Profile grows a few optional biometric fields early.
+
+---
+
+**Decision:** Phase 3 calculators are configuration objects with a `compute` fn; the RSC page passes only `slug` into the client shell.
+**Reason:** Next.js cannot serialize functions across the server→client boundary; looking up config client-side keeps one source of truth.
+**Tradeoff:** Metadata still reads config on the server; the shell must tolerate a missing slug gracefully.
+
+---
+
+**Decision:** Authenticated Phase 3 modules (workouts library/builder, nutrition, analytics, settings) use `DashboardShell`; live workout session stays chrome-minimal.
+**Reason:** Consistent app chrome for signed-in workflows; session UI must stay gym-usable (large targets, no sidebar chrome).
+**Tradeoff:** Calculators remain on marketing chrome for SEO/anonymous lead-gen.
+
+---
+
+**Decision:** Offline tracker persistence uses IndexedDB queue (`idb`) plus a light shell service worker — not a full offline SPA.
+**Reason:** Matches PRODUCT_DECISIONS scope (sets/water/meals only) while still enabling installability and shell caching.
+**Tradeoff:** Analytics/community/store still require network; sync is mock flush until Phase 6.

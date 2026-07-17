@@ -7,6 +7,7 @@ import { Toaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/overlays";
 import { initAuthCrossTabSync, useAuthStore } from "@/stores/auth-store";
 import { CommandPalette } from "@/components/command-palette/command-palette";
+import { ServiceWorkerRegister } from "@/components/pwa/sw-register";
 
 function AuthLifecycle() {
   const checkExpiry = useAuthStore((s) => s.checkExpiry);
@@ -44,6 +45,7 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
       <QueryClientProvider client={client}>
         <TooltipProvider delayDuration={200}>
           <AuthLifecycle />
+          <ServiceWorkerRegister />
           {children}
           <CommandPalette />
           <Toaster

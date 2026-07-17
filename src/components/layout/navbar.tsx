@@ -10,10 +10,10 @@ import { useFeatureFlag } from "@/lib/feature-flags";
 
 const navLinks = [
   { href: "/#features", label: "Features" },
+  { href: "/calculators", label: "Calculators", flag: "CALCULATORS" as const },
   { href: "/#pricing", label: "Pricing" },
   { href: "/blog", label: "Articles", flag: "BLOG" as const },
   { href: "/dashboard", label: "Dashboard" },
-  { href: "/#faq", label: "FAQ" },
 ];
 
 export function Navbar() {
@@ -21,6 +21,7 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const { resolvedTheme, setTheme } = useTheme();
   const blogEnabled = useFeatureFlag("BLOG");
+  const calculatorsEnabled = useFeatureFlag("CALCULATORS");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -29,7 +30,12 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const links = navLinks.filter((l) => !("flag" in l) || (l.flag === "BLOG" && blogEnabled));
+  const links = navLinks.filter((l) => {
+    if (!("flag" in l) || !l.flag) return true;
+    if (l.flag === "BLOG") return blogEnabled;
+    if (l.flag === "CALCULATORS") return calculatorsEnabled;
+    return true;
+  });
 
   return (
     <header
