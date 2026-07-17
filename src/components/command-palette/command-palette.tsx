@@ -114,6 +114,17 @@ export function CommandPalette() {
         run: () => router.push("/recap"),
       }),
       registerCommand({
+        id: "action-ask-ai",
+        label: "Ask EsiFit AI",
+        group: "actions",
+        keywords: ["assistant", "chat", "insight"],
+        run: () => {
+          if (typeof window !== "undefined") {
+            window.dispatchEvent(new Event("esifit:open-ask-ai"));
+          }
+        },
+      }),
+      registerCommand({
         id: "nav-workout-builder",
         label: "Open workout builder",
         group: "navigation",

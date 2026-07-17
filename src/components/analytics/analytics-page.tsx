@@ -25,6 +25,7 @@ import {
   ChartTooltipStyle,
 } from "@/lib/charts/theme";
 import { isFeatureEnabled } from "@/lib/feature-flags";
+import { AIInsightPanel } from "@/components/ai/ai-insight-panel";
 
 function ActivityHeatmap({ values }: { values: { date: string; count: number }[] }) {
   const max = Math.max(...values.map((v) => v.count), 1);
@@ -244,6 +245,20 @@ export function AnalyticsPage() {
             </li>
           ))}
         </ul>
+        <div className="mt-4">
+          <AIInsightPanel
+            touchpoint="analytics"
+            title="AI weekly narrative"
+            prompt="Write one short paragraph summarizing this week's progress using only the provided stats. Do not invent numbers."
+            context={{
+              weightDeltaKg: Number((weight.slice(-1)[0]!.kg - weight[0]!.kg).toFixed(1)),
+              latestWeight: weight.slice(-1)[0]!.kg,
+              workoutCount: workouts,
+              avgSleep: Number((sleep.reduce((a, s) => a + s.hours, 0) / Math.max(1, sleep.length)).toFixed(1)),
+              ruleInsights: insights.join(" | "),
+            }}
+          />
+        </div>
       </GlassCard>
 
       <div>
