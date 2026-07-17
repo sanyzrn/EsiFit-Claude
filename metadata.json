@@ -1,8 +1,0 @@
-{
-  "name": "Remix: EsiFit",
-  "description": "Your ultimate fitness and bodybuilding platform with programs, exercises, and calculators.",
-  "requestFramePermissions": [],
-  "majorCapabilities": [
-    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
-  ]
-}
