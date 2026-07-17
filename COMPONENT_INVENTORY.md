@@ -61,10 +61,16 @@
 | SettingsInstallPanel | — | — | deferred / standalone | — | beforeinstallprompt, useIsStandalone | `/settings` | Yes |
 | chart theme utils | Recharts wrappers | — | — | — | CSS vars | calculators, analytics | Yes |
 
-## Growth / Phase 4 (planned)
+## Growth / Phase 4 (implemented)
 
 | Component | Variants | Props | States | Animation | Depends On | Used In | Stable |
 |---|---|---|---|---|---|---|---|
-| AchievementCard | locked / unlocked / in-progress | TBD | — | unlock celebration | Card, Celebration | TBD | No |
-| FloatingButton | — | TBD | — | — | Button | TBD | No |
-| Celebration (shared) | confetti / glow-burst | `trigger, intensity` | idle / triggered | one reusable implementation | — | PRs, level-ups, badges, missions | No |
+| CelebrationHost | level/badge/mission/pr | — | idle / celebrating | particle burst | Framer Motion, gamification store | Global | Yes |
+| AchievementsView | — | — | locked / progress / unlocked | XP bar | gamification store | `/achievements` | Yes |
+| MissionsView | daily/weekly/monthly | — | Active/Completed/Claimed | progress bar | gamification store | `/missions` | Yes |
+| CommunityFeed | — | — | empty / loaded | optimistic like | sanitize, community store | `/community` | Yes |
+| BeforeAfterCompare | compact | before/after src | dragging | clip-path | — | transformation posts | Yes |
+| ChallengesView / LeaderboardView | scopes | — | joined / sticky me | — | community store | community routes | Yes |
+| WeeklyRecapView | privacy toggles | — | composing | — | html2canvas, OG route | `/recap` | Yes |
+| ShopCatalog / CartCheckoutView | cart/checkout | mode | empty/form/processing/success/failure | — | shop store | `/shop*` | Yes |
+| NotificationCenter / ReminderSettings | compact/full | — | unread / empty | — | notification store | shell, settings | Yes |

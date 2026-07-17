@@ -15,6 +15,10 @@ import {
   Menu,
   Salad,
   Settings,
+  ShoppingBag,
+  Trophy,
+  Users,
+  Target,
   X,
 } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -23,15 +27,22 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/stores/auth-store";
 import { useCommandPaletteStore } from "@/stores/command-palette-store";
+import { useNotificationStore } from "@/stores/notification-store";
+import { NotificationCenter } from "@/components/notifications/notification-center";
+import { isFeatureEnabled, type FeatureFlag } from "@/lib/feature-flags";
 import type { UserTier } from "@/lib/types";
 
-const nav = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/workouts", label: "Workouts", icon: Dumbbell },
-  { href: "/nutrition", label: "Nutrition", icon: Salad },
-  { href: "/calculators", label: "Calculators", icon: Command },
-  { href: "/analytics", label: "Analytics", icon: LineChart },
-  { href: "/settings", label: "Settings", icon: Settings },
+const nav: { href: string; label: string; icon: typeof LayoutDashboard; flag: FeatureFlag | null }[] = [
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, flag: null },
+  { href: "/workouts", label: "Workouts", icon: Dumbbell, flag: null },
+  { href: "/nutrition", label: "Nutrition", icon: Salad, flag: null },
+  { href: "/calculators", label: "Calculators", icon: Command, flag: "CALCULATORS" },
+  { href: "/analytics", label: "Analytics", icon: LineChart, flag: "ANALYTICS" },
+  { href: "/achievements", label: "Achievements", icon: Trophy, flag: "ACHIEVEMENTS" },
+  { href: "/missions", label: "Missions", icon: Target, flag: null },
+  { href: "/community", label: "Community", icon: Users, flag: "COMMUNITY" },
+  { href: "/shop", label: "Shop", icon: ShoppingBag, flag: "SHOP" },
+  { href: "/settings", label: "Settings", icon: Settings, flag: null },
 ];
 
 function tierBadge(tier: UserTier) {
@@ -48,10 +59,13 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
   const status = useAuthStore((s) => s.status);
   const logout = useAuthStore((s) => s.logout);
   const openPalette = useCommandPaletteStore((s) => s.open);
+  const unread = useNotificationStore((s) => s.items.filter((n) => !n.is_read).length);
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const { setTheme, resolvedTheme } = useTheme();
+
+  const visibleNav = nav.filter((item) => !item.flag || isFeatureEnabled(item.flag));
 
   useEffect(() => {
     if (status === "anonymous") router.replace("/login");
@@ -65,8 +79,6 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
       </div>
     );
   }
-
-  const unread = 2;
 
   return (
     <div className="min-h-[100dvh] bg-[var(--surface-0)]">
@@ -87,8 +99,8 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
           </Button>
         </div>
-        <nav className="flex-1 space-y-1 px-2 py-2" aria-label="Dashboard">
-          {nav.map((item) => {
+        <nav className="flex-1 space-y-1 overflow-y-auto px-2 py-2" aria-label="Dashboard">
+          {visibleNav.map((item) => {
             const Icon = item.icon;
             const active =
               pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(`${item.href}/`));
@@ -143,25 +155,31 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
               Command
               <kbd className="type-caption rounded bg-[var(--surface-3)] px-1.5">⌘K</kbd>
             </Button>
-            <div className="relative">
-              <Button variant="ghost" size="icon" aria-label="Notifications" onClick={() => setNotifOpen((v) => !v)}>
-                <Bell className="h-4 w-4" />
-                {unread ? (
-                  <span className="absolute right-1 top-1 h-4 min-w-4 rounded-full bg-[var(--mint)] px-1 text-center text-[10px] font-bold text-[#04140e]">
-                    {unread}
-                  </span>
+            {isFeatureEnabled("NOTIFICATIONS") ? (
+              <div className="relative">
+                <Button variant="ghost" size="icon" aria-label="Notifications" onClick={() => setNotifOpen((v) => !v)}>
+                  <Bell className="h-4 w-4" />
+                  {unread ? (
+                    <span className="absolute right-1 top-1 h-4 min-w-4 rounded-full bg-[var(--mint)] px-1 text-center text-[10px] font-bold text-[#04140e]">
+                      {unread}
+                    </span>
+                  ) : null}
+                </Button>
+                {notifOpen ? (
+                  <div className="absolute right-0 top-12 z-40 max-h-96 w-80 overflow-auto rounded-[var(--radius-md)] border border-[var(--surface-glass-border)] bg-[var(--surface-1)] p-3 shadow-[var(--shadow-float)]">
+                    <div className="mb-2 flex items-center justify-between">
+                      <p className="type-caption font-semibold uppercase tracking-[0.12em] text-[var(--foreground-subtle)]">
+                        Notifications
+                      </p>
+                      <Link href="/settings" className="type-caption text-[var(--plasma)] hover:underline" onClick={() => setNotifOpen(false)}>
+                        Settings
+                      </Link>
+                    </div>
+                    <NotificationCenter compact />
+                  </div>
                 ) : null}
-              </Button>
-              {notifOpen ? (
-                <div className="absolute right-0 top-12 z-40 w-72 rounded-[var(--radius-md)] border border-[var(--surface-glass-border)] bg-[var(--surface-1)] p-3 shadow-[var(--shadow-float)]">
-                  <p className="type-caption mb-2 font-semibold uppercase tracking-[0.12em] text-[var(--foreground-subtle)]">Notifications</p>
-                  <ul className="space-y-2">
-                    <li className="type-body-sm">Readiness update ready</li>
-                    <li className="type-body-sm text-[var(--foreground-muted)]">Hydration reminder</li>
-                  </ul>
-                </div>
-              ) : null}
-            </div>
+              </div>
+            ) : null}
             <Badge variant={tierBadge(user.tier)}>{user.role}</Badge>
             <Button
               variant="ghost"
@@ -179,7 +197,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
       {mobileOpen ? (
         <div className="fixed inset-0 z-40 md:hidden">
           <button className="absolute inset-0 bg-black/50" aria-label="Close menu" onClick={() => setMobileOpen(false)} />
-          <div className="absolute inset-y-0 left-0 w-72 bg-[var(--surface-1)] p-4 shadow-[var(--shadow-float)]">
+          <div className="absolute inset-y-0 left-0 w-72 overflow-y-auto bg-[var(--surface-1)] p-4 shadow-[var(--shadow-float)]">
             <div className="mb-4 flex justify-between">
               <span className="font-bold">EsiFit</span>
               <Button variant="ghost" size="icon" onClick={() => setMobileOpen(false)} aria-label="Close">
@@ -187,7 +205,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
               </Button>
             </div>
             <nav className="space-y-1">
-              {nav.map((item) => (
+              {visibleNav.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}

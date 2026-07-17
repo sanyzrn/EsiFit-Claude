@@ -16,6 +16,11 @@ const HIDE_CHROME = [
   "/nutrition",
   "/analytics",
   "/settings",
+  "/achievements",
+  "/missions",
+  "/community",
+  "/shop",
+  "/recap",
 ];
 
 export function SiteChrome({ children }: { children: React.ReactNode }) {
