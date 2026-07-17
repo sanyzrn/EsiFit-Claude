@@ -8,10 +8,12 @@ import {
   ChevronLeft,
   ChevronRight,
   Command,
+  Dumbbell,
   LayoutDashboard,
+  LineChart,
   LogOut,
   Menu,
-  Search,
+  Salad,
   Settings,
   X,
 } from "lucide-react";
@@ -25,8 +27,11 @@ import type { UserTier } from "@/lib/types";
 
 const nav = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/blog", label: "Articles", icon: Search },
-  { href: "/#pricing", label: "Plans", icon: Settings },
+  { href: "/workouts", label: "Workouts", icon: Dumbbell },
+  { href: "/nutrition", label: "Nutrition", icon: Salad },
+  { href: "/calculators", label: "Calculators", icon: Command },
+  { href: "/analytics", label: "Analytics", icon: LineChart },
+  { href: "/settings", label: "Settings", icon: Settings },
 ];
 
 function tierBadge(tier: UserTier) {
@@ -85,7 +90,8 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
         <nav className="flex-1 space-y-1 px-2 py-2" aria-label="Dashboard">
           {nav.map((item) => {
             const Icon = item.icon;
-            const active = pathname === item.href;
+            const active =
+              pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(`${item.href}/`));
             return (
               <Link
                 key={item.href}

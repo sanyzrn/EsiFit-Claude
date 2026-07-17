@@ -47,17 +47,19 @@
 | BottomSheet, Drawer | — | TBD | closed / open / dragging | slide | Modal | TBD | No |
 | AIBubble (chat entry point) | collapsed / expanded | TBD | idle / typing / responding | expand/collapse | Button | TBD | No |
 
-## Feature cards / Phase 3 (planned)
+## Core product / Phase 3 (implemented)
 
 | Component | Variants | Props | States | Animation | Depends On | Used In | Stable |
 |---|---|---|---|---|---|---|---|
-| ExerciseCard | grid / list | TBD | default / expanded | expand | Card, AnatomyBodyMap | TBD | No |
-| WorkoutCard | routine / active-session | TBD | idle / active / complete | — | Card | TBD | No |
-| CalculatorCard | per calculator config | `config, onCalculate` | idle / calculating / result | result reveal | Card, RadialProgress | TBD | No |
-| NutritionCard | meal / recipe | TBD | — | — | Card | TBD | No |
-| TimelineCard | — | TBD | — | — | Card | TBD | No |
-| Ring (macro/progress) | — | TBD | — | fill animation | RadialProgress | TBD | No |
-| Sparkline, AreaChart, RadarChart, Heatmap | — | `data, theme` | loading / loaded / empty | draw-in | ChartCard | TBD | No |
+| CalculatorShell | config-driven | `slug` | idle / result / compare | gauge + counter | RadialProgress, chart theme, history store | `/calculators/[slug]` | Yes |
+| ExerciseLibrary | grid | — | filter / detail | — | AnatomyBodyMap, catalog | `/workouts` | Yes |
+| WorkoutBuilder | — | — | editing / saved | — | builder store | `/workouts/builder` | Yes |
+| WorkoutSession | live | — | logging / rest / PR / done | PR glow, rest beep | offline queue, Speech API | `/workouts/session` | Yes |
+| NutritionModule | day view | — | planning / logging | water fill, macro rings | RadialProgress, offline queue | `/nutrition` | Yes |
+| AnalyticsPage | suite | — | loaded / empty | chart draw-in | chart theme, AnatomyBodyMap, TransformationSlider | `/analytics` | Yes |
+| OfflineIndicator | banner | — | online / offline | slide | useOnline | session, nutrition | Yes |
+| SettingsInstallPanel | — | — | deferred / standalone | — | beforeinstallprompt, useIsStandalone | `/settings` | Yes |
+| chart theme utils | Recharts wrappers | — | — | — | CSS vars | calculators, analytics | Yes |
 
 ## Growth / Phase 4 (planned)
 
