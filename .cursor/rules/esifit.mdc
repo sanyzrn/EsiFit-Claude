@@ -1,0 +1,16 @@
+---
+description: Always apply EsiFit development standards via the esifit-development skill
+alwaysApply: true
+---
+
+# EsiFit — always-on project guidance
+
+This repository is **EsiFit**. Before writing or changing any code, load and follow the **esifit-development** skill (`.cursor/skills/esifit-development/SKILL.md`).
+
+That skill is the global, project-wide control plane for:
+
+- Required reading order (`PROJECT_RULES.md`, `DESIGN_BIBLE.md`, inventory, data model, flags, decisions, testing, security, operations)
+- Phase prompts and Definition of Done
+- UI quality gate and documentation sync rules
+
+Do not invent design tokens, duplicate components, or reverse logged product decisions. Prefer living docs at the repository root over stale copies.
