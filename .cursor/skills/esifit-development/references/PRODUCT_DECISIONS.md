@@ -103,3 +103,9 @@ A log of project-level decisions already made, with the reasoning and the accept
 **Decision:** Offline tracker persistence uses IndexedDB queue (`idb`) plus a light shell service worker — not a full offline SPA.
 **Reason:** Matches PRODUCT_DECISIONS scope (sets/water/meals only) while still enabling installability and shell caching.
 **Tradeoff:** Analytics/community/store still require network; sync is mock flush until Phase 6.
+
+---
+
+**Decision:** Deploy via Vercel as Framework Preset `nextjs` with `outputDirectory: null` in repo `vercel.json`.
+**Reason:** Project Settings still carried a Vite-era Output Directory of `dist`, which fails after `next build` (Next uses `.next`, not a static `dist` folder). Repo config overrides that and locks the correct framework/build commands.
+**Tradeoff:** Dashboard overrides can still fight `vercel.json` if a Production Override is stuck; clear Output Directory / Framework overrides in Vercel Project Settings if deploys keep looking for `dist`.
