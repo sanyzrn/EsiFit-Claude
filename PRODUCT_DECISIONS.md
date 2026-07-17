@@ -121,3 +121,15 @@ A log of project-level decisions already made, with the reasoning and the accept
 **Decision:** Community UGC renders only as sanitized plain text (React text nodes + `sanitizeUserText`); report actions write to a mock moderation queue.
 **Reason:** Establish the safe render + report pattern before Phase 6 real users.
 **Tradeoff:** No rich-text posts in Phase 4.
+
+---
+
+**Decision:** AI defaults to the `mock` adapter when `AI_PROVIDER` is unset or the chosen provider’s API key is missing; real providers share one `generateAIResponse` wrapper for quota + logging.
+**Reason:** Demos and CI stay green without secrets; swapping providers never touches call sites.
+**Tradeoff:** Mock insights are template-grounded, not model-quality — fine for structural testing until a key is configured.
+
+---
+
+**Decision:** AI usage logs store token counts and metadata only — not full prompt/response text.
+**Reason:** SECURITY_PRIVACY.md — avoid logging personal health context in plaintext.
+**Tradeoff:** Harder to debug bad prompts without a separate explicit debug mode later.

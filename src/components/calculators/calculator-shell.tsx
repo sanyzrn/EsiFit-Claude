@@ -22,6 +22,7 @@ import {
   chartTheme,
   ChartTooltipStyle,
 } from "@/lib/charts/theme";
+import { AIInsightPanel } from "@/components/ai/ai-insight-panel";
 
 export function CalculatorShell({ slug }: { slug: string }) {
   const config = getCalculator(slug);
@@ -153,6 +154,25 @@ function CalculatorShellInner({ config }: { config: CalculatorConfig }) {
               <RadialProgress value={gaugeValue} size="lg" label="scale" />
             </div>
             <p className="type-body-sm mt-4 text-[var(--foreground-muted)]">{result.interpretation}</p>
+            <div className="mt-4">
+              <AIInsightPanel
+                touchpoint="calculator"
+                title="AI Insight"
+                prompt={`Write a short 3-5 sentence personalized interpretation of this ${config.name} result. Be encouraging and practical.`}
+                context={{
+                  calculator: config.name,
+                  value: result.value,
+                  unit: result.unit,
+                  band: result.band,
+                  interpretation: result.interpretation,
+                  weightKg: profile?.weightKg ?? null,
+                  heightCm: profile?.heightCm ?? null,
+                  age: profile?.age ?? null,
+                  goal: profile?.primaryGoal ?? null,
+                  experience: profile?.experienceLevel ?? null,
+                }}
+              />
+            </div>
             {result.secondary ? (
               <dl className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
                 {Object.entries(result.secondary).map(([k, v]) => (

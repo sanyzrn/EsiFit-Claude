@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { motionPresets } from "@/lib/motion";
 import { useGamificationStore } from "@/stores/gamification-store";
 import { useNotificationStore } from "@/stores/notification-store";
+import { AIInsightPanel } from "@/components/ai/ai-insight-panel";
 
 type LoggedSet = { weight: number; reps: number; isPr: boolean };
 
@@ -101,6 +102,19 @@ export function WorkoutSession() {
             <Stat label="Volume" value={`${Math.round(volume)} kg`} />
             <Stat label="PRs" value={`${prs}`} />
             <Stat label="XP" value={`+${40 + prs * 15}`} />
+          </div>
+          <div className="mt-6 text-left">
+            <AIInsightPanel
+              touchpoint="workout"
+              title="AI session note"
+              prompt="Write one encouraging sentence about this completed workout using only the provided stats."
+              context={{
+                durationMin: minutes,
+                volumeKg: Math.round(volume),
+                prCount: prs,
+                setCount: all.length,
+              }}
+            />
           </div>
           <Button className="mt-8" onClick={() => router.push("/dashboard")}>
             Back to dashboard

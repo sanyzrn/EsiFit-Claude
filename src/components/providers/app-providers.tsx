@@ -8,6 +8,7 @@ import { TooltipProvider } from "@/components/ui/overlays";
 import { initAuthCrossTabSync, useAuthStore } from "@/stores/auth-store";
 import { CommandPalette } from "@/components/command-palette/command-palette";
 import { CelebrationHost } from "@/components/celebration/celebration";
+import { AskAIBubble } from "@/components/ai/ask-ai-bubble";
 import { ServiceWorkerRegister } from "@/components/pwa/sw-register";
 
 function AuthLifecycle() {
@@ -49,6 +50,7 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
           <ServiceWorkerRegister />
           {children}
           <CelebrationHost />
+          <AskAIBubble />
           <CommandPalette />
           <Toaster
             theme="system"
