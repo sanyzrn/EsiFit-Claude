@@ -20,7 +20,7 @@ const footerColumns = [
   {
     title: "Legal",
     links: [
-      { href: "#", label: "Privacy" },
+      { href: "/privacy", label: "Privacy" },
       { href: "#", label: "Terms" },
       { href: "#", label: "Cookies" },
     ],
