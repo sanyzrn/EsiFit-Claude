@@ -29,16 +29,23 @@
 | `SectionHeader` | left / center | `eyebrow, title, description, align` | — | — | — | Landing | Yes |
 | `TransformationSlider` | before/after | — | dragging / idle | clip-path follow | — | Landing | Yes |
 
-## Dashboard / Phase 2 (planned)
+## Dashboard / Phase 2 (implemented)
 
 | Component | Variants | Props | States | Animation | Depends On | Used In | Stable |
 |---|---|---|---|---|---|---|---|
-| StatCard, ProgressCard | per widget type | `data, loading, error` | loading / loaded / empty / error | staggered entrance | Card, Skeleton, AnimatedCounter | TBD | No |
-| ChartCard (wrapper) | line / bar / radial / heatmap | `series, config` | loading / loaded / empty | draw-in on mount | Card, Skeleton | TBD | No |
-| CommandPalette | — | `commands[]` | closed / open / searching | fade + scale | Modal | TBD | No |
+| DashboardShell | collapsed sidebar | children | auth-gated | width transition | Badge, Button | /dashboard | Yes |
+| DashboardView | bento grid | — | loading / loaded / error | staggered RevealOnScroll | TanStack Query, dnd-kit | /dashboard | Yes |
+| WidgetShell | default / locked | title, loading, error, empty, locked, dragHandleProps | loading / error / locked / empty | — | GlassCard, Skeleton | All widgets | Yes |
+| ProgressScoreWidget / ReadinessWidget | hero | WidgetProps&lt;DashboardData&gt; | loading / loaded | RadialProgress | WidgetShell | Dashboard | Yes |
+| Metric widgets (Today/Nutrition/Water/Sleep/Weight/BodyFat/XP/Streak/Goals/Weekly/Timeline/Milestones) | per data type | WidgetProps&lt;DashboardData&gt; | loading / empty / error | counters, sparklines, bars | WidgetShell, Sparkline | Dashboard | Yes |
+| CompleteProfileWidget | nudge | visible, dragHandleProps | — | — | WidgetShell | Dashboard | Yes |
+| CoachMessagesWidget / AnalyticsTeaserWidget | locked/unlocked | WidgetProps | locked for Free | — | WidgetShell | Dashboard | Yes |
+| CommandPalette | — | registry commands | open / closed | Dialog | cmdk, registerCommand | Global | Yes |
+| OnboardingWizard | 6 steps | — | skippable | progress bar | GlassCard | /onboarding | Yes |
+| OtpInput | 6-digit | value, onChange | — | auto-advance / paste | — | /2fa | Yes |
+| Auth forms | login/signup/forgot/verify | RHF+Zod | loading / error | — | AuthShell | Auth routes | Yes |
 | BottomSheet, Drawer | — | TBD | closed / open / dragging | slide | Modal | TBD | No |
 | AIBubble (chat entry point) | collapsed / expanded | TBD | idle / typing / responding | expand/collapse | Button | TBD | No |
-| Sidebar | expanded / collapsed | TBD | — | width transition | Button | TBD | No |
 
 ## Feature cards / Phase 3 (planned)
 

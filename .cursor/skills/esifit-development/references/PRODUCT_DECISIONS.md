@@ -73,3 +73,15 @@ A log of project-level decisions already made, with the reasoning and the accept
 **Decision:** Contextual PWA install prompt is deferred until post-onboarding / first-workout engagement exists (Phase 2–3).
 **Reason:** `PWA_INSTALLABILITY.md` forbids showing it on first landing-page visit; Phase 1 has no signed-in engagement signal yet.
 **Tradeoff:** Manifest/icons ship in Phase 1 (installable via browser UI), but in-app prompt UX waits.
+
+---
+
+**Decision:** Phase 2 ships Vitest store/unit tests for auth + VIP gating now; full Playwright E2E for signup→dashboard is deferred to a focused follow-up once the dashboard layout API stabilizes.
+**Reason:** Auth/session transitions are the highest-risk logic regressions called out in `TESTING_STRATEGY.md` and are covered; E2E harness adds tooling surface area mid-phase without changing the mock contract.
+**Tradeoff:** Critical-path E2E is not automated yet — manual route smoke + unit/store coverage fills the gap until Playwright is added.
+
+---
+
+**Decision:** Onboarding profile fields live on `User.profile` (aligned to USER/GOAL), not a separate onboarding DTO.
+**Reason:** Calculators (Phase 3) and AI context (Phase 5) must read one shape; avoids reconciliation debt.
+**Tradeoff:** Profile grows a few optional biometric fields early.
