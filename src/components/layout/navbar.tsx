@@ -12,6 +12,7 @@ const navLinks = [
   { href: "/#features", label: "Features" },
   { href: "/#pricing", label: "Pricing" },
   { href: "/blog", label: "Articles", flag: "BLOG" as const },
+  { href: "/dashboard", label: "Dashboard" },
   { href: "/#faq", label: "FAQ" },
 ];
 
@@ -68,10 +69,10 @@ export function Navbar() {
             <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
           </Button>
           <Button variant="ghost" className="hidden sm:inline-flex" asChild>
-            <Link href="/#newsletter">Sign in</Link>
+            <Link href="/login">Sign in</Link>
           </Button>
           <Button className="hidden sm:inline-flex" asChild>
-            <Link href="/#pricing">Start free</Link>
+            <Link href="/signup">Start free</Link>
           </Button>
           <Button variant="ghost" size="icon" className="md:hidden" aria-label="Open menu" onClick={() => setOpen((v) => !v)}>
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
