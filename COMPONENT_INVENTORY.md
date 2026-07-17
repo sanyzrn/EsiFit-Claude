@@ -66,6 +66,9 @@
 | Component | Variants | Props | States | Animation | Depends On | Used In | Stable |
 |---|---|---|---|---|---|---|---|
 | CelebrationHost | level/badge/mission/pr | — | idle / celebrating | particle burst | Framer Motion, gamification store | Global | Yes |
+| AIInsightPanel | calculator/workout/analytics | prompt, context, touchpoint | anonymous-gate / loading / result / degraded | — | `/api/ai/generate` | calculators, session, analytics | Yes |
+| AskAIBubble | floating | — | closed / open / loading | — | AI_CHAT flag | Global | Yes |
+| AISettingsPanel | — | — | loaded | — | `/api/ai/usage` | `/settings` | Yes |
 | AchievementsView | — | — | locked / progress / unlocked | XP bar | gamification store | `/achievements` | Yes |
 | MissionsView | daily/weekly/monthly | — | Active/Completed/Claimed | progress bar | gamification store | `/missions` | Yes |
 | CommunityFeed | — | — | empty / loaded | optimistic like | sanitize, community store | `/community` | Yes |
